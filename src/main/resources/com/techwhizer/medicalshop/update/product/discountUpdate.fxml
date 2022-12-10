@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.techwhizer.medicalshop.controller.update.product.DiscountUpdate">
+
+    <center>
+        <StackPane BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="CENTER" spacing="20.0" StackPane.alignment="CENTER">
+                    <children>
+
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="20.0" layoutY="120.0" spacing="5.0">
+                            <children>
+                                <Label prefHeight="18.0" prefWidth="316.0" text="DISCOUNT NAME  :">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                        <TextField fx:id="discountNameC" editable="true" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="312.0" promptText="Enter Discount Name ex- special offer" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                            </children>
+                        </VBox>
+
+
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <VBox fillWidth="false" prefHeight="70.0" prefWidth="312.0" spacing="5.0">
+                                    <children>
+                                        <Label lineSpacing="5.0" prefHeight="18.0" prefWidth="257.0" text=" DISCOUNT % :">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="discountTF" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="42.0" prefWidth="312.0" promptText="ENTER DISCOUNT % :" style="-fx-border-color: gray; -fx-border-radius: 3;">
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </TextField>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="70.0" layoutY="163.0" prefHeight="89.0" prefWidth="300.0" spacing="5.0">
+                            <children>
+                                <Label prefHeight="18.0" prefWidth="316.0" text=" DESCRIPTION  :">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <TextArea fx:id="descriptionTF" minHeight="50.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="312.0" promptText="ENTER DESCRIPTION :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                            </children>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </VBox>
+                        <HBox alignment="CENTER" spacing="30.0">
+                            <children>
+
+                                <Button alignment="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="103.0" style="-fx-background-color: red; -fx-text-fill: WHITE; -fx-cursor: hand;" text="CANCEL" textAlignment="CENTER">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font></Button>
+                        <Button fx:id="submitBn" alignment="CENTER" layoutX="117.0" layoutY="10.0" mnemonicParsing="false" onAction="#updateBn" prefHeight="26.0" prefWidth="103.0" style="-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-cursor: hand;" text="UPDATE" textAlignment="CENTER">
+                           <font>
+                              <Font name="Arial Black" size="11.0" />
+                           </font>
+                        </Button>
+
+                            </children>
+                            <VBox.margin>
+                                <Insets top="30.0" />
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </StackPane>
+    </center>
+
+</BorderPane>

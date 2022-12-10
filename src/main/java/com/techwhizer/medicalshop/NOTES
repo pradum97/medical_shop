@@ -1,0 +1,40 @@
+
+licence activate
+
+add product : add hsn button,dealer name auto complete
+close item not show
+PROHIBIT ITEM SHOW ONLY FOR ADMIN
+
+after sale print type - view and print
+
+check extra file delete in server
+// for admin
+-> enable licence
+-> update licence details in licence manager
+-> clean licence data
+
+//
+
+-purchase details
+product name*
+mr(medical representive)
+purchase p*
+mfg
+dealer name
+exp date*
+unit-ml mg litre pkt strip pcs kg g *
+qty*
+batch*
+lot# *
+
+notes
+
+  
+    tab per strip
+    category ex-tab,bottle-
+    pack
+    MIN QTY , MAX QTY
+
+
+
+

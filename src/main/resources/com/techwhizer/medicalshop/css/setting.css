@@ -1,0 +1,51 @@
+.context-menu {
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: SansSerif;
+    -fx-cursor: hand;
+    -fx-padding: 10;
+    -fx-background-radius: 4;
+}
+.menu-item:focused .label {
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: Arial;
+    -fx-cursor: hand;
+}
+.menu-item:focused {
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: "Arial Black";
+    -fx-cursor: hand;
+}
+.menu-button{
+
+    -fx-color: white;
+    -fx-background-color: red;
+    -fx-font-family: "Arial Black";
+    -fx-cursor: hand;
+}
+
+.hyperlink {
+    -fx-underline: false;
+    -fx-font-family: SansSerif;
+    -fx-background-color: transparent;
+    -fx-border-style: solid;
+    -fx-border-width: 3px;
+    -fx-padding: 4px 12px 4px 12px;
+    -fx-text-fill: white;-fx-graphic-text-gap: 8;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-cursor: hand;
+}
+
+.hyperlink:focused{
+    -fx-background-color: #0881ea;
+    -fx-border-color: transparent;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-border-radius: 2px;
+}
