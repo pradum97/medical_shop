@@ -3,10 +3,11 @@ package com.techwhizer.medicalshop.controller.product.discount;
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
-import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.DiscountModel;
 import com.techwhizer.medicalshop.util.DBConnection;
+import com.victorlaerte.asynctask.AsyncTask;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -24,10 +24,8 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class Discount implements Initializable {
@@ -51,14 +49,70 @@ public class Discount implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        setDiscountData();
 
+        callThread();
+
+    }
+
+    private void callThread() {
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setDaemon(false);
+        myAsyncTask.execute();
+    }
+
+    public void refresh(ActionEvent event) {
+        callThread();
+    }
+
+    private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private String msg;
+
+        @Override
+        public void onPreExecute() {
+            msg = "";
+            if (null != tableViewDiscount) {
+                tableViewDiscount.setItems(null);
+            }
+
+            assert tableViewDiscount != null;
+            tableViewDiscount.setPlaceholder(method.getProgressBar(40, 40));
+
+        }
+
+        @Override
+        public Boolean doInBackground(String... params) {
+
+            Map<String, Object> status = setDiscountData();
+            boolean isSuccess = (boolean) status.get("is_success");
+            msg = (String) status.get("message");
+
+            if (discountList.size() > 0) {
+                pagination.setVisible(true);
+            }
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+            pagination.setCurrentPageIndex(0);
+            changeTableView(0, rowsPerPage);
+            pagination.currentPageIndexProperty().addListener(
+                    (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+
+            return isSuccess;
+        }
+
+        @Override
+        public void onPostExecute(Boolean success) {
+            tableViewDiscount.setPlaceholder(new Label(msg));
+        }
+
+        @Override
+        public void progressCallback(Integer... params) {
+
+        }
     }
 
     private void changeTableView(int index, int limit) {
 
         int totalPage = (int) (Math.ceil(discountList.size() * 1.0 / rowsPerPage));
-        pagination.setPageCount(totalPage);
+        Platform.runLater(()-> pagination.setPageCount(totalPage));
 
         colSlNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableViewDiscount.getItems().indexOf(cellData.getValue()) + 1));
@@ -66,7 +120,7 @@ public class Discount implements Initializable {
         colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
         colDiscountDes.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-      setOptionalCell();
+        setOptionalCell();
 
         customColumn(colDiscountName);
 
@@ -108,7 +162,7 @@ public class Discount implements Initializable {
                     );
 
                     iv_edit.setOnMouseClicked((MouseEvent event) -> {
-                        method.selectTable(getIndex(),tableViewDiscount);
+                        method.selectTable(getIndex(), tableViewDiscount);
 
                         DiscountModel edit_selection = tableViewDiscount.
                                 getSelectionModel().getSelectedItem();
@@ -121,7 +175,7 @@ public class Discount implements Initializable {
                         Main.primaryStage.setUserData(edit_selection);
 
                         customDialog.showFxmlDialog("update/product/discountUpdate.fxml", "UPDATE DISCOUNT");
-                        setDiscountData();
+                        callThread();
 
                     });
 
@@ -161,38 +215,16 @@ public class Discount implements Initializable {
     public void addDiscountBN(ActionEvent event) {
 
         customDialog.showFxmlDialog("product/discount/addDiscount.fxml", "Create new discount");
-        setDiscountData();
+        callThread();
     }
 
-    private void setDiscountData() {
+    private Map<String, Object> setDiscountData() {
+
         if (null != discountList) {
             discountList.clear();
         }
-        discountList = method.getDiscount();
-
-        if (null == discountList) {
-            return;
-        }
-        double tableMinHeight = 70;
-
-        for (int i = 0; i < discountList.size(); i++) {
-
-            tableMinHeight = tableMinHeight + 20 + i;
-
-            tableViewDiscount.setMinHeight(tableMinHeight);
-
-        }
-
-        if (discountList.size() > 0) {
-            pagination.setVisible(true);
-        }
-
-        changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-
-        pagination.setCurrentPageIndex(0);
-        changeTableView(0, rowsPerPage);
-        pagination.currentPageIndexProperty().addListener(
-                (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
-
+        Map<String, Object> map = method.getDiscount();
+        discountList = (ObservableList<DiscountModel>) map.get("data");
+        return map;
     }
 }

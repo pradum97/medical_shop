@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -24,13 +26,25 @@
                                         <children>
                                             <VBox alignment="CENTER" spacing="15.0" HBox.hgrow="ALWAYS">
                                                 <children>
-                                                    <HBox alignment="CENTER_RIGHT">
+                                                    <HBox alignment="CENTER_RIGHT" spacing="30.0">
                                                         <children>
-                                                            <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addDiscountBN" style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-cursor: hand;" text="➕ ADD DISCOUNT" HBox.hgrow="ALWAYS">
+                                                            <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addDiscountBN" prefHeight="26.0" style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-cursor: hand;" text="➕ ADD DISCOUNT" HBox.hgrow="ALWAYS">
                                                                 <HBox.margin>
                                                                     <Insets />
                                                                 </HBox.margin>
                                                             </Button>
+                                             <Button alignment="CENTER" mnemonicParsing="false" onAction="#refresh" prefHeight="26.0" prefWidth="47.0" style="-fx-cursor: hand;" textAlignment="CENTER">
+                                                <graphic>
+                                                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                                      <image>
+                                                         <Image url="@../../img/icon/refresh_ic_red.png" />
+                                                      </image>
+                                                   </ImageView>
+                                                </graphic>
+                                                <HBox.margin>
+                                                   <Insets right="20.0" />
+                                                </HBox.margin>
+                                             </Button>
                                                         </children>
                                                     </HBox>
                                                     <TableView fx:id="tableViewDiscount" editable="true">

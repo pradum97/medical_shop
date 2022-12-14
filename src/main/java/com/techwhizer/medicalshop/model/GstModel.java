@@ -76,6 +76,6 @@ public class GstModel {
 
     @Override
     public String toString() {
-        return this.getHsn_sac()+" - "+this.getGstName();
+        return this.getHsn_sac()+"-"+(getCgst()+getIgst()+getSgst())+"%"+"-"+this.getGstName();
     }
 }

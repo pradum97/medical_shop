@@ -138,7 +138,6 @@ public class AllDealer implements Initializable {
                 String date = rs.getString("date");
                 String dealerDl = rs.getString("dealer_dl");
 
-
                 if (null == dealerName || dealerName.isEmpty()) {
                     dealerName = "-";
                 }
@@ -379,4 +378,5 @@ public class AllDealer implements Initializable {
         customDialog.showFxmlDialog2("product/dealer/addDealer.fxml", "ADD DEALER");
         callThread();
     }
+
 }

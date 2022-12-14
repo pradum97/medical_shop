@@ -2,12 +2,14 @@
     -fx-cursor: hand;
 }
 
+
 .context-menu {
     -fx-background-color: red;
     -fx-border-color: red;
     -fx-padding: 1;
     -fx-text-fill: white;
 }
+
 
 .checkItem {
 

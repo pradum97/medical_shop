@@ -2,6 +2,7 @@ package com.techwhizer.medicalshop;
 
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.GetUserProfile;
+import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.UserDetails;
 import com.techwhizer.medicalshop.util.AppConfig;
 import com.techwhizer.medicalshop.util.DBConnection;
@@ -15,8 +16,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,14 +37,11 @@ public class Dashboard implements Initializable {
     public Label dateL;
     @FXML
     public BorderPane main_container;
-    @FXML
-    HBox staffTopContainer;
     public Button bn_logout;
     public StackPane contentArea;
     public Label fullName;
     public ImageView userImage;
     public Label userRole;
-    public ScrollPane menuScrollTop;
     public Hyperlink homeBn;
     public Hyperlink myProductBn;
     public Hyperlink saleProduct;
@@ -56,7 +54,6 @@ public class Dashboard implements Initializable {
     private Main main;
     public static Stage stage;
     private Properties propRead;
-    public MenuButton feedbackMenuButton;
     public MenuButton settingMenuButton;
 
     @Override
@@ -82,7 +79,6 @@ public class Dashboard implements Initializable {
 
     private void setting() {
 
-        setVisible(menuScrollTop, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(homeBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(myProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(saleReportBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
@@ -97,29 +93,23 @@ public class Dashboard implements Initializable {
 
     private void addButtonMenu() {
 
-        // FEEDBACK
-        MenuItem addFeedback = new MenuItem("ADD FEEDBACK");
-        MenuItem view_feedback = new MenuItem("VIEW FEEDBACK");
-        feedbackMenuButton.getItems().addAll(addFeedback, view_feedback);
-        addFeedback.setOnAction(event -> addFeedback());
-        view_feedback.setOnAction(event -> showDialog("viewFeedback.fxml", "ALL FEEDBACK", 650, 750, StageStyle.DECORATED));
-
         // product -- start
-        Menu product = new Menu("PRODUCT");
-        MenuItem category = new MenuItem("CATEGORY");
+        Menu product = new Menu("ITEM MASTER");
         MenuItem discount = new MenuItem("DISCOUNT");
         MenuItem gst = new MenuItem("GST");
         MenuItem company = new MenuItem("COMPANY");
+        MenuItem manufacture = new MenuItem("MANUFACTURE");
+        MenuItem mr = new MenuItem("MEDICAL REPRESENTATIVE");
 
 
-        product.getItems().addAll(category,discount,gst,company);
+        product.getItems().addAll(discount,gst,company,manufacture,mr);
 
         // general -- end
         MenuItem dealer = new MenuItem("DEALER");
         MenuItem shopData = new MenuItem("SHOP DETAILS");
         MenuItem profile = new MenuItem("PROFILE");
         MenuItem users = new MenuItem("USERS");
-        MenuItem patient = new MenuItem("VIEW PATIENT");
+        MenuItem patient = new MenuItem("PATIENT");
         MenuItem myLicense = new MenuItem("MY LICENSE");
         MenuItem backup = new MenuItem("BACKUP");
 
@@ -127,40 +117,14 @@ public class Dashboard implements Initializable {
 
         settingMenuButton.getItems().addAll(product, profile, users, shopData, patient, myLicense, dealer, backup);
 
-        onClickAction(gst, myLicense, shopData, category,
-                profile, users, dealer, patient, backup,company,discount);
+        onClickAction(gst, myLicense, shopData,
+                profile, users, dealer, patient, backup,company,discount,manufacture , mr);
 
     }
 
-    private void showAddProductDialog() {
-
-        try {
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("product/addProduct.fxml")));
-            stage = new Stage();
-            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
-            stage.setTitle("Add new product");
-            stage.setMaximized(false);
-            Scene scene = new Scene(parent);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
-            stage.setScene(scene);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(Main.primaryStage);
-            stage.showAndWait();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void addFeedback() {
-        customDialog.showFxmlDialog2("feedbackDialog.fxml", "FEEDBACK");
-
-    }
-
-    private void onClickAction(MenuItem gst, MenuItem myLicense, MenuItem shopData, MenuItem category,
-                               MenuItem profile, MenuItem users, MenuItem dealer, MenuItem patient , MenuItem backup, MenuItem company, MenuItem discount) {
+    private void onClickAction(MenuItem gst, MenuItem myLicense, MenuItem shopData,
+                               MenuItem profile, MenuItem users, MenuItem dealer, MenuItem patient ,
+                               MenuItem backup, MenuItem company, MenuItem discount, MenuItem manufacture, MenuItem mr) {
 
         gst.setOnAction(event -> {
             customDialog.showFxmlDialog2("product/gst/gstConfig.fxml", "GST");
@@ -170,26 +134,36 @@ public class Dashboard implements Initializable {
         });
         myLicense.setOnAction(event -> customDialog.showFxmlDialog2("license/licenseMain.fxml", "My Subscription"));
         backup.setOnAction(event -> customDialog.showFxmlDialog2("db_backup.fxml", "BACKUP"));
-        patient.setOnAction(event -> customDialog.showFxmlFullDialog("setting/customer.fxml", "ALL CUSTOMER"));
-        shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
-        category.setOnAction(event -> customDialog.showFxmlDialog2("product/viewCategory.fxml","Categories list"));
+        patient.setOnAction(event -> customDialog.showFxmlFullDialog("product/patient/patientMain.fxml", "ALL PATIENT"));
+        shopData.setOnAction(event -> {
+            if (new Method().isShopDetailsAvailable()){
+                customDialog.showFxmlDialog2("shopDetails.fxml", "SHOP DETAILS");
+            }else {
+                customDialog.showFxmlDialog2("update/shopDetailsUpdate.fxml", "Shop details not available.Please submit shop details");
+            }
+
+        });
         company.setOnAction(event -> customDialog.showFxmlDialog2("product/viewCompany.fxml","Companies list"));
-        discount.setOnAction(event -> customDialog.showFxmlDialog2("product/discount/discount.fxml","Companies list"));
+        discount.setOnAction(event -> customDialog.showFxmlDialog2("product/discount/discount.fxml","Discount"));
         users.setOnAction(event -> {
-            customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS");
+            customDialog.showFxmlFullDialog("user/users.fxml", "ALL USERS");
             if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
                 refreshPage();
             }
         });
-        dealer.setOnAction(event -> customDialog.showFxmlFullDialog("product/dealer/allDealer.fxml", "ALL DEALER"));
+        dealer.setOnAction(event -> customDialog.showFxmlFullDialog("product/dealer/allDealer.fxml", "DEALER"));
         profile.setOnAction(event -> {
 
             Main.primaryStage.setUserData(Login.currentlyLogin_Id);
-            customDialog.showFxmlDialog2("dashboard/userprofile.fxml", "MY PROFILE");
+            customDialog.showFxmlDialog2("user/userprofile.fxml", "MY PROFILE");
             if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
                 refreshPage();
             }
         });
+
+        manufacture.setOnAction(event -> customDialog.showFxmlDialog2("product/manufactureMain.fxml","Manufacture"));
+        mr.setOnAction(event -> customDialog.showFxmlDialog2("product/mr/mrMain.fxml","Medical Representative"));
+
 
 
     }
@@ -198,28 +172,6 @@ public class Dashboard implements Initializable {
         setCustomImage();
         setUserData();
     }
-
-    private void showDialog(String fxmlName, String title, double height,
-                            double width, StageStyle utility) {
-
-        try {
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource(fxmlName)));
-            stage = new Stage();
-            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
-            stage.setTitle(title);
-            stage.setMaximized(false);
-            Scene scene = new Scene(parent, width, height);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(Main.primaryStage);
-            stage.initStyle(utility);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void setUserData() {
 
         UserDetails userDetails = new GetUserProfile().getUser(Login.currentlyLogin_Id);
@@ -269,7 +221,7 @@ public class Dashboard implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         ButtonType button = result.orElse(ButtonType.CANCEL);
         if (button == ButtonType.OK) {
-            main.changeScene("login.fxml", "LOGIN HERE");
+            main.changeScene("auth/login.fxml", "LOGIN HERE");
             Login.currentlyLogin_Id = 0;
             Login.currentRoleName = "";
             Login.currentRole_Id = 0;
@@ -310,8 +262,8 @@ public class Dashboard implements Initializable {
         replaceScene("proposal/proposalMain.fxml");
     }
 
-    public void addProductBnClick(ActionEvent actionEvent) {
-        showAddProductDialog();
+    public void addProductBnClick(MouseEvent actionEvent) {
+        new Method().showAddProductDialog();
     }
 
     public void myProfileClick(ActionEvent event) {
@@ -328,8 +280,7 @@ public class Dashboard implements Initializable {
         customDialog.showFxmlDialog2("db_backup.fxml", "    BACKUP");
     }
 
-    public void addItems(ActionEvent actionEvent) {
-
-        customDialog.showFxmlFullDialog("product/all_items.fxml","ADD ITEMS");
+    public void addPurchase(MouseEvent actionEvent) {
+       customDialog.showFxmlFullDialog("product/purchase/purchaseMain.fxml","PURCHASE ENTRY");
     }
 }

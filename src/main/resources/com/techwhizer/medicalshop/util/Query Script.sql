@@ -60,14 +60,15 @@ VALUES ('PRADUM', 'KUMAR', 'admin', 'MALE', 'admin@gmail.com', 1234567899, 'admi
 
 CREATE TABLE TBL_SHOP_DETAILS
 (
-    shop_id         serial primary key  not null,
-    SHOP_NAME       VARCHAR(100) unique NOT NULL,
-    SHOP_EMAIL      VARCHAR(100) unique NOT NULL,
-    SHOP_PHONE_1    VARCHAR(10) unique  NOT NULL,
-    SHOP_PHONE_2    VARCHAR(10),
-    SHOP_GST_NUMBER VARCHAR(100),
-    SHOP_PROP       VARCHAR(100),
-    SHOP_ADDRESS    VARCHAR(200) unique NOT NULL
+    shop_id           serial primary key  not null,
+    SHOP_NAME         VARCHAR(100) unique NOT NULL,
+    SHOP_EMAIL        VARCHAR(100) unique NOT NULL,
+    SHOP_PHONE_1      VARCHAR(10) unique  NOT NULL,
+    SHOP_PHONE_2      VARCHAR(10),
+    SHOP_GST_NUMBER   VARCHAR(100),
+    SHOP_FOOD_LICENCE VARCHAR(100),
+    SHOP_DRUG_LICENCE VARCHAR(100),
+    SHOP_ADDRESS      VARCHAR(200) unique NOT NULL
 );
 
 CREATE TABLE TBL_PRODUCT_TAX
@@ -89,7 +90,7 @@ CREATE TABLE TBL_ROLE
 
 INSERT INTO TBL_ROLE (ROLE)
 VALUES ('ADMIN'),
-       ('MEMBER');
+       ('STAFF');
 
 CREATE TABLE tbl_dealer
 (
@@ -104,17 +105,19 @@ CREATE TABLE tbl_dealer
     ADDED_DATE   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE tbl_category(
-    category_id serial primary key ,
-    category_name varchar(100) not null ,
-    create_date timestamp default current_timestamp
+CREATE TABLE tbl_category
+(
+    category_id   serial primary key,
+    category_name varchar(100) not null,
+    create_date   timestamp default current_timestamp
 );
 
-CREATE TABLE tbl_company(
-    company_id serial primary key ,
-    company_name varchar(200) not null ,
-    company_address varchar(200) not null ,
-    created_date timestamp default current_timestamp
+CREATE TABLE tbl_company
+(
+    company_id      serial primary key,
+    company_name    varchar(200) not null,
+    company_address varchar(200) not null,
+    created_date    timestamp default current_timestamp
 );
 
 CREATE TABLE TBL_DISCOUNT
@@ -124,69 +127,102 @@ CREATE TABLE TBL_DISCOUNT
     DISCOUNT      NUMERIC            NOT NULL,
     DISCOUNT_NAME VARCHAR(200)       not null,
     description   varchar(200),
-    created_date timestamp default current_timestamp
+    created_date  timestamp default current_timestamp
 
+);
+
+CREATE TABLE TBL_ITEMS_MASTER
+(
+    ITEM_ID      SERIAL PRIMARY KEY,
+    ITEMS_NAME   VARCHAR(300) NOT NULL,
+    UNIT         VARCHAR(100) NOT NULL,
+    STRIP_TAB    NUMERIC,
+    PACKING      VARCHAR(100) NOT NULL,
+    COMPANY_ID   INT,
+    MFR_ID       INT,
+    DISCOUNT_ID  INT,
+    MR_ID        INT,
+    GST_ID       INT          NOT NULL,
+    PURCHASE_MRP NUMERIC      NOT NULL,
+    MRP          NUMERIC      NOT NULL,
+    SALE_RATE    NUMERIC,
+    TYPE         VARCHAR(50)  NOT NULL,
+    NARCOTIC     VARCHAR(50)  NOT NULL,
+    ITEM_TYPE    VARCHAR(50)  NOT NULL,
+    STATUS       INT          NOT NULL,
+    CREATED_BY   INT,
+    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    IS_ACTIVE    INT       DEFAULT 1,
+    foreign key (GST_ID) REFERENCES tbl_product_tax (TAX_ID),
+    foreign key (CREATED_BY) REFERENCES tbl_users (user_id),
+    foreign key (MFR_ID) REFERENCES tbl_manufacturer_list (MFR_ID),
+    foreign key (MR_ID) REFERENCES tbl_mr_list (MR_ID)
+);
+
+CREATE TABLE tbl_manufacturer_list
+(
+    mfr_id            serial primary key,
+    manufacturer_name varchar(200),
+    created_date      timestamp default current_timestamp
+);
+CREATE TABLE tbl_mr_list
+(
+    mr_id        serial primary key,
+    name         varchar(200) not null,
+    phone        varchar(20),
+    gender       varchar(20)  not null,
+    email        varchar(100),
+    company      varchar(100),
+    address      varchar(200),
+    created_date timestamp default current_timestamp
+);
+
+CREATE TABLE TBL_PURCHASE_MAIN
+(
+    PURCHASE_MAIN_ID SERIAL PRIMARY KEY,
+    DEALER_ID        INT         NOT NULL,
+    BILL_NUM         VARCHAR(50) NOT NULL,
+    DEALER_BILL_NUM  VARCHAR(50),
+    DATE             VARCHAR(15) NOT NULL,
+    CREATED_DATE     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    IS_ACTIVE        INT       DEFAULT 1,
+    FOREIGN KEY (DEALER_ID) REFERENCES tbl_dealer (DEALER_ID)
+);
+
+CREATE TABLE TBL_PURCHASE_DETAILS
+(
+    PURCHASE_DETAILS_ID SERIAL PRIMARY KEY,
+    PURCHASE_MAIN_ID    INT          NOT NULL,
+    ITEM_ID             INT          NOT NULL,
+    BATCH               VARCHAR(100) NOT NULL,
+    EXPIRY_DATE         VARCHAR(50)  NOT NULL,
+    LOT_NUMBER          VARCHAR(50),
+    QUANTITY            NUMERIC      NOT NULL,
+    QUANTITY_UNIT       VARCHAR(20)  NOT NULL,
+    FOREIGN KEY (PURCHASE_MAIN_ID) REFERENCES TBL_PURCHASE_MAIN (PURCHASE_MAIN_ID),
+    FOREIGN KEY (ITEM_ID) REFERENCES TBL_ITEMS_MASTER (ITEM_ID)
+
+);
+
+CREATE TABLE TBL_PATIENT
+(
+    PATIENT_ID      SERIAL PRIMARY KEY NOT NULL,
+    NAME            VARCHAR(100)       NOT NULL,
+    PHONE           VARCHAR(30),
+    ADDRESS         VARCHAR(200),
+    ID_NUMBER       VARCHAR(100),
+    GENDER          VARCHAR(10),
+    AGE             VARCHAR(5),
+    DISCOUNT        NUMERIC,
+    CARE_OF         VARCHAR(100),
+    WEIGHT          VARCHAR(50),
+    BP              VARCHAR(50),
+    PULSE           VARCHAR(50),
+    SUGAR           VARCHAR(50),
+    registered_date timestamp default CURRENT_TIMESTAMP
 );
 
 -- top finished
-
-CREATE TABLE TBL_PRODUCTS
-(
-    PRODUCT_ID          SERIAL PRIMARY KEY                  NOT NULL,
-    PRODUCT_NAME        VARCHAR(200)                        NOT NULL,
-    PRODUCT_DESCRIPTION VARCHAR(1000),
-    CATEGORY_ID         INTEGER                             NOT NULL,
-    ADDED_DATE          timestamp default CURRENT_TIMESTAMP not null,
-    TAX_ID              INTEGER,
-    IS_ACTIVE           INT       DEFAULT 1                 NOT NULL,
-    MRP_TYPE            VARCHAR(50)                         NOT NULL,
-    FOREIGN KEY (CATEGORY_ID)
-        REFERENCES tbl_category (CATEGORY_ID),
-
-    FOREIGN KEY (TAX_ID)
-        REFERENCES TBL_PRODUCT_TAX (TAX_ID)
-);
-
-CREATE TABLE TBL_PCS_MRP
-(
-    PCS_MRP_ID SERIAL PRIMARY KEY,
-    PCS_MRP    NUMERIC NOT NULL,
-    PLATE_MRP  NUMERIC NOT NULL,
-    PRODUCT_ID INTEGER NOT NULL
-);
-CREATE TABLE TBL_PACK_MRP
-(
-    PACK_MRP_ID      SERIAL PRIMARY KEY,
-    QUARTER_PACK_MRP NUMERIC NOT NULL,
-    HALF_PACK_MRP    NUMERIC NOT NULL,
-    FULL_PACK_MRP    NUMERIC NOT NULL,
-    FAMILY_PACK_MRP  NUMERIC NOT NULL,
-    PRODUCT_ID       INTEGER NOT NULL
-);
-CREATE TABLE TBL_WEIGHT_MRP
-(
-    WEIGHT_MRP_ID SERIAL PRIMARY KEY,
-    GRAM_MRP      NUMERIC NOT NULL,
-    KG_MRP        NUMERIC NOT NULL,
-    LITRE_MRP     NUMERIC NOT NULL,
-    PRODUCT_ID    INTEGER NOT NULL
-);
-
-CREATE TABLE TBL_COUPON
-(
-    COUPON_ID      BIGSERIAL PRIMARY KEY,
-    COUPON_CODE    VARCHAR(10)  NOT NULL,
-    MIN_AMOUNT     NUMERIC      NOT NULL,
-    START_DATE     VARCHAR(100) NOT NULL,
-    END_DATE       VARCHAR(100) NOT NULL,
-    COUPON_TYPE    VARCHAR(100) NOT NULL,
-    VALUE          NUMERIC      NOT NULL,
-    CREATED_BY     INT          NOT NULL,
-    IS_ACTIVE      INT       DEFAULT 1,
-    QUANTITY_COUNT INT       DEFAULT 0,
-    MAX_QUANTITY   INT       DEFAULT 1,
-    CREATED_DATE   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE TBL_CART
 (
@@ -197,19 +233,6 @@ CREATE TABLE TBL_CART
     MRP_TYPE      VARCHAR(50)           NOT NULL,
     QUANTITY_UNIT VARCHAR(100)          NOT NULL
 );
-
-CREATE TABLE TBL_CUSTOMER
-(
-    CUSTOMER_ID      SERIAL PRIMARY KEY                  NOT NULL,
-    CUSTOMER_NAME    VARCHAR(100)                        NOT NULL,
-    CUSTOMER_PHONE   VARCHAR(10),
-    CUSTOMER_ADDRESS VARCHAR(200),
-    registered_date  timestamp default CURRENT_TIMESTAMP NOT NULL
-);
-
-INSERT INTO TBL_CUSTOMER(CUSTOMER_NAME, customer_phone, customer_address)
-VALUES ('SALE TIME', '-', '-');
-
 
 CREATE TABLE TBL_DUES
 (

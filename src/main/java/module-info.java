@@ -8,6 +8,7 @@ module com.techwhizer.medicalshop {
     requires org.apache.httpcomponents.httpcore;
     requires org.json;
     requires org.apache.httpcomponents.httpclient;
+    requires java.base;
     opens com.techwhizer.medicalshop to javafx.fxml;
     exports com.techwhizer.medicalshop;
 
@@ -20,9 +21,17 @@ module com.techwhizer.medicalshop {
     exports com.techwhizer.medicalshop.method;
     opens com.techwhizer.medicalshop.model to javafx.fxml;
     exports com.techwhizer.medicalshop.model;
+    opens com.techwhizer.medicalshop.model.chooserModel to javafx.fxml;
+    exports com.techwhizer.medicalshop.model.chooserModel;
 
     opens com.techwhizer.medicalshop.controller.product.gst to javafx.fxml;
     exports com.techwhizer.medicalshop.controller.product.gst;
+
+    opens com.techwhizer.medicalshop.controller.user to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.user;
+
+    opens com.techwhizer.medicalshop.controller.update.user to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.update.user;
 
     opens com.techwhizer.medicalshop.controller.product to javafx.fxml;
     exports com.techwhizer.medicalshop.controller.product;
@@ -37,4 +46,17 @@ module com.techwhizer.medicalshop {
 
     exports com.techwhizer.medicalshop.controller.update.product;
     opens com.techwhizer.medicalshop.controller.update.product to javafx.fxml;
+
+    exports com.techwhizer.medicalshop.controller.product.purchase;
+    opens com.techwhizer.medicalshop.controller.product.purchase to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.chooser;
+    opens com.techwhizer.medicalshop.controller.chooser to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.product.mr;
+    opens com.techwhizer.medicalshop.controller.product.mr to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.update;
+    opens com.techwhizer.medicalshop.controller.update to javafx.fxml;
+
+    exports com.techwhizer.medicalshop.controller.product.patient;
+    opens com.techwhizer.medicalshop.controller.product.patient to javafx.fxml;
+
 }

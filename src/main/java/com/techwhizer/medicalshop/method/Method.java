@@ -1,16 +1,22 @@
 package com.techwhizer.medicalshop.method;
 
+import com.techwhizer.medicalshop.CustomDialog;
+import com.techwhizer.medicalshop.ImageLoader;
+import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.model.*;
 import com.techwhizer.medicalshop.PropertiesLoader;
+import com.techwhizer.medicalshop.util.AppConfig;
 import com.techwhizer.medicalshop.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.DatePicker;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -31,10 +37,43 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Method extends StaticData {
 
-    public String stripTrailingZeros(Object o){
+    public ProgressIndicator getProgressBar(double height , double width){
+        ProgressIndicator pi = new ProgressIndicator();
+        pi.indeterminateProperty();
+        pi.setPrefHeight(height);
+        pi.setPrefWidth(width);
+
+        return pi;
+    }
+
+    public void showAddProductDialog() {
+
+        try {
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("product/addProduct.fxml")));
+            Stage stage = new Stage();
+            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
+            stage.setTitle("Add new product");
+            stage.setMaximized(false);
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(Main.primaryStage);
+            stage.showAndWait();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String stripTrailingZeros(Object o) {
         return new BigDecimal(String.valueOf(o)).stripTrailingZeros().toPlainString();
     }
 
@@ -51,16 +90,16 @@ public class Method extends StaticData {
             ps = connection.prepareStatement("SELECT * FROM tbl_category order by category_id desc");
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int categoryId = rs.getInt("category_id");
                 String categoryName = rs.getString("category_name");
-                categoryList.add(new CategoryModel(categoryId , categoryName));
+                categoryList.add(new CategoryModel(categoryId, categoryName));
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection,ps,rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
         return categoryList;
@@ -79,25 +118,27 @@ public class Method extends StaticData {
             ps = connection.prepareStatement("SELECT * FROM tbl_company order by company_id desc");
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int categoryId = rs.getInt("company_id");
                 String categoryName = rs.getString("company_name");
                 String categoryAddress = rs.getString("company_address");
                 String createdDate = rs.getString("created_date");
-                companyList.add(new CompanyModel(categoryId , categoryName , categoryAddress,createdDate));
+                companyList.add(new CompanyModel(categoryId, categoryName, categoryAddress, createdDate));
             }
 
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection,ps,rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
         return companyList;
     }
 
-    public ObservableList<DiscountModel> getDiscount (){
+    public  Map<String, Object> getDiscount() {
+
+        Map<String, Object> map = new HashMap<>();
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -115,6 +156,8 @@ public class Method extends StaticData {
             ps = connection.prepareStatement("SELECT * FROM TBL_DISCOUNT ORDER BY discount_id ASC");
             rs = ps.executeQuery();
 
+            int res = 0;
+
             while (rs.next()) {
 
                 // discount
@@ -124,23 +167,38 @@ public class Method extends StaticData {
                 String discountName = rs.getString("discount_name");
 
 
-                discountList.addAll(new DiscountModel(discountID,discountName, discount, description));
+                discountList.addAll(new DiscountModel(discountID, discountName, discount, description));
+                res++;
 
             }
 
-            return discountList;
+           if (res>0){
+               map.put("data",discountList);
+               map.put("is_success",true);
+               map.put("message","success");
+           }else {
+               map.put("data",discountList);
+               map.put("is_success",true);
+               map.put("message","Not Available");
+           }
+
+            return map;
 
 
         } catch (SQLException e) {
+            map.put("data",discountList);
+            map.put("is_success",false);
+            map.put("message","Something went wrong...");
             e.printStackTrace();
-            return null;
         } finally {
 
             DBConnection.closeConnection(connection, ps, rs);
         }
+
+        return map;
     }
 
-    public  boolean isExpires (String startDate ,String endDate){
+    public boolean isExpires(String startDate, String endDate) {
 
         try {
             SimpleDateFormat sdformat = new SimpleDateFormat("dd-MM-yyyy");
@@ -156,14 +214,14 @@ public class Method extends StaticData {
         }
     }
 
-    public long countDays(String startDate ,String endDate){
+    public long countDays(String startDate, String endDate) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         long days = ChronoUnit.DAYS.between(
-                LocalDate.parse(startDate,dateFormat),
-                LocalDate.parse(endDate,dateFormat));
+                LocalDate.parse(startDate, dateFormat),
+                LocalDate.parse(endDate, dateFormat));
 
-        if (days < 0){
+        if (days < 0) {
             days = 0;
         }
         return days;
@@ -173,12 +231,14 @@ public class Method extends StaticData {
         for (DatePicker datePicker : date) {
             datePicker.setConverter(new StringConverter<>() {
                 private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
                 @Override
                 public String toString(LocalDate localDate) {
                     if (localDate == null)
                         return "";
                     return dateTimeFormatter.format(localDate);
                 }
+
                 @Override
                 public LocalDate fromString(String dateString) {
                     if (dateString == null || dateString.trim().isEmpty()) {
@@ -190,7 +250,7 @@ public class Method extends StaticData {
         }
     }
 
-    public ObservableList<Role> getRole(){
+    public ObservableList<Role> getRole() {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -209,32 +269,34 @@ public class Method extends StaticData {
                 int role_Id = rs.getInt("ROLE_ID");
                 String roleName = rs.getString("ROLE");
 
-              role.add(new Role(role_Id ,roleName));
+                role.add(new Role(role_Id, roleName));
 
             }
-            return  role;
+            return role;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         } finally {
 
             DBConnection.closeConnection(connection, ps, rs);
         }
     }
-    public void hideElement(Node node){
+
+    public void hideElement(Node node) {
         node.setVisible(false);
         node.managedProperty().bind(node.visibleProperty());
     }
 
-    public ContextMenu show_popup(String message, Object textField){
+    public ContextMenu show_popup(String message, Object textField) {
 
-       ContextMenu form_Validator = new ContextMenu();
+        ContextMenu form_Validator = new ContextMenu();
         form_Validator.setAutoHide(true);
         form_Validator.getItems().add(new MenuItem(message));
         form_Validator.show((Node) textField, Side.RIGHT, 10, 0);
         return form_Validator;
     }
+
     public String getTempFile() {
         try {
             String folderLocation = System.getenv("temp");
@@ -264,6 +326,7 @@ public class Method extends StaticData {
 
         }
     }
+
     public void openFileInBrowser(String path) {
         if (Desktop.isDesktopSupported()) {
             try {
@@ -275,21 +338,22 @@ public class Method extends StaticData {
             }
         }
     }
-    public  String removeZeroAfterDecimal(Object o){
+
+    public String removeZeroAfterDecimal(Object o) {
         return new BigDecimal(String.valueOf(o)).stripTrailingZeros().toPlainString();
     }
 
-    public void closeStage(Node node){
+    public void closeStage(Node node) {
 
         Stage stage = (Stage) node.getScene().getWindow();
-        if (stage.isShowing()){
+        if (stage.isShowing()) {
             stage.close();
         }
     }
 
-    public  void selectTable(int index , TableView tableView) {
+    public void selectTable(int index, TableView tableView) {
 
-        if(!tableView.getSelectionModel().isEmpty()){
+        if (!tableView.getSelectionModel().isEmpty()) {
             tableView.getSelectionModel().clearSelection();
         }
 
@@ -307,9 +371,9 @@ public class Method extends StaticData {
 
             byte[] mac = network.getHardwareAddress();
 
-            if (null == mac){
+            if (null == mac) {
                 return "Not-Found";
-            }else {
+            } else {
                 sb = new StringBuilder();
                 for (int i = 0; i < mac.length; i++) {
                     sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
@@ -323,7 +387,7 @@ public class Method extends StaticData {
         }
     }
 
-    public UpiModel getUpiDetails(){
+    public UpiModel getUpiDetails() {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -334,23 +398,24 @@ public class Method extends StaticData {
             ps = connection.prepareStatement(qry);
             rs = ps.executeQuery();
 
-            if (rs.next()){
+            if (rs.next()) {
                 int id = rs.getInt("u_id");
                 String upiId = rs.getString("upi_id");
                 String payeeName = rs.getString("payee_name");
 
 
-                return new UpiModel(id,upiId,payeeName);
-            }else {
+                return new UpiModel(id, upiId, payeeName);
+            } else {
                 return null;
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally {
-            DBConnection.closeConnection(connection,ps,rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
+
     public boolean isShopDetailsAvailable() {
 
         Connection connection = null;
@@ -364,15 +429,8 @@ public class Method extends StaticData {
             String query = "select * from tbl_shop_details";
 
             ps = connection.prepareStatement(query);
-
             rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return true;
-            }else {
-                return false;
-            }
-
+            return rs.next();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -380,6 +438,17 @@ public class Method extends StaticData {
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
+    }
+
+    public String rec(String str){
+        String txt = "";
+
+        if (null == str || str.isEmpty()){
+            txt = "-";
+        }else {
+            txt = str;
+        }
+        return txt;
     }
 
 }

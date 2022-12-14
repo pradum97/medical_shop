@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="534.0" prefWidth="891.0" stylesheets="@../../css/main.css"
+            xmlns="http://javafx.com/javafx/19"
+            fx:controller="com.techwhizer.medicalshop.controller.product.patient.PatientMain">
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="15.0"/>
+            </BorderPane.margin>
+            <children>
+                <VBox VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="tableView" editable="true" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colSrNo" maxWidth="70.0" minWidth="70.0" text="SL #"/>
+                                <TableColumn fx:id="colName" minWidth="150.0" text="NAME"/>
+                                <TableColumn fx:id="colPhone" maxWidth="120.0" minWidth="120.0" text="PHONE"/>
+                                <TableColumn fx:id="colAddress" minWidth="180.0" text="ADDRESS"/>
+                                <TableColumn fx:id="colIdNum" maxWidth="150.0" minWidth="130.0" text="ID NUMBER"/>
+                                <TableColumn fx:id="colGender" maxWidth="70.0" minWidth="70.0" text="GENDER"/>
+                                <TableColumn fx:id="colAge" maxWidth="60.0" minWidth="60.0" text="AGE"/>
+                                <TableColumn fx:id="colDiscount" maxWidth="65.0" minWidth="65.0" text="DIS(%)"/>
+                                <TableColumn fx:id="colCareOf" maxWidth="140.0" minWidth="140.0" text="CARE OF"/>
+                                <TableColumn fx:id="colWeight" maxWidth="80.0" minWidth="80.0" text="WEIGHT"/>
+                                <TableColumn fx:id="colBp" maxWidth="100.0" minWidth="100.0" text="BP"/>
+                                <TableColumn fx:id="colPulse" maxWidth="130.0" minWidth="130.0" text="PULSE"/>
+                                <TableColumn fx:id="colSugar" maxWidth="100.0" minWidth="100.0" text="SUGAR"/>
+                                <TableColumn fx:id="colDate" maxWidth="100.0" minWidth="100.0" text="CREATED DATE"/>
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <Pagination fx:id="pagination" visible="false" HBox.hgrow="ALWAYS"/>
+            </children>
+        </HBox>
+    </bottom>
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="20.0"
+              style="-fx-border-color: transparent transparent gray transparent;" BorderPane.alignment="CENTER">
+            <children>
+                <HBox>
+                    <HBox.margin>
+                        <Insets right="15.0"/>
+                    </HBox.margin>
+                    <children>
+                        <TextField fx:id="searchTf" minWidth="38.0" prefHeight="42.0" prefWidth="290.0"
+                                   promptText="Enter ID / PHONE NUM / NAME"
+                                   style="-fx-border-color: gray; -fx-border-radius: 3;">
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            </padding>
+                        </TextField>
+                    </children>
+                </HBox>
+                <Button graphicTextGap="10.0" mnemonicParsing="false" onAction="#addPatient" prefHeight="35.0"
+                        prefWidth="134.0"
+                        style="-fx-cursor: hand; -fx-background-color: white; -fx-text-fill: black; -fx-font-weight: BOLD; -fx-background-radius: 3; -fx-border-color: grey; -fx-border-radius: 3;"
+                        text="ADD PATIENT">
+                    <HBox.margin>
+                        <Insets right="70.0"/>
+                    </HBox.margin>
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../img/icon/add_ic_black.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </children>
+            <BorderPane.margin>
+                <Insets top="10.0"/>
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="10.0"/>
+            </padding>
+        </HBox>
+    </top>
+</BorderPane>

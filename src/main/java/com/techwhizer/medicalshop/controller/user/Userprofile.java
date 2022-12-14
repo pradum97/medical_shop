@@ -1,4 +1,4 @@
-package com.techwhizer.medicalshop.controller;
+package com.techwhizer.medicalshop.controller.user;
 
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
@@ -86,14 +86,14 @@ public class Userprofile implements Initializable {
     public void editProfile(ActionEvent event) {
        Main.primaryStage.setUserData(userId);
 
-        customDialog.showFxmlDialog2("update/updateProfile.fxml", "EDIT PROFILE");
+        customDialog.showFxmlDialog2("update/user/updateProfile.fxml", "EDIT PROFILE");
 
         setUserData(userId);
     }
 
     public void changePassword(ActionEvent event) {
 
-        customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "CHANGE PASSWORD");
+        customDialog.showFxmlDialog("auth/forgotPassword.fxml", "CHANGE PASSWORD");
     }
 
     public void cancel(ActionEvent event) {

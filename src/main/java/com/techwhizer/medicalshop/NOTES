@@ -1,10 +1,12 @@
+--UPDATE PRIVACY POLICY IN LEAD APP
 
-licence activate
+1 work change company combobox to chooser
+2. create mr with deatails combobox to chooser
+3. mfr create combobox to chooser\
+if table cell is null or empty set "-" from Method.java rec method
 
-add product : add hsn button,dealer name auto complete
 close item not show
 PROHIBIT ITEM SHOW ONLY FOR ADMIN
-
 after sale print type - view and print
 
 check extra file delete in server
@@ -28,12 +30,40 @@ batch*
 lot# *
 
 notes
-
-  
     tab per strip
     category ex-tab,bottle-
     pack
     MIN QTY , MAX QTY
+
+    // purchase
+    invoice number
+    qauantity and qty unit
+    diealer
+
+
+// remove
+
+exp date
+batch num
+lot num
+
+ //
+ if (lotNumTf.getText().isEmpty()) {
+     ps.setNull(14, Types.NULL);
+ } else {
+      ps.setString(14, im.getLotNumber());
+ }
+ //
+
+  else if (monthCom.getSelectionModel().isEmpty()) {
+             method.show_popup("Please select expiry month", monthCom);
+             return;
+         } else if (yearCom.getSelectionModel().isEmpty()) {
+             method.show_popup("Please select expiry year", yearCom);
+             return;
+         }
+         //
+
 
 
 

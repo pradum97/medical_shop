@@ -5,14 +5,14 @@
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.techwhizer.medicalshop.controller.product.gst.GstConfig">
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.product.gst.GstConfig">
    <center>
       <AnchorPane stylesheets="@../../css/cartTable.css">
             <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="450.0" AnchorPane.topAnchor="15.0">
@@ -21,9 +21,21 @@
                         <children>
                             <VBox spacing="15.0">
                                 <children>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="30.0">
                                         <children>
                                             <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addGST" style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-cursor: hand;" text="➕ ADD OTHER GST" />
+                                 <Button alignment="CENTER" layoutX="661.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefHeight="26.0" prefWidth="47.0" style="-fx-cursor: hand;" textAlignment="CENTER">
+                                    <HBox.margin>
+                                       <Insets right="20.0" />
+                                    </HBox.margin>
+                                    <graphic>
+                                       <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                             <Image url="@../../img/icon/refresh_ic_red.png" />
+                                          </image>
+                                       </ImageView>
+                                    </graphic>
+                                 </Button>
                                         </children>
                                     </HBox>
                                     <TableView fx:id="tableViewGst">
@@ -57,7 +69,7 @@
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Pagination visible="false" fx:id="pagination" HBox.hgrow="ALWAYS" />
+            <Pagination fx:id="pagination" visible="false" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </bottom>

@@ -10,12 +10,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GetTax {
 
 
-    public ObservableList<GstModel> getGst() {
-
+    public   ObservableList<GstModel> getGst() {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -48,8 +49,8 @@ public class GetTax {
               gstModels.add(new GstModel(taxID,hsn_sac , sgst, cgst, igst, gstName, tax_description));
             }
 
-           return gstModels;
 
+            return gstModels;
 
         } catch (SQLException e) {
             e.printStackTrace();

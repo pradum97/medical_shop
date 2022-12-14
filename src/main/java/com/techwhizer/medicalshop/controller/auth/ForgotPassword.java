@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Forgot_Password implements Initializable {
+public class ForgotPassword implements Initializable {
 
     public TextField email_f;
     public VBox verification_container;

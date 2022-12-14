@@ -3,7 +3,7 @@ package com.techwhizer.medicalshop.model;
 public class DealerModel {
 
     private int dealerId;
-    private String dealerName , dealerPhone , dealerEmail , dealerGstNum  ,dealerAddress  , dealerState , addedSate,dealerDl;
+    private String dealerName , dealerPhone , dealerEmail , dealerGstNum ,dealerAddress  , dealerState , addedSate,dealerDl;
 
     public DealerModel(int dealerId, String dealerName, String dealerPhone, String dealerEmail, String dealerGstNum,
                        String dealerAddress, String dealerState, String addedSate,String dealerDl) {

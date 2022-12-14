@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.time.Year;
-import java.util.Calendar;
 
 public class StaticData {
 
@@ -67,8 +66,11 @@ public class StaticData {
 
         return FXCollections.observableArrayList("PERCENTAGE","FLAT");
     }
+    public ObservableList<String> getUnit() {
+        return FXCollections.observableArrayList("STRIP","PCS","PKT","INJ","TAB","CAP","KG","GRAM","ML","LITRE","MG");
+    }
     public ObservableList<String> getQuantityUnit() {
-        return FXCollections.observableArrayList("STRIP","PCS","KG","GRAM","ML","LITRE");
+        return FXCollections.observableArrayList("STRIP","PCS","TAB","CAP");
     }
     public ObservableList<String> getAccountStatus() {
 

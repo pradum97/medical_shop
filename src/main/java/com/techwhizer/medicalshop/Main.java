@@ -17,7 +17,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-       Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("auth/login.fxml")));
+      Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("auth/login.fxml")));
+       //Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("product/purchase/purchaseMain.fxml")));
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON))));
         stage.setTitle(AppConfig.APPLICATION_NAME);
         stage.setMaximized(true);

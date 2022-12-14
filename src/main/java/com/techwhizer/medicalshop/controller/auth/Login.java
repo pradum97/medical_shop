@@ -54,7 +54,7 @@ public class Login implements Initializable {
 
     @FXML
     public void forget_password_bn(ActionEvent event) {
-        customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "Forgot Password");
+        customDialog.showFxmlDialog("auth/forgotPassword.fxml", "Forgot Password");
     }
 
     public void login_bn(ActionEvent event) {

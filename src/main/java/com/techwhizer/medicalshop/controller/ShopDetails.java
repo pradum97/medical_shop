@@ -4,13 +4,15 @@ import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.Method;
-import com.techwhizer.medicalshop.model.Shop;
+import com.techwhizer.medicalshop.model.ShopModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -23,38 +25,32 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ShopDetails implements Initializable {
-    @FXML
-    public Label shopName;
-    public Label sPhone_1;
-    public Label sPhone_2;
-    public Label sEmail;
-    public Label sGstNum;
-    public Label sAddress;
-    public Label propName;
-    public Label updateBn;
-
+    public TextField shopNameTf;
+    public TextField phone_1Tf;
+    public TextField phone_2TF;
+    public TextField emailTF;
+    public TextField gstNumberTF;
+    public TextField foodLicenceTf;
+    public TextField drugLicenceTf;
+    public TextArea addressTF;
+    public Label submit_button;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
+    private Method method;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-
-        setData();
-        updateBn.managedProperty().bind(updateBn.visibleProperty());
-        updateBn.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+        method = new Method();
 
         config();
+        setData();
     }
 
     private void config() {
-
-        if (new Method().isShopDetailsAvailable()) {
-            updateBn.setText("UPDATE");
-        } else {
-            updateBn.setText("SUBMIT");
-        }
+        method.hideElement(submit_button);
+        submit_button.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
     }
 
     private void setData() {
@@ -81,15 +77,17 @@ public class ShopDetails implements Initializable {
                 String email = rs.getString("shop_email");
                 String gstNum = rs.getString("shop_gst_number");
                 String address = rs.getString("shop_address");
-                String prop = rs.getString("shop_prop");
+                String drugLicence = rs.getString("shop_drug_licence");
+                String foodLicence = rs.getString("shop_food_licence");
 
-                shopName.setText(shop_name);
-                sPhone_1.setText(phone_1);
-                sPhone_2.setText(phone_2);
-                sEmail.setText(email);
-                sGstNum.setText(gstNum);
-                sAddress.setText(address);
-                propName.setText(prop);
+                shopNameTf.setText(shop_name);
+                phone_1Tf.setText(phone_1);
+                phone_2TF.setText(phone_2);
+                emailTF.setText(email);
+                gstNumberTF.setText(gstNum);
+                addressTF.setText(address);
+                drugLicenceTf.setText(drugLicence);
+                foodLicenceTf.setText(foodLicence);
             }
 
 
@@ -102,18 +100,19 @@ public class ShopDetails implements Initializable {
 
     public void bnUpdate(MouseEvent event) {
 
-        String sName = shopName.getText();
-        String phone_1 = sPhone_1.getText();
-        String phone_2 = sPhone_2.getText();
-        String email = sEmail.getText();
-        String address = sAddress.getText();
-        String gstNum = sGstNum.getText();
-        String prop = propName.getText();
+        String sName = shopNameTf.getText();
+        String phone_1 = phone_1Tf.getText();
+        String phone_2 = phone_2TF.getText();
+        String email = emailTF.getText();
+        String address = addressTF.getText();
+        String gstNum = gstNumberTF.getText();
+        String drugLicence = drugLicenceTf.getText();
+        String foodLicence = foodLicenceTf.getText();
 
-        Shop shop = new Shop(sName , phone_1 , phone_2 , email , address ,gstNum,prop );
-        Main.primaryStage.setUserData(shop);
+        ShopModel shopModel = new ShopModel(sName , phone_1 , phone_2 , email , address ,gstNum,foodLicence,drugLicence);
+        Main.primaryStage.setUserData(shopModel);
 
-        customDialog.showFxmlDialog("update/shopDetailsUpdate.fxml", "UPDATE");
+        customDialog.showFxmlDialog("update/shopDetailsUpdate.fxml", "UPDATE SHOP DETAILS");
         setData();
         config();
     }

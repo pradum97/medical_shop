@@ -1,19 +1,19 @@
 package com.techwhizer.medicalshop.controller.product;
 
 import com.techwhizer.medicalshop.CustomDialog;
+import com.techwhizer.medicalshop.TaskSample;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.CompanyModel;
 import com.techwhizer.medicalshop.util.DBConnection;
+import com.victorlaerte.asynctask.AsyncTask;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -24,6 +24,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ViewCompany implements Initializable {
@@ -48,7 +50,7 @@ public class ViewCompany implements Initializable {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
-        getCompany();
+        callThread();
     }
 
     private void onColumnEdit(TableColumn<CompanyModel, String> col, String updateColumnName) {
@@ -60,7 +62,7 @@ public class ViewCompany implements Initializable {
             String value = e.getNewValue();
 
             if (value.isEmpty()) {
-                getCompany();
+                callThread();
                 customDialog.showAlertBox("Empty", "Empty Value Not Accepted");
                 return;
             }
@@ -91,7 +93,7 @@ public class ViewCompany implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-                getCompany();
+                callThread();
             }
 
 
@@ -102,7 +104,47 @@ public class ViewCompany implements Initializable {
         }
     }
 
-    private void getCompany() {
+    private void callThread() {
+
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setDaemon(false);
+        myAsyncTask.execute();
+    }
+
+    private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private String msg;
+
+        @Override
+        public void onPreExecute() {
+            msg = "";
+            if (null != tableView){
+                tableView.setItems(null);
+            }
+            assert tableView != null;
+            tableView.setPlaceholder(method.getProgressBar(40,40));
+
+        }
+
+        @Override
+        public Boolean doInBackground(String... params) {
+            Map<String, Object> status = getCompany();
+            return true;
+        }
+
+        @Override
+        public void onPostExecute(Boolean success) {
+            tableView.setPlaceholder(new Label("Not Available"));
+        }
+
+        @Override
+        public void progressCallback(Integer... params) {
+
+        }
+    }
+
+    private Map<String, Object> getCompany() {
+        Map<String, Object> map = new HashMap<>();
+
         if (null != companyList){
             companyList.clear();
         }
@@ -112,9 +154,6 @@ public class ViewCompany implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null == connection){
-                return;
-            }
             ps = connection.prepareStatement("SELECT * FROM tbl_company order by company_id asc");
             rs = ps.executeQuery();
 
@@ -125,7 +164,6 @@ public class ViewCompany implements Initializable {
                 String createdDate = rs.getString("created_date");
                 companyList.add(new CompanyModel(categoryId , categoryName , categoryAddress,createdDate));
             }
-
             if (companyList.size()>0){
                 pagination.setVisible(true);
                 pagination.setCurrentPageIndex(0);
@@ -140,6 +178,8 @@ public class ViewCompany implements Initializable {
         }finally {
             DBConnection.closeConnection(connection,ps,rs);
         }
+
+        return map;
     }
 
     public void addCompany(ActionEvent event) {
@@ -171,8 +211,9 @@ public class ViewCompany implements Initializable {
             int res = ps.executeUpdate();
 
             if (res >0){
-                getCompany();
+                callThread();
                 companyNameTF.setText("");
+                companyAddressTf.setText("");
             }
 
         } catch (SQLException e) {
@@ -185,7 +226,7 @@ public class ViewCompany implements Initializable {
     private void changeTableView(int index, int limit) {
 
         int totalPage = (int) (Math.ceil(companyList.size() * 1.0 / rowsPerPage));
-        pagination.setPageCount(totalPage);
+        Platform.runLater(()-> pagination.setPageCount(totalPage));
 
         colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableView.getItems().indexOf(cellData.getValue()) + 1));

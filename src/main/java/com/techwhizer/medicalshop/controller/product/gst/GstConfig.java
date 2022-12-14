@@ -1,14 +1,16 @@
 package com.techwhizer.medicalshop.controller.product.gst;
 
+import com.techwhizer.medicalshop.TaskSample;
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.method.GetTax;
 import com.techwhizer.medicalshop.method.Method;
-import com.techwhizer.medicalshop.model.DealerModel;
 import com.techwhizer.medicalshop.model.GstModel;
 import com.techwhizer.medicalshop.util.DBConnection;
+import com.victorlaerte.asynctask.AsyncTask;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -20,7 +22,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
@@ -58,13 +59,13 @@ public class GstConfig implements Initializable {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
-        setGstTableData();
+        callThread();
     }
 
     private void changeTableView(int index, int limit) {
 
         int totalPage = (int) (Math.ceil(gstModelList.size() * 1.0 / rowsPerPage));
-        pagination.setPageCount(totalPage);
+        Platform.runLater(()-> pagination.setPageCount(totalPage));
 
         colHsn_Sac.setCellValueFactory(new PropertyValueFactory<>("hsn_sac"));
         colSGST.setCellValueFactory(new PropertyValueFactory<>("sgst"));
@@ -124,7 +125,7 @@ public class GstConfig implements Initializable {
                                 Main.primaryStage.setUserData(edit_selection);
 
                                 customDialog.showFxmlDialog("update/product/gst/gstUpdate.fxml", "GST UPDATE");
-                                setGstTableData();
+                                callThread();
 
                             });
 
@@ -204,7 +205,7 @@ public class GstConfig implements Initializable {
                 int res = ps.executeUpdate();
 
                 if (res > 0) {
-                    setGstTableData();
+                    callThread();
                     alert.close();
                 }
 
@@ -237,39 +238,65 @@ public class GstConfig implements Initializable {
 
     public void addGST(ActionEvent event) {
         customDialog.showFxmlDialog("product/gst/addGst.fxml", "Add new gst");
-        setGstTableData();
+        callThread();
     }
 
-    private void setGstTableData() {
-        if (null != gstModelList) {
-            gstModelList.clear();
+    private void callThread() {
+
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setDaemon(false);
+        myAsyncTask.execute();
+
+    }
+
+    public void refresh(ActionEvent event) {
+        callThread();
+    }
+
+    private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private String msg;
+
+        @Override
+        public void onPreExecute() {
+            msg = "";
+            if (null != tableViewGst) {
+                tableViewGst.setItems(null);
+            }
+            assert tableViewGst != null;
+            tableViewGst.setPlaceholder(method.getProgressBar(40,40));
         }
-        gstModelList = new GetTax().getGst();
 
-        if (null == gstModelList) {
-            return;
+        @Override
+        public Boolean doInBackground(String... params) {
+
+            if (null != gstModelList) {
+                gstModelList.clear();
+            }
+            gstModelList = new GetTax().getGst();
+
+            if (gstModelList.size()>0){
+                pagination.setVisible(true);
+            }
+
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+
+            pagination.setCurrentPageIndex(0);
+            changeTableView(0, rowsPerPage);
+            pagination.currentPageIndexProperty().addListener(
+                    (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+
+            return true;
         }
-        double tableMinHeight = 70;
 
-        for (int i = 0; i < gstModelList.size(); i++) {
-
-            tableMinHeight = tableMinHeight + 20 + i;
-
-            tableViewGst.setMinHeight(tableMinHeight);
-
+        @Override
+        public void onPostExecute(Boolean success) {
+            tableViewGst.setPlaceholder(new Label(msg));
         }
 
-        if (gstModelList.size()>0){
-            pagination.setVisible(true);
+        @Override
+        public void progressCallback(Integer... params) {
+
         }
-
-        changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-
-        pagination.setCurrentPageIndex(0);
-        changeTableView(0, rowsPerPage);
-        pagination.currentPageIndexProperty().addListener(
-                (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
-
     }
 
     private void customColumn(TableColumn<GstModel, String> columnName) {

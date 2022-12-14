@@ -1,13 +1,15 @@
-package com.techwhizer.medicalshop.controller;
+package com.techwhizer.medicalshop.controller.user;
 
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
+import com.techwhizer.medicalshop.TaskSample;
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.GetUserProfile;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.UserDetails;
 import com.techwhizer.medicalshop.util.DBConnection;
+import com.victorlaerte.asynctask.AsyncTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +31,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-;
 
 public class Users implements Initializable {
     public TableView<UserDetails> user_table_view;
@@ -58,7 +59,42 @@ public class Users implements Initializable {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
-        setUserData();
+        callThread();
+    }
+
+    private void callThread() {
+
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setDaemon(false);
+        myAsyncTask.execute();
+
+    }
+    private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private String msg;
+
+        @Override
+        public void onPreExecute() {
+            msg = "";
+            user_table_view.setPlaceholder(method.getProgressBar(40,40));
+        }
+
+        @Override
+        public Boolean doInBackground(String... params) {
+           setUserData();
+            return true;
+
+        }
+
+        @Override
+        public void onPostExecute(Boolean success) {
+            user_table_view.setItems(userList);
+            user_table_view.setPlaceholder(new Label("Not available"));
+        }
+
+        @Override
+        public void progressCallback(Integer... params) {
+
+        }
     }
 
     private void setUserData() {
@@ -71,8 +107,6 @@ public class Users implements Initializable {
 
         userList = getUserProfile.getAllUser();
 
-        user_table_view.setItems(userList);
-
         col_id.setCellValueFactory(new PropertyValueFactory<>("userID"));
         col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         col_FirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -82,8 +116,6 @@ public class Users implements Initializable {
         col_role.setCellValueFactory(new PropertyValueFactory<>("role"));
         col_username.setCellValueFactory(new PropertyValueFactory<>("username"));
         col_address.setCellValueFactory(new PropertyValueFactory<>("fullAddress"));
-
-
         Callback<TableColumn<UserDetails, String>, TableCell<UserDetails, String>>
                 cellFactory = (TableColumn<UserDetails, String> param) -> new TableCell<>() {
             @Override
@@ -98,11 +130,7 @@ public class Users implements Initializable {
                     int userId = user_table_view.getItems().get(getIndex()).getUserID();
 
                     ImageLoader loader = new ImageLoader();
-
-
                     ImageView iv_edit, iv_view, iv_delete;
-
-
                     iv_edit = new ImageView(loader.load("img/icon/edit_ic.png"));
                     iv_edit.setFitHeight(22);
                     iv_edit.setFitHeight(22);
@@ -115,7 +143,6 @@ public class Users implements Initializable {
 
                     iv_delete = new ImageView(loader.load("img/icon/delete_ic.png"));
                     iv_delete.setPreserveRatio(true);
-
                     if (Login.currentlyLogin_Id == userId) {
 
                         if (null != iv_delete) {
@@ -145,8 +172,6 @@ public class Users implements Initializable {
 
                         });
                     }
-
-
                     iv_edit.setStyle(
                             " -fx-cursor: hand ;"
                                     + "-glyph-size:28px;"
@@ -175,7 +200,7 @@ public class Users implements Initializable {
 
                         Main.primaryStage.setUserData(edit_selection.getUserID());
 
-                        customDialog.showFxmlDialog("update/updateProfile.fxml", "EDIT PROFILE");
+                        customDialog.showFxmlDialog("update/user/updateProfile.fxml", "EDIT PROFILE");
                         refreshTableData();
 
 
@@ -191,19 +216,15 @@ public class Users implements Initializable {
                         }
 
                         Main.primaryStage.setUserData(view_selection.getUserID());
-                        customDialog.showFxmlDialog("dashboard/userprofile.fxml", "User Profile");
+                        customDialog.showFxmlDialog("user/userprofile.fxml", "User Profile");
                     });
-
-
                     HBox managebtn = new HBox(iv_edit, iv_delete, iv_view);
-
                     managebtn.setStyle("-fx-alignment:center");
                     HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
                     HBox.setMargin(iv_view, new Insets(2, 3, 0, 20));
                     HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
 
                     setGraphic(managebtn);
-
                     setText(null);
 
                 }
@@ -334,14 +355,14 @@ public class Users implements Initializable {
 
     private void refreshTableData() {
 
-        setUserData();
+        callThread();
 
     }
 
     public void bn_addUsers(ActionEvent event) {
 
         Main.primaryStage.setUserData("adduser");
-        customDialog.showFxmlFullDialog("signup.fxml", "Add New User");
+        customDialog.showFxmlFullDialog("auth/signup.fxml", "Add New User");
         refreshTableData();
 
     }

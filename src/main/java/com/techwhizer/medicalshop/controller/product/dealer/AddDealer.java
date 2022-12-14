@@ -62,16 +62,10 @@ public class AddDealer implements Initializable {
         if (sName.isEmpty()) {
             method.show_popup("Enter Dealer Full Name", sNameTf);
             return;
-        } else if (sPhone.isEmpty()) {
-            method.show_popup("Enter Dealer Phone Number", sPhoneTf);
-            return;
         }else if (sAddress.isEmpty()) {
             method.show_popup("Enter Dealer Address", sAddressTf);
             return;
-        } else if (sState.isEmpty()) {
-            method.show_popup("Enter State", sStateTf);
-            return;
-        } else if (!sEmail.isEmpty()) {
+        }else if (!sEmail.isEmpty()) {
             if (!matcher.matches()) {
                 method.show_popup("Enter Valid Email", sEmailTf);
                 return;

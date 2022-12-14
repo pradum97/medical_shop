@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.techwhizer.medicalshop.controller.product.mr.MrMain">
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="30.0" BorderPane.alignment="CENTER">
+            <children>
+                <TextField fx:id="searchTf" prefHeight="35.0" prefWidth="282.0" promptText="Enter mr name"
+                           style="-fx-border-color: grey; -fx-border-radius: 20; -fx-background-radius: 20;"/>
+                <Button graphicTextGap="10.0" layoutX="1107.0" layoutY="20.0" mnemonicParsing="false"
+                        onAction="#refresh" prefHeight="35.0" prefWidth="47.0"
+                        style="-fx-border-color: grey; -fx-border-radius: 3; -fx-background-radius: 3;">
+                    <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../img/icon/refresh_ic_red.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button graphicTextGap="10.0" mnemonicParsing="false" onAction="#addMr" prefHeight="35.0"
+                        prefWidth="134.0"
+                        style="-fx-border-color: grey; -fx-border-radius: 3; -fx-background-radius: 3;" text="ADD MR">
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../img/icon/add_ic_black.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets right="10.0"/>
+                    </HBox.margin>
+                </Button>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <TableView fx:id="tableView" editable="true">
+                    <columns>
+                        <TableColumn fx:id="colSrNo" prefWidth="75.0" text="SL #"/>
+                        <TableColumn fx:id="colName" minWidth="200.0" prefWidth="-1.0" text="NAME"/>
+                        <TableColumn fx:id="colGender" minWidth="90.0" prefWidth="-1.0" text="GENDER"/>
+                        <TableColumn fx:id="colPhone" maxWidth="175.20001220703125" minWidth="130.0"
+                                     prefWidth="175.20001220703125" text="PHONE"/>
+                        <TableColumn fx:id="colEmail" minWidth="200.0" prefWidth="-1.0" text="EMAIL"/>
+                        <TableColumn fx:id="colCompany" minWidth="200.0" prefWidth="-1.0" text="COMPANY"/>
+                        <TableColumn fx:id="colAddress" minWidth="250.0" prefWidth="250.0" text="ADDRESS"/>
+                        <TableColumn fx:id="colDate" minWidth="150.0" prefWidth="-1.0" text="DATE"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <Pagination fx:id="pagination" visible="false" HBox.hgrow="ALWAYS"/>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

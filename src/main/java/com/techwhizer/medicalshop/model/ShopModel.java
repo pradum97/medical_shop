@@ -1,18 +1,19 @@
 package com.techwhizer.medicalshop.model;
 
-public class Shop {
+public class ShopModel {
 
- private  String shopName , shopPhone_1 , shopPhone_2 , shopEmail , shopAddress , gstNumber , propName;
+ private  String shopName , shopPhone_1 , shopPhone_2 , shopEmail , shopAddress , gstNumber , foodLicence,drugLicence;
 
-    public Shop(String shopName, String shopPhone_1, String shopPhone_2, String shopEmail,
-                String shopAddress, String gstNumber, String propName) {
+    public ShopModel(String shopName, String shopPhone_1, String shopPhone_2, String shopEmail, String shopAddress,
+                     String gstNumber, String foodLicence, String drugLicence) {
         this.shopName = shopName;
         this.shopPhone_1 = shopPhone_1;
         this.shopPhone_2 = shopPhone_2;
         this.shopEmail = shopEmail;
         this.shopAddress = shopAddress;
         this.gstNumber = gstNumber;
-        this.propName = propName;
+        this.foodLicence = foodLicence;
+        this.drugLicence = drugLicence;
     }
 
     public String getShopName() {
@@ -63,11 +64,19 @@ public class Shop {
         this.gstNumber = gstNumber;
     }
 
-    public String getPropName() {
-        return propName;
+    public String getFoodLicence() {
+        return foodLicence;
     }
 
-    public void setPropName(String propName) {
-        this.propName = propName;
+    public void setFoodLicence(String foodLicence) {
+        this.foodLicence = foodLicence;
+    }
+
+    public String getDrugLicence() {
+        return drugLicence;
+    }
+
+    public void setDrugLicence(String drugLicence) {
+        this.drugLicence = drugLicence;
     }
 }
