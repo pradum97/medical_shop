@@ -118,7 +118,7 @@ public class MrChooser implements Initializable {
                 String phone = rs.getString("phone");
                 String email = rs.getString("email");
                 String company = rs.getString("company");
-                String address = rs.getString("address");
+                String address = rs.getString("addressTf");
                 String createdDate = rs.getString("created_date");
                 String gender = rs.getString("gender");
 

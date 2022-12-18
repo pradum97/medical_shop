@@ -11,26 +11,23 @@ public class ItemsModel {
     private int discount_id;
     private Double discount;
     private int mr_id;
-    private String expiryDate;
+    private String mrName,mfrName;
     private int gstId;
     private int cGst;
     private int sGst;
     private int iGst;
-    private double purchaseMrp;
-    private double mrp;
-    private double saleRate;
-    private String batchNumber;
-    private String lotNumber;
     private String type;
     private String narcotic;
     private String itemType;
     private int status;
     private String createdDate;
     private long tabPerStrip;
+    private String hsn, fullUnit;
 
-    public ItemsModel(int itemId, String productName, String unit, String packing, int company_id, String companyName, int mfr_id, int discount_id,
-                      Double discount, int mr_id, String expiryDate, int gstId, int cGst, int sGst, int iGst, double purchaseMrp, double mrp,
-                      double saleRate, String batchNumber, String lotNumber, String type, String narcotic, String itemType, int status, String createdDate) {
+    public ItemsModel(int itemId, String productName, String unit, String packing, int company_id, String companyName, int mfr_id, int discount_id, Double discount,
+                      int mr_id, String mrName, String mfrName, int gstId,
+                      int cGst, int sGst, int iGst, String type, String narcotic, String itemType, int status, String createdDate,
+                      long tabPerStrip, String hsn, String fullUnit) {
         this.itemId = itemId;
         this.productName = productName;
         this.unit = unit;
@@ -41,44 +38,88 @@ public class ItemsModel {
         this.discount_id = discount_id;
         this.discount = discount;
         this.mr_id = mr_id;
-        this.expiryDate = expiryDate;
+        this.mrName = mrName;
+        this.mfrName = mfrName;
         this.gstId = gstId;
         this.cGst = cGst;
         this.sGst = sGst;
         this.iGst = iGst;
-        this.purchaseMrp = purchaseMrp;
-        this.mrp = mrp;
-        this.saleRate = saleRate;
-        this.batchNumber = batchNumber;
-        this.lotNumber = lotNumber;
         this.type = type;
         this.narcotic = narcotic;
         this.itemType = itemType;
         this.status = status;
         this.createdDate = createdDate;
+        this.tabPerStrip = tabPerStrip;
+        this.hsn = hsn;
+        this.fullUnit = fullUnit;
     }
 
+    public String getMrName() {
+        return mrName;
+    }
+
+    public void setMrName(String mrName) {
+        this.mrName = mrName;
+    }
+
+    public String getMfrName() {
+        return mfrName;
+    }
+
+    public void setMfrName(String mfrName) {
+        this.mfrName = mfrName;
+    }
+
+    public String getFullUnit() {
+        return fullUnit;
+    }
+
+    public void setFullUnit(String fullUnit) {
+        this.fullUnit = fullUnit;
+    }
     // for parameter in add product
 
     public ItemsModel(String productName, String unit, String packing, int discount_id,
                       int gstId, double purchaseMrp, double mrp,
-                      double saleRate, String type, String narcotic, String itemType, int status,long tabPerStrip) {
+                      double saleRate, String type, String narcotic, String itemType, int status, long tabPerStrip) {
         this.productName = productName;
         this.unit = unit;
         this.packing = packing;
-        this.company_id = company_id;
-        this.mfr_id = mfr_id;
         this.discount_id = discount_id;
-        this.mr_id = mr_id;
         this.gstId = gstId;
-        this.purchaseMrp = purchaseMrp;
-        this.mrp = mrp;
-        this.saleRate = saleRate;
         this.type = type;
         this.narcotic = narcotic;
         this.itemType = itemType;
         this.status = status;
         this.tabPerStrip = tabPerStrip;
+    }
+
+    public int getMfr_id() {
+        return mfr_id;
+    }
+
+    public void setMfr_id(int mfr_id) {
+        this.mfr_id = mfr_id;
+    }
+
+    public int getMr_id() {
+        return mr_id;
+    }
+
+    public void setMr_id(int mr_id) {
+        this.mr_id = mr_id;
+    }
+
+    public void setTabPerStrip(long tabPerStrip) {
+        this.tabPerStrip = tabPerStrip;
+    }
+
+    public String getHsn() {
+        return hsn;
+    }
+
+    public void setHsn(String hsn) {
+        this.hsn = hsn;
     }
 
     public long getTabPerStrip() {
@@ -155,14 +196,6 @@ public class ItemsModel {
     }
 
 
-    public String getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public int getGstId() {
         return gstId;
     }
@@ -193,46 +226,6 @@ public class ItemsModel {
 
     public void setiGst(int iGst) {
         this.iGst = iGst;
-    }
-
-    public double getPurchaseMrp() {
-        return purchaseMrp;
-    }
-
-    public void setPurchaseMrp(double purchaseMrp) {
-        this.purchaseMrp = purchaseMrp;
-    }
-
-    public double getMrp() {
-        return mrp;
-    }
-
-    public void setMrp(double mrp) {
-        this.mrp = mrp;
-    }
-
-    public double getSaleRate() {
-        return saleRate;
-    }
-
-    public void setSaleRate(double saleRate) {
-        this.saleRate = saleRate;
-    }
-
-    public String getBatchNumber() {
-        return batchNumber;
-    }
-
-    public void setBatchNumber(String batchNumber) {
-        this.batchNumber = batchNumber;
-    }
-
-    public String getLotNumber() {
-        return lotNumber;
-    }
-
-    public void setLotNumber(String lotNumber) {
-        this.lotNumber = lotNumber;
     }
 
     public String getType() {

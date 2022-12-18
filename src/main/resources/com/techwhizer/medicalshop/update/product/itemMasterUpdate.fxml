@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane style="-fx-background-color: #cccccc;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.update.product.ItemMasterUpdate">
+    <center>
+        <HBox alignment="CENTER" style="-fx-background-color: #cccccc;">
+            <children>
+                <VBox style="-fx-background-color: #cccccc;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #cccccc;" VBox.vgrow="ALWAYS">
+                            <content>
+                                <HBox alignment="TOP_CENTER" style="-fx-background-color: #cccccc;">
+                                    <children>
+                                        <VBox style="-fx-background-color: white; -fx-border-radius: 10; -fx-border-color: gray; -fx-background-radius: 10;">
+                                            <HBox.margin>
+                                                <Insets bottom="20.0" top="10.0" />
+                                            </HBox.margin>
+                                            <children>
+                                                <VBox alignment="CENTER" spacing="6.0">
+                                                    <children>
+                                                        <Label text="UPDATE PRODUCT">
+                                                            <font>
+                                                                <Font name="Arial Black" size="13.0" />
+                                                            </font>
+                                                            <VBox.margin>
+                                                                <Insets top="10.0" />
+                                                            </VBox.margin>
+                                                        </Label>
+                                          <ProgressIndicator fx:id="progressBarMain" />
+                                                        <Separator prefWidth="200.0" />
+                                                    </children>
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" />
+                                                    </VBox.margin>
+                                                </VBox>
+                                                <VBox fx:id="mainContainer" alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                                                    <children>
+                                                        <VBox spacing="5.0">
+                                                            <children>
+                                                                <HBox>
+                                                                    <children>
+                                                                        <Label text="PRODUCT NAME * : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <HBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </HBox.margin>
+                                                                        </Label>
+                                                                    </children>
+                                                                </HBox>
+                                                                <TextField fx:id="productNameTf" minHeight="45.0" minWidth="510.0" onKeyPressed="#enterKeyPress" prefHeight="45.0" prefWidth="510.0" promptText="Enter item name Enter Description  ( Max 200 Characters  ) :" style="-fx-border-color: gray; -fx-border-radius: 4;" />
+                                                            </children>
+                                                        </VBox>
+                                                        <HBox fillHeight="false" layoutX="30.0" layoutY="167.0" spacing="30.0">
+                                                            <children>
+                                                                <HBox alignment="CENTER" prefWidth="300.0">
+                                                                    <children>
+                                                                        <HBox>
+                                                                            <children>
+                                                                                <VBox spacing="5.0">
+                                                                                    <children>
+                                                                                        <Label text="UNIT *  : ">
+                                                                                            <font>
+                                                                                                <Font name="Arial Black" size="12.0" />
+                                                                                            </font>
+                                                                                            <VBox.margin>
+                                                                                                <Insets left="3.0" />
+                                                                                            </VBox.margin>
+                                                                                        </Label>
+                                                                                        <HBox alignment="BOTTOM_CENTER">
+                                                                                            <children>
+                                                                                                <ComboBox fx:id="unitCom" minHeight="35.0" onKeyPressed="#enterKeyPress" prefHeight="35.0" prefWidth="200.0" promptText="Select unit" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                    </children>
+                                                                                </VBox>
+                                                                                <VBox fx:id="stripTabContainer" spacing="5.0">
+                                                                                    <children>
+                                                                                        <Label fx:id="stripTabLabel">
+                                                                                            <font>
+                                                                                                <Font name="Arial" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <TextField fx:id="stripTabTf" alignment="CENTER" minHeight="35.0" minWidth="70.0" prefHeight="35.0" prefWidth="114.0" promptText="tab per strip" style="-fx-border-color: grey; -fx-border-radius: 0 3 3 0;">
+                                                                                            <VBox.margin>
+                                                                                                <Insets top="2.0" />
+                                                                                            </VBox.margin>
+                                                                                        </TextField>
+                                                                                    </children>
+                                                                                </VBox>
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </HBox>
+                                                                <VBox prefHeight="58.0" prefWidth="298.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="PACKING * :">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox>
+                                                                            <children>
+                                                                                <TextField fx:id="packingTf" alignment="CENTER" minHeight="33.0" onKeyPressed="#enterKeyPress" prefHeight="34.0" prefWidth="294.0" promptText="Enter packing" style="-fx-border-color: gray; -fx-border-radius: 3;" HBox.hgrow="ALWAYS" />
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox spacing="30.0">
+                                                            <children>
+                                                                <VBox prefWidth="300.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="COMPANY  : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox alignment="CENTER" prefWidth="281.0">
+                                                         <children>
+                                                                              <Label fx:id="companyNameL" alignment="CENTER" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseCompany" prefHeight="35.0" prefWidth="305.0" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3; -fx-cursor: hand;" text="Click to select company" textAlignment="CENTER">
+                                                                                  <font>
+                                                                                      <Font size="13.0" />
+                                                                                  </font>
+                                                                                  <padding>
+                                                                                      <Insets left="5.0" />
+                                                                                  </padding>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                                              </Label>
+                                                            <Button mnemonicParsing="false" onAction="#clearCompany" prefHeight="34.0" prefWidth="31.0" style="-fx-border-color: red; -fx-border-radius: 0 3 3 0; -fx-background-color: red; -fx-background-radius: 0 3 3 0;" HBox.hgrow="ALWAYS">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../img/icon/clear_ic.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                               <HBox.margin>
+                                                                  <Insets bottom="1.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children></HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox prefWidth="300.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="MFR : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox alignment="CENTER" prefWidth="281.0" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                                              <Label fx:id="mfrL" alignment="CENTER" minHeight="35.0" minWidth="261.0" onMouseClicked="#chooseMfr" prefHeight="35.0" prefWidth="334.0" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3; -fx-cursor: hand;" text="Click to select mfr" textAlignment="CENTER">
+                                                                                  <font>
+                                                                                      <Font size="13.0" />
+                                                                                  </font>
+                                                                                  <padding>
+                                                                                      <Insets left="5.0" />
+                                                                                  </padding>
+                                                                              </Label>
+                                                            <Button mnemonicParsing="false" onAction="#clearMfr" prefHeight="34.0" prefWidth="41.0" style="-fx-border-color: red; -fx-border-radius: 0 3 3 0; -fx-background-color: red; -fx-background-radius: 0 3 3 0;">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../img/icon/clear_ic.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                               <HBox.margin>
+                                                                  <Insets bottom="1.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children></HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" fillHeight="false" spacing="30.0">
+                                                            <children>
+                                                                <VBox layoutX="176.0" layoutY="10.0" prefWidth="300.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="DISCOUNT  : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox alignment="CENTER" prefWidth="281.0">
+                                                                            <children>
+                                                                                <ComboBox fx:id="discountCom" minHeight="33.0" onKeyPressed="#enterKeyPress" prefHeight="35.0" prefWidth="295.0" promptText="SELECT DISCOUNT" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS" />
+                                                                                <Button mnemonicParsing="false" onAction="#clearDiscount" prefHeight="34.0" prefWidth="32.0" style="-fx-border-color: red; -fx-border-radius: 0 3 3 0; -fx-background-color: red; -fx-background-radius: 0 3 3 0;">
+                                                                                    <graphic>
+                                                                                        <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                                            <image>
+                                                                                                <Image url="@../../img/icon/clear_ic.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                    </graphic>
+                                                               <HBox.margin>
+                                                                  <Insets bottom="1.0" />
+                                                               </HBox.margin>
+                                                                                </Button>
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox prefWidth="300.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="MR : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox alignment="CENTER" prefWidth="281.0" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                                              <Label fx:id="mrL" alignment="CENTER" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseMr" prefHeight="35.0" prefWidth="322.0" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3; -fx-cursor: hand;" text="Click to select mr" textAlignment="CENTER">
+                                                                                  <font>
+                                                                                      <Font size="13.0" />
+                                                                                  </font>
+                                                                                  <padding>
+                                                                                      <Insets left="5.0" />
+                                                                                  </padding>
+                                                                              </Label>
+                                                            <Button mnemonicParsing="false" onAction="#clearMr" prefHeight="34.0" prefWidth="31.0" style="-fx-border-color: red; -fx-border-radius: 0 3 3 0; -fx-background-color: red; -fx-background-radius: 0 3 3 0;">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../img/icon/clear_ic.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                               <HBox.margin>
+                                                                  <Insets bottom="1.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children></HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="BOTTOM_CENTER" fillHeight="false" layoutX="40.0" layoutY="214.0" spacing="30.0">
+                                                            <children>
+                                                                <VBox prefWidth="300.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="HSN CODE * :">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="5.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox alignment="CENTER">
+                                                                            <children>
+                                                                                <ComboBox fx:id="hsnCom" minHeight="30.0" onKeyPressed="#enterKeyPress" prefHeight="30.0" prefWidth="304.0" promptText="Select HSN" style="-fx-border-color: gray; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS">
+                                                                                    <HBox.margin>
+                                                                                        <Insets />
+                                                                                    </HBox.margin>
+                                                                                </ComboBox>
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="TYPE  : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox prefHeight="35.0">
+                                                                            <children>
+                                                                                <ComboBox fx:id="typeCom" minHeight="30.0" onKeyPressed="#enterKeyPress" prefHeight="30.0" prefWidth="298.0" promptText="Select type" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS" />
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" layoutX="30.0" layoutY="99.0" spacing="20.0">
+                                                            <children>
+                                                                <VBox spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="NARCOTIC  : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox prefHeight="35.0">
+                                                                            <children>
+                                                                                <ComboBox fx:id="narcoticCom" minHeight="30.0" onKeyPressed="#enterKeyPress" prefHeight="30.0" prefWidth="196.0" promptText="Select narcotic" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS" />
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="ITEM TYPE  : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <ComboBox fx:id="itemTypeCom" minHeight="30.0" onKeyPressed="#enterKeyPress" prefHeight="30.0" prefWidth="198.0" promptText="Select item type" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                                    <children>
+                                                                        <Label text="STATUS : ">
+                                                                            <font>
+                                                                                <Font name="Arial Black" size="12.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="3.0" />
+                                                                            </VBox.margin>
+                                                                        </Label>
+                                                                        <HBox>
+                                                                            <children>
+                                                                                <ComboBox fx:id="statusCom" minHeight="30.0" onKeyPressed="#enterKeyPress" prefHeight="30.0" prefWidth="191.0" promptText="Select status" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS" />
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" spacing="100.0">
+                                                            <children>
+                                                                <Button layoutX="10.0" layoutY="22.0" minHeight="30.0" minWidth="130.0" mnemonicParsing="false" onAction="#closeBn" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-cursor: hand; -fx-background-radius: 2;" text="CANCEL">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="13.0" />
+                                                                    </font>
+                                                                </Button>
+                                                                <HBox alignment="CENTER">
+                                                                    <children>
+                                                                        <Button fx:id="updateButton" minHeight="30.0" minWidth="150.0" mnemonicParsing="false" onAction="#updateBn" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-cursor: hand; -fx-background-radius: 2;" text="UPDATE">
+                                                                            <font>
+                                                                                <Font name="Arial Bold" size="13.0" />
+                                                                            </font>
+                                                                        </Button>
+                                                                        <ProgressIndicator fx:id="progressBar" prefHeight="35.0" prefWidth="35.0" />
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                            <VBox.margin>
+                                                                <Insets top="25.0" />
+                                                            </VBox.margin>
+                                                        </HBox>
+                                                    </children>
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                    </padding>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                    <padding>
+                                        <Insets right="20.0" />
+                                    </padding>
+                                </HBox>
+                            </content>
+                            <padding>
+                                <Insets left="10.0" right="10.0" />
+                            </padding>
+                        </ScrollPane>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </center>
+</BorderPane>

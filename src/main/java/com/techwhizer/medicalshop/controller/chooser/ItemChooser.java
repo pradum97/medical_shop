@@ -53,7 +53,6 @@ public class ItemChooser implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-
         callThread();
     }
 
@@ -75,9 +74,7 @@ public class ItemChooser implements Initializable {
 
         @Override
         public Boolean doInBackground(String... params) {
-            /* Background Thread is running */
-
-            Map<String, Object> status = getItems();
+ Map<String, Object> status = getItems();
             msg = (String) status.get("message");
 
             return (boolean) status.get("is_success");
@@ -124,9 +121,6 @@ public class ItemChooser implements Initializable {
                 int itemId = rs.getInt("ITEM_ID");
                 String itemName = rs.getString("ITEMS_NAME");
                 String packing = rs.getString("PACKING");
-                double purchasePrice = rs.getDouble("PURCHASE_MRP");
-                double mrp = rs.getDouble("mrp");
-                double saleRate = rs.getDouble("sale_rate");
                 int gstId = rs.getInt("gst_id");
                 int cGst = rs.getInt("cgst");
                 int iGst = rs.getInt("igst");
@@ -138,7 +132,7 @@ public class ItemChooser implements Initializable {
                 count++;
 
                 GstModel gm = new GstModel(gstId, hsn, sGst, cGst, iGst, gstName, null);
-                itemList.add(new ItemChooserModel(itemId, itemName, packing, purchasePrice, mrp, saleRate, gm, unit, tabPerStrip));
+                itemList.add(new ItemChooserModel(itemId, itemName, packing, gm, unit, tabPerStrip));
             }
 
             if (itemList.size() > 0) {

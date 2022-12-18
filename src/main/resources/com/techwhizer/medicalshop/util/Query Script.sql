@@ -105,13 +105,6 @@ CREATE TABLE tbl_dealer
     ADDED_DATE   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE tbl_category
-(
-    category_id   serial primary key,
-    category_name varchar(100) not null,
-    create_date   timestamp default current_timestamp
-);
-
 CREATE TABLE tbl_company
 (
     company_id      serial primary key,
@@ -136,16 +129,13 @@ CREATE TABLE TBL_ITEMS_MASTER
     ITEM_ID      SERIAL PRIMARY KEY,
     ITEMS_NAME   VARCHAR(300) NOT NULL,
     UNIT         VARCHAR(100) NOT NULL,
-    STRIP_TAB    NUMERIC,
+    STRIP_TAB    NUMERIC   default 0,
     PACKING      VARCHAR(100) NOT NULL,
     COMPANY_ID   INT,
     MFR_ID       INT,
     DISCOUNT_ID  INT,
     MR_ID        INT,
     GST_ID       INT          NOT NULL,
-    PURCHASE_MRP NUMERIC      NOT NULL,
-    MRP          NUMERIC      NOT NULL,
-    SALE_RATE    NUMERIC,
     TYPE         VARCHAR(50)  NOT NULL,
     NARCOTIC     VARCHAR(50)  NOT NULL,
     ITEM_TYPE    VARCHAR(50)  NOT NULL,
@@ -183,25 +173,41 @@ CREATE TABLE TBL_PURCHASE_MAIN
     DEALER_ID        INT         NOT NULL,
     BILL_NUM         VARCHAR(50) NOT NULL,
     DEALER_BILL_NUM  VARCHAR(50),
-    DATE             VARCHAR(15) NOT NULL,
+    BILL_DATE        VARCHAR(15) NOT NULL,
     CREATED_DATE     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     IS_ACTIVE        INT       DEFAULT 1,
     FOREIGN KEY (DEALER_ID) REFERENCES tbl_dealer (DEALER_ID)
 );
 
-CREATE TABLE TBL_PURCHASE_DETAILS
+CREATE TABLE TBL_PURCHASE_ITEMS
 (
-    PURCHASE_DETAILS_ID SERIAL PRIMARY KEY,
-    PURCHASE_MAIN_ID    INT          NOT NULL,
-    ITEM_ID             INT          NOT NULL,
-    BATCH               VARCHAR(100) NOT NULL,
-    EXPIRY_DATE         VARCHAR(50)  NOT NULL,
-    LOT_NUMBER          VARCHAR(50),
-    QUANTITY            NUMERIC      NOT NULL,
-    QUANTITY_UNIT       VARCHAR(20)  NOT NULL,
+    PURCHASE_ITEMS_ID SERIAL PRIMARY KEY,
+    PURCHASE_MAIN_ID  INT          NOT NULL,
+    ITEM_ID           INT          NOT NULL,
+    BATCH             VARCHAR(100) NOT NULL,
+    EXPIRY_DATE       VARCHAR(50)  NOT NULL,
+    LOT_NUMBER        VARCHAR(50),
+    PURCHASE_RATE     NUMERIC,
+    MRP               NUMERIC,
+    SALE_PRICE        NUMERIC,
+    QUANTITY          NUMERIC      NOT NULL,
+    QUANTITY_UNIT     VARCHAR(20)  NOT NULL,
     FOREIGN KEY (PURCHASE_MAIN_ID) REFERENCES TBL_PURCHASE_MAIN (PURCHASE_MAIN_ID),
     FOREIGN KEY (ITEM_ID) REFERENCES TBL_ITEMS_MASTER (ITEM_ID)
+);
 
+CREATE TABLE TBL_STOCK
+(
+    STOCK_ID          SERIAL PRIMARY KEY,
+    ITEM_ID           INT         NOT NULL,
+    PURCHASE_MAIN_ID  INT         NOT NULL,
+    PURCHASE_ITEMS_ID INT         NOT NULL,
+    QUANTITY          NUMERIC     NOT NULL,
+    QUANTITY_UNIT     VARCHAR(20) NOT NULL,
+    UPDATE_DATE       VARCHAR(20) NOT NULL,
+    FOREIGN KEY (ITEM_ID) REFERENCES TBL_ITEMS_MASTER (ITEM_ID),
+    FOREIGN KEY (PURCHASE_MAIN_ID) REFERENCES TBL_PURCHASE_MAIN (PURCHASE_MAIN_ID),
+    FOREIGN KEY (PURCHASE_ITEMS_ID) REFERENCES TBL_PURCHASE_ITEMS (PURCHASE_ITEMS_ID)
 );
 
 CREATE TABLE TBL_PATIENT
@@ -222,17 +228,73 @@ CREATE TABLE TBL_PATIENT
     registered_date timestamp default CURRENT_TIMESTAMP
 );
 
--- top finished
-
 CREATE TABLE TBL_CART
 (
-    CART_ID       BIGSERIAL PRIMARY KEY NOT NULL,
-    PRODUCT_ID    INTEGER               NOT NULL,
-    MRP           NUMERIC               NOT NULL,
-    QUANTITY      NUMERIC               NOT NULL,
-    MRP_TYPE      VARCHAR(50)           NOT NULL,
-    QUANTITY_UNIT VARCHAR(100)          NOT NULL
+    CART_ID      BIGSERIAL PRIMARY KEY NOT NULL,
+    ITEM_ID      INTEGER               NOT NULL,
+    MRP          NUMERIC               NOT NULL,
+    STRIP        INT,
+    PCS          INT,
+    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE TBL_SALE_MAIN
+(
+    SALE_MAIN_ID        SERIAL PRIMARY KEY                  NOT NULL,
+    PATIENT_ID          INTEGER                             NOT NULL,
+    SELLER_ID           INTEGER                             NOT NULL,
+    ADDITIONAL_DISCOUNT NUMERIC,
+    PAYMENT_MODE        VARCHAR                             NOT NULL,
+    TOT_TAX_AMOUNT      NUMERIC,
+    NET_AMOUNT          NUMERIC                             NOT NULL,
+    INVOICE_NUMBER      VARCHAR(100)                        NOT NULL,
+    BILL_TYPE           VARCHAR(100)                        NOT NULL,
+    sale_date           timestamp default CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (SELLER_ID)
+        REFERENCES tbl_users (user_id)
+);
+
+CREATE TABLE TBL_SALE_ITEMS
+(
+    SALE_ITEM_ID  BIGSERIAL PRIMARY KEY               NOT NULL,
+    SALE_MAIN_ID  INTEGER                             NOT NULL,
+    ITEM_ID       INTEGER                             NOT NULL,
+    ITEM_NAME     VARCHAR(200)                        NOT NULL,
+    PURCHASE_RATE NUMERIC                             NOT NULL,
+    MRP           NUMERIC   DEFAULT 0                 NOT NULL,
+    SALE_RATE     NUMERIC                             NOT NULL,
+    STRIP         INT       default 0,
+    PCS           INT       default 0,
+    DISCOUNT      numeric,
+    HSN_SAC       NUMERIC,
+    igst          NUMERIC,
+    sgst          NUMERIC,
+    cgst          NUMERIC,
+    STRIP_TAB     INT,
+    NET_AMOUNT    NUMERIC                             NOT NULL,
+    TAX_AMOUNT    NUMERIC,
+    sale_date     timestamp default CURRENT_TIMESTAMP NOT NULL,
+
+    FOREIGN KEY (SALE_MAIN_ID)
+        REFERENCES TBL_SALE_MAIN (SALE_MAIN_ID),
+    FOREIGN KEY (ITEM_ID)
+        REFERENCES tbl_items_master (item_id)
+);
+
+CREATE TABLE TBL_DOCTOR(
+    DOCTOR_ID SERIAL PRIMARY KEY ,
+    DR_NAME VARCHAR(100) NOT NULL ,
+    DR_PHONE varchar(20),
+    DR_ADDRESS VARCHAR(200),
+    DR_REG_NUM VARCHAR(100),
+    SPECIALITY VARCHAR(100),
+    QUALIFICATION VARCHAR(300),
+    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- top finished
+
 
 CREATE TABLE TBL_DUES
 (
@@ -262,50 +324,6 @@ CREATE TABLE DUES_HISTORY
     FOREIGN KEY (CUSTOMER_ID)
         REFERENCES tbl_customer (CUSTOMER_ID)
 
-);
-
-CREATE TABLE TBL_SALE_MAIN
-(
-    SALE_MAIN_ID           SERIAL PRIMARY KEY                  NOT NULL,
-    CUSTOMER_ID            INTEGER                             NOT NULL,
-    SELLER_ID              INTEGER                             NOT NULL,
-    ADDITIONAL_DISCOUNT    NUMERIC,
-    RECEIVED_AMOUNT        NUMERIC                             NOT NULL,
-    PAYMENT_MODE           VARCHAR                             NOT NULL,
-    COUPON_CODE            VARCHAR(50),
-    COUPON_DISCOUNT_AMOUNT NUMERIC,
-    TOT_TAX_AMOUNT         NUMERIC,
-    NET_AMOUNT             NUMERIC                             NOT NULL,
-    INVOICE_NUMBER         VARCHAR(100)                        NOT NULL,
-    BILL_TYPE              VARCHAR(100)                        NOT NULL,
-    sale_date              timestamp default CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (SELLER_ID)
-        REFERENCES tbl_users (user_id)
-);
-
-CREATE TABLE TBL_SALE_ITEMS
-(
-    SALE_ITEM_ID     BIGSERIAL PRIMARY KEY NOT NULL,
-    SALE_MAIN_ID     INTEGER               NOT NULL,
-    PRODUCT_ID       INTEGER               NOT NULL,
-    PRODUCT_NAME     VARCHAR(200)          NOT NULL,
-    PRODUCT_CATEGORY VARCHAR(100)          NOT NULL,
-    PRODUCT_MRP      NUMERIC               NOT NULL,
-    PRODUCT_QUANTITY VARCHAR(100)          NOT NULL,
-    MRP_TYPE         VARCHAR(20)           NOT NULL,
-    HSN_SAC          NUMERIC,
-    igst             NUMERIC,
-    sgst             NUMERIC,
-    cgst             NUMERIC,
-    NET_AMOUNT       NUMERIC               NOT NULL,
-    SALE_DATE        timestamp default CURRENT_TIMESTAMP,
-    TAX_AMOUNT       NUMERIC,
-    FOREIGN KEY (SALE_MAIN_ID)
-        REFERENCES TBL_SALE_MAIN (SALE_MAIN_ID),
-
-    FOREIGN KEY (PRODUCT_ID)
-        REFERENCES tbl_products (product_id)
 );
 
 CREATE TABLE TBL_LICENSE

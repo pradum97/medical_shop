@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.product.dealer.AddDealer">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.product.dealer.AddDealer">
    <center>
       <VBox prefHeight="596.0" prefWidth="683.0" spacing="30.0" BorderPane.alignment="CENTER">
          <children>
@@ -155,7 +150,7 @@
                         <HBox alignment="CENTER" spacing="60.0" VBox.vgrow="ALWAYS">
                            <children>
                               <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="137.0" style="-fx-cursor: hand; -fx-background-color: red; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 3;" text="CANCEL" />
-                              <Button layoutX="241.0" layoutY="10.0" mnemonicParsing="false" onAction="#bnAddDealer" prefHeight="26.0" prefWidth="137.0" style=" -fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 3;" text="ADD SUBMIT" />
+                              <Button layoutX="241.0" layoutY="10.0" mnemonicParsing="false" onAction="#bnAddDealer" prefHeight="26.0" prefWidth="137.0" style=" -fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 3;" text="SUBMIT" />
                            </children>
                            <VBox.margin>
                               <Insets top="60.0" />

@@ -6,9 +6,14 @@ import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.method.StaticData;
+import com.techwhizer.medicalshop.model.PriceTypeModel;
 import com.techwhizer.medicalshop.model.PurchaseItemsTemp;
 import com.techwhizer.medicalshop.model.chooserModel.ItemChooserModel;
 import com.techwhizer.medicalshop.util.DBConnection;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -55,31 +60,36 @@ public class AddPurchaseItems implements Initializable {
         staticData = new StaticData();
         stripTabContainer.setDisable(true);
         setData();
-        comboBoxConfig();
 
     }
 
-    private void comboBoxConfig() {
-
-        unitCom.valueProperty().addListener((observableValue, s, newValue) -> {
-            stripTabTf.setText("");
-            if (newValue.equalsIgnoreCase("STRIP")) {
-                stripTabLabel.setText("TAB PER STRIP :");
-                stripTabContainer.setDisable(false);
-            } else {
-                stripTabLabel.setText("");
-                stripTabContainer.setDisable(true);
-            }
-
-        });
-    }
 
     private void setData() {
 
         monthCom.setItems(staticData.getMonth());
         yearCom.setItems(staticData.getYear());
-        unitCom.setItems(staticData.getUnit());
-        quantityUnitCom.setItems(staticData.getQuantityUnit());
+        unitCom.valueProperty().addListener((observableValue, s, t1) -> {
+
+            if (t1.equalsIgnoreCase("STRIP")){
+                quantityUnitCom.setItems(staticData.tabUnit);
+                stripTabLabel.setText("Tab per strip :");
+                stripTabContainer.setDisable(false);
+               stripTabTf.setText(String.valueOf(icm.getTabPerStrip()));
+            }else if (t1.equalsIgnoreCase("TAB")){
+                quantityUnitCom.setItems(FXCollections.observableArrayList("TAB"));
+                quantityUnitCom.getSelectionModel().select("TAB");
+                stripTabLabel.setText("");
+                stripTabContainer.setDisable(true);
+                stripTabTf.setText("");
+
+            } else {
+                quantityUnitCom.setItems(staticData.getQuantityUnit());
+                quantityUnitCom.getSelectionModel().select("PCS");
+                stripTabLabel.setText("");
+                stripTabContainer.setDisable(true);
+                stripTabTf.setText("");
+            }
+        });
     }
     public void cancelClick(ActionEvent actionEvent) {
     }
@@ -105,6 +115,8 @@ public class AddPurchaseItems implements Initializable {
         String mrp = mrpTf.getText();
         String saleRate = saleRateTf.getText();
         String stripTab = stripTabTf.getText();
+        int stripTabInt = 0;
+        double saleRateD = 0.0, purchasePriceD = 0.0,mrpD = 0.0;
 
         if (null == icm) {
             method.show_popup("Please select product", productNameL);
@@ -122,29 +134,37 @@ public class AddPurchaseItems implements Initializable {
             method.show_popup("Please select unit", unitCom);
             return;
         } else if (unitCom.getSelectionModel().getSelectedItem().equals("STRIP")) {
-            if (stripTab.isEmpty()) {
-                method.show_popup("Please enter tab per strip", stripTabTf);
-                return;
-            }
             try {
-                long l = Long.parseLong(stripTab);
+                 stripTabInt  = Integer.parseInt(stripTab);
             } catch (NumberFormatException e) {
                 method.show_popup("Please enter number only", stripTabTf);
                 return;
             }
+
+            if (stripTab.isEmpty() || stripTabInt < 1) {
+                method.show_popup("Please enter tab per strip", stripTabTf);
+                return;
+            }
+        }else if (packing.isEmpty()){
+            method.show_popup("Please enter packing", packingTf);
+            return;
         }
         if (quantity.isEmpty()) {
             method.show_popup("Please enter quantity", quantityTf);
             return;
         }
-
         try {
-            Integer.parseInt(quantity);
+            Double.parseDouble(quantity);
         } catch (NumberFormatException e) {
             method.show_popup("Please enter valid quantity", quantityTf);
             return;
         }
-        if (quantityUnitCom.getSelectionModel().isEmpty()) {
+
+        if (Double.parseDouble(quantity) < 1 ){
+            method.show_popup("Enter quantity more then 0", quantityTf);
+            return;
+
+        }else if (quantityUnitCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select quantity unit", quantityUnitCom);
             return;
         } else if (purchaseRate.isEmpty()) {
@@ -152,29 +172,40 @@ public class AddPurchaseItems implements Initializable {
             return;
         }
 
+
         try {
-            Double.parseDouble(purchaseRate);
+        purchasePriceD =  Double.parseDouble(purchaseRate);
         } catch (NumberFormatException e) {
             method.show_popup("Please enter valid purchase price", purchaseRateTf);
             return;
         }
-
-        if (mrp.isEmpty()) {
+        if (purchasePriceD <1){
+            method.show_popup("Enter valid rate", purchaseRateTf);
+            return;
+        }else if (mrp.isEmpty()) {
             method.show_popup("Please enter mrp", mrpTf);
             return;
         }
         try {
-            Double.parseDouble(mrp);
+         mrpD = Double.parseDouble(mrp);
         } catch (NumberFormatException e) {
             method.show_popup("Please enter valid mrp", mrpTf);
             return;
         }
 
-        if (!saleRate.isEmpty()){
+        if (mrpD <0){
+            method.show_popup("Enter valid rate", mrpTf);
+            return;
+        }else if (!saleRate.isEmpty()){
             try {
-                Double.parseDouble(saleRate);
+                saleRateD =  Double.parseDouble(saleRate);
             } catch (NumberFormatException e) {
                 method.show_popup("Please enter valid sale rate", saleRateTf);
+                return;
+            }
+
+            if (saleRateD <0){
+                method.show_popup("Enter valid rate", saleRateTf);
                 return;
             }
         }
@@ -185,8 +216,21 @@ public class AddPurchaseItems implements Initializable {
         String unit = unitCom.getSelectionModel().getSelectedItem();
 
         String expiryDate = expiryMonth+"/"+expiryYear;
-        PurchaseItemsTemp pit = new PurchaseItemsTemp(icm.getItemId(), icm.getItemName(), batchNumber,expiryDate,unit,stripTab,
-                  packing,lotNum,Integer.parseInt(quantity),quantityUnit,Double.parseDouble(purchaseRate),Double.parseDouble(mrp),Double.parseDouble(saleRate));
+
+        double noOfPcs = 0;
+        String qtyUnit = "";
+        if (quantityUnit.equalsIgnoreCase("strip")){
+            //noOfTab =
+            qtyUnit = "TAB";
+            noOfPcs =Double.parseDouble(quantity)*stripTabInt ;
+        }else {
+            qtyUnit = quantityUnit;
+            noOfPcs = Double.parseDouble(quantity);
+        }
+
+        PurchaseItemsTemp pit = new PurchaseItemsTemp(icm.getItemId(), icm.getItemName(), batchNumber,expiryDate,unit,stripTabInt,
+                  packing,lotNum,noOfPcs,qtyUnit,Double.parseDouble(purchaseRate),
+                Double.parseDouble(mrp),saleRateD);
        if (null != Main.primaryStage.getUserData()){
            Main.primaryStage.setUserData(null);
        }
@@ -206,13 +250,34 @@ public class AddPurchaseItems implements Initializable {
         if (Main.primaryStage.getUserData() instanceof ItemChooserModel icm) {
             this.icm = icm;
             productNameL.setText(icm.getItemName());
-            purchaseRateTf.setText(method.removeZeroAfterDecimal(icm.getPurchasePrice()));
-            mrpTf.setText(method.removeZeroAfterDecimal(icm.getMrp()));
-            saleRateTf.setText(method.removeZeroAfterDecimal(icm.getSaleRate()));
             packingTf.setText(icm.getPacking());
-            unitCom.getSelectionModel().select(icm.getUnit());
-            if (icm.getUnit().equalsIgnoreCase("strip")) {
-                stripTabTf.setText(String.valueOf(icm.getTabPerStrip()));
+
+            if (method.isItemAvailableInStock(icm.getItemId())){
+
+                String stockUnit = method.getStockUnit(icm.getItemId());
+
+                if (stockUnit.equalsIgnoreCase("TAB") || stockUnit.equalsIgnoreCase("STRIP")){
+                    unitCom.setItems(staticData.tabUnit);
+                    unitCom.getSelectionModel().select(icm.getUnit());
+                    if (icm.getUnit().equalsIgnoreCase("strip")) {
+                        stripTabTf.setText(String.valueOf(icm.getTabPerStrip()));
+                    }
+                }else {
+                    unitCom.setItems(staticData.pcsUnit);
+                    unitCom.getSelectionModel().select("PCS");
+                }
+
+                PriceTypeModel ptm = method.getLastPrice(icm.getItemId());
+                purchaseRateTf.setText(method.removeZeroAfterDecimal(ptm.getPurchaseRate()));
+                mrpTf.setText(method.removeZeroAfterDecimal(ptm.getMrp()));
+                saleRateTf.setText(method.removeZeroAfterDecimal(ptm.getSaleRate()));
+
+            }else {
+                if (icm.getUnit().equalsIgnoreCase("strip")) {
+                    stripTabTf.setText(String.valueOf(icm.getTabPerStrip()));
+                }
+                unitCom.setItems(staticData.getUnit());
+                unitCom.getSelectionModel().select(icm.getUnit());
             }
         }
     }

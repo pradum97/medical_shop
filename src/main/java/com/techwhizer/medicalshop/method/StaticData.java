@@ -14,10 +14,6 @@ public class StaticData {
         return FXCollections.observableArrayList("Male", "Female", "Other");
     }
 
- public ObservableList<Integer> getPcsPerPacketList() {
-        return FXCollections.observableArrayList(6 ,1,2,3,4,5,7,8,9 , 10 , 11 , 12);
-    }
-
     public ObservableList<Integer> getYear() {
 
         int year = Year.now().getValue();
@@ -54,7 +50,7 @@ public class StaticData {
 
     public ObservableList<String> getBillingType() {
 
-        return FXCollections.observableArrayList("REGULAR", "GST" ,"KITTY PARTY");
+        return FXCollections.observableArrayList("REGULAR", "GST");
     }
 
     public  ObservableList<String> getPaymentMode(){
@@ -67,14 +63,18 @@ public class StaticData {
         return FXCollections.observableArrayList("PERCENTAGE","FLAT");
     }
     public ObservableList<String> getUnit() {
-        return FXCollections.observableArrayList("STRIP","PCS","PKT","INJ","TAB","CAP","KG","GRAM","ML","LITRE","MG");
+        return FXCollections.observableArrayList("STRIP","TAB","PCS");
     }
     public ObservableList<String> getQuantityUnit() {
-        return FXCollections.observableArrayList("STRIP","PCS","TAB","CAP");
+        return FXCollections.observableArrayList("PCS");
     }
     public ObservableList<String> getAccountStatus() {
 
         return FXCollections.observableArrayList("Inactive","Active" );
     }
+
+   public ObservableList<String> tabUnit = FXCollections.observableArrayList("TAB","STRIP");
+  public   ObservableList<String> pcsUnit = FXCollections.observableArrayList("PCS");
+  public   ObservableList<String> stockFilter = FXCollections.observableArrayList("EXPIRED","CLOSE","NARCOTIC ITEMS","PROHIBIT","LOW QTY","OUT OF STOCK");
 
 }

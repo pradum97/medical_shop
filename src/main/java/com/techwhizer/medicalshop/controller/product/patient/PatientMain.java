@@ -182,7 +182,7 @@ public class PatientMain implements Initializable {
         @Override
         public Boolean doInBackground(String... params) {
 
-            Map<String, Object> status = getCustomer();
+            Map<String, Object> status = getPatient();
             boolean isSuccess = (boolean) status.get("is_success");
             msg = (String) status.get("message");
             return isSuccess;
@@ -201,7 +201,7 @@ public class PatientMain implements Initializable {
         }
     }
 
-    private Map<String, Object> getCustomer() {
+    private Map<String, Object> getPatient() {
         Map<String, Object> map = new HashMap<>();
 
         if (null != patientList) {
@@ -321,7 +321,7 @@ public class PatientMain implements Initializable {
         colGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
 
         onColumnEdit(colName, "name");
-        onColumnEdit(colAddress, "address");
+        onColumnEdit(colAddress, "addressTf");
         onColumnEdit(colPhone, "phone");
         onColumnEdit(colIdNum, "id_number");
         onColumnEdit(colGender, "gender");

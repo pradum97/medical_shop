@@ -89,7 +89,7 @@ public class MrMain implements Initializable {
                 String phone = rs.getString("phone");
                 String email = rs.getString("email");
                 String company = rs.getString("company");
-                String address = rs.getString("address");
+                String address = rs.getString("addressTf");
                 String createdDate = rs.getString("created_date");
                 String gender = rs.getString("gender");
 
@@ -158,7 +158,7 @@ public class MrMain implements Initializable {
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colCompany.setCellValueFactory(new PropertyValueFactory<>("company"));
-        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("addressTf"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("createdDate"));
         colGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
 
@@ -166,7 +166,7 @@ public class MrMain implements Initializable {
         onColumnEdit(colPhone,"phone");
         onColumnEdit(colEmail,"email");
         onColumnEdit(colCompany,"company");
-        onColumnEdit(colAddress,"address");
+        onColumnEdit(colAddress,"addressTf");
         onColumnEdit(colGender,"gender");
 
 

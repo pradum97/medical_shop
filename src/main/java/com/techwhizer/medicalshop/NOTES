@@ -1,9 +1,13 @@
 --UPDATE PRIVACY POLICY IN LEAD APP
+add dr in cart
 
-1 work change company combobox to chooser
-2. create mr with deatails combobox to chooser
-3. mfr create combobox to chooser\
+change unit confirma. dialo in add pur item
 if table cell is null or empty set "-" from Method.java rec method
+special customer discount control
+purchase board
+naroctic
+type
+
 
 close item not show
 PROHIBIT ITEM SHOW ONLY FOR ADMIN
@@ -14,56 +18,6 @@ check extra file delete in server
 -> enable licence
 -> update licence details in licence manager
 -> clean licence data
-
-//
-
--purchase details
-product name*
-mr(medical representive)
-purchase p*
-mfg
-dealer name
-exp date*
-unit-ml mg litre pkt strip pcs kg g *
-qty*
-batch*
-lot# *
-
-notes
-    tab per strip
-    category ex-tab,bottle-
-    pack
-    MIN QTY , MAX QTY
-
-    // purchase
-    invoice number
-    qauantity and qty unit
-    diealer
-
-
-// remove
-
-exp date
-batch num
-lot num
-
- //
- if (lotNumTf.getText().isEmpty()) {
-     ps.setNull(14, Types.NULL);
- } else {
-      ps.setString(14, im.getLotNumber());
- }
- //
-
-  else if (monthCom.getSelectionModel().isEmpty()) {
-             method.show_popup("Please select expiry month", monthCom);
-             return;
-         } else if (yearCom.getSelectionModel().isEmpty()) {
-             method.show_popup("Please select expiry year", yearCom);
-             return;
-         }
-         //
-
 
 
 

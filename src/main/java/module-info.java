@@ -9,6 +9,7 @@ module com.techwhizer.medicalshop {
     requires org.json;
     requires org.apache.httpcomponents.httpclient;
     requires java.base;
+    requires jasperreports;
     opens com.techwhizer.medicalshop to javafx.fxml;
     exports com.techwhizer.medicalshop;
 
@@ -58,5 +59,11 @@ module com.techwhizer.medicalshop {
 
     exports com.techwhizer.medicalshop.controller.product.patient;
     opens com.techwhizer.medicalshop.controller.product.patient to javafx.fxml;
+    exports com.techwhizer.medicalshop.controller.dashboard;
+    opens com.techwhizer.medicalshop.controller.dashboard to javafx.fxml;
+
+    exports com.techwhizer.medicalshop.controller.product.doctor;
+    opens com.techwhizer.medicalshop.controller.product.doctor to javafx.fxml;
+
 
 }

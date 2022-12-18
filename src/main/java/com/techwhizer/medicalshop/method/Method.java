@@ -1,22 +1,14 @@
 package com.techwhizer.medicalshop.method;
 
-import com.techwhizer.medicalshop.CustomDialog;
-import com.techwhizer.medicalshop.ImageLoader;
-import com.techwhizer.medicalshop.Main;
-import com.techwhizer.medicalshop.model.*;
 import com.techwhizer.medicalshop.PropertiesLoader;
-import com.techwhizer.medicalshop.util.AppConfig;
+import com.techwhizer.medicalshop.model.*;
 import com.techwhizer.medicalshop.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Modality;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -31,15 +23,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Method extends StaticData {
 
@@ -50,27 +43,6 @@ public class Method extends StaticData {
         pi.setPrefWidth(width);
 
         return pi;
-    }
-
-    public void showAddProductDialog() {
-
-        try {
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("product/addProduct.fxml")));
-            Stage stage = new Stage();
-            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
-            stage.setTitle("Add new product");
-            stage.setMaximized(false);
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(Main.primaryStage);
-            stage.showAndWait();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public String stripTrailingZeros(Object o) {
@@ -187,8 +159,8 @@ public class Method extends StaticData {
 
         } catch (SQLException e) {
             map.put("data",discountList);
-            map.put("is_success",false);
-            map.put("message","Something went wrong...");
+            map.put("is_success", false);
+            map.put("message", "Something went wrong...");
             e.printStackTrace();
         } finally {
 
@@ -196,6 +168,45 @@ public class Method extends StaticData {
         }
 
         return map;
+    }
+
+    public DiscountModel getSpecificDiscount(int discountId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+            connection = new DBConnection().getConnection();
+
+            if (null == connection) {
+                return null;
+            }
+
+            ps = connection.prepareStatement("SELECT * FROM TBL_DISCOUNT WHERE discount_id = ? ORDER BY discount_id ASC");
+            ps.setInt(1, discountId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+
+                // discount
+                int discountID = rs.getInt("discount_id");
+                int discount = rs.getInt("discount");
+                String description = rs.getString("description");
+                String discountName = rs.getString("discount_name");
+
+                return new DiscountModel(discountID, discountName, discount, description);
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+
+        } finally {
+
+            DBConnection.closeConnection(connection, ps, rs);
+        }
     }
 
     public boolean isExpires(String startDate, String endDate) {
@@ -213,7 +224,6 @@ public class Method extends StaticData {
             throw new RuntimeException(e);
         }
     }
-
     public long countDays(String startDate, String endDate) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -443,12 +453,373 @@ public class Method extends StaticData {
     public String rec(String str){
         String txt = "";
 
-        if (null == str || str.isEmpty()){
+        if (null == str || str.isEmpty()) {
             txt = "-";
-        }else {
+        } else {
             txt = str;
         }
         return txt;
     }
 
+    public boolean isItemAvailableInStock(int itemId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select item_id from tbl_stock where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public String getStockUnit(int itemId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select quantity_unit from tbl_stock where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("quantity_unit");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+
+    }
+
+    public String getCurrentDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
+
+    public int getQuantity(int itemId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select quantity from tbl_stock where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("quantity");
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Method().getTbPerStrip(1));
+    }
+
+    public int getTbPerStrip(int itemId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select strip_tab from tbl_items_master where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("strip_tab");
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public String getAvailableQty(int itemId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select  ts.quantity,ts.quantity_unit,strip_tab from tbl_items_master tim\n" + "left join tbl_stock ts on tim.item_id = ts.item_id where ts.item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                double quantity = rs.getDouble("quantity");
+                String unit = rs.getString("quantity_unit");
+                int tabPerStrip = rs.getInt("strip_tab");
+
+                double tab = 0;
+                if (unit.equalsIgnoreCase("strip")) {
+                    tab = quantity * tabPerStrip;
+                    unit = "TAB";
+                } else {
+                    tab = quantity;
+                }
+
+                return tabToStrip(tab, tabPerStrip, unit);
+
+            } else {
+                return "";
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public String tabToStrip(double tablet, int stripPerTab, String unitType) {
+        String val = "";
+        int strip = (int) (tablet / stripPerTab);
+        int tab = (int) (tablet % stripPerTab);
+        if (unitType.equalsIgnoreCase("tab")) {
+
+            if (strip > 0) {
+                val = strip + "-STR";
+            }
+            if (tab > 0) {
+                if (strip > 0) {
+                    val = val.concat(",");
+                }
+                val = val.concat(tab + "-TAB");
+            }
+        } else {
+            val = removeZeroAfterDecimal(tablet) + "-PCS";
+        }
+
+        return val;
+    }
+
+    public PriceTypeModel getLastPrice(int itemId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        PriceTypeModel ptm = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select purchase_rate,mrp,sale_price from tbl_purchase_items where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                double purchaseRate = rs.getDouble("purchase_rate");
+                double mrp = rs.getDouble("mrp");
+                double saleRate = rs.getDouble("sale_price");
+
+                if (rs.isLast()) {
+                    ptm = new PriceTypeModel(purchaseRate, mrp, saleRate);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+        if (null == ptm) {
+            ptm = new PriceTypeModel(0, 0, 0);
+        }
+
+        return ptm;
+    }
+
+    public boolean isItemAvlInCart(int itemId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select item_id from tbl_cart where item_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+    }
+
+    public String decimalFormatter(Object o) {
+        DecimalFormat formatter = new DecimalFormat("#0.0");
+        return formatter.format(o);
+    }
+
+    public MrModel getSpecificMr(int mrId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+
+            String qry = "select *,(TO_CHAR(tml.created_date, 'DD-MM-YYYY')) as created_date from tbl_mr_list tml where mr_id = ? order by mr_id desc ";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, mrId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                int mr_id = rs.getInt("mr_id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+                String company = rs.getString("company");
+                String address = rs.getString("addressTf");
+                String createdDate = rs.getString("created_date");
+                String gender = rs.getString("gender");
+
+                return new MrModel(mr_id, name, phone, company, email, address, createdDate, gender);
+            } else {
+                return null;
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public ManufacturerModal getManufacture(int mfrId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+
+            String qry = "SELECT * FROM tbl_manufacturer_list where mfr_id = ? order by mfr_id asc";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, mfrId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+
+                int id = rs.getInt("mfr_id");
+                String manufacturer_name = rs.getString("manufacturer_name");
+                String created_date = rs.getString("created_date");
+                return new ManufacturerModal(id, manufacturer_name, created_date);
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+    }
+
+    public CompanyModel getSpecificCompany(int companyId) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+
+            String qry = "SELECT * FROM tbl_company where company_id = ? order by company_id asc";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, companyId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                int id = rs.getInt("company_id");
+                String company_name = rs.getString("company_name");
+                String company_address = rs.getString("company_address");
+                String created_date = rs.getString("created_date");
+                return new CompanyModel(id, company_name, company_address, created_date);
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public GstModel getSpecificGst(int gstId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = new DBConnection().getConnection();
+
+            if (null == connection) {
+                return null;
+            }
+
+            ps = connection.prepareStatement("SELECT * FROM TBL_PRODUCT_TAX where tax_id = ? ORDER BY tax_id ASC");
+            ps.setInt(1, gstId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int taxID = rs.getInt("tax_id");
+                int hsn_sac = rs.getInt("hsn_sac");
+                int sgst = rs.getInt("sgst");
+                int cgst = rs.getInt("cgst");
+                int igst = rs.getInt("igst");
+                String tax_description = rs.getString("description");
+                String gstName = rs.getString("gstName");
+
+                return new GstModel(taxID, hsn_sac, sgst, cgst, igst, gstName, tax_description);
+            }else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+    }
 }

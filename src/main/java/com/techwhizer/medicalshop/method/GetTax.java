@@ -1,7 +1,7 @@
 package com.techwhizer.medicalshop.method;
 
-import com.techwhizer.medicalshop.model.GstModel;
 import com.techwhizer.medicalshop.PropertiesLoader;
+import com.techwhizer.medicalshop.model.GstModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GetTax {
 
@@ -61,5 +59,4 @@ public class GetTax {
         }
 
     }
-
 }

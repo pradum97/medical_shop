@@ -6,15 +6,15 @@ public class PurchaseItemsTemp {
     private String batch;
     private String expiryDate;
     private String unit;
-    private String tabPerStrip;
+    private int tabPerStrip;
     private String packing;
     private String lotNum;
-    private int quantity;
+    private double quantity;
     private String quantityUnit;
     private double purchasePrice , mrp,salePrice;
 
-    public PurchaseItemsTemp(int itemId, String itemsName, String batch, String expiryDate, String unit, String tabPerStrip, String packing,
-                             String lotNum, int quantity, String quantityUnit, double purchasePrice, double mrp, double salePrice) {
+    public PurchaseItemsTemp(int itemId, String itemsName, String batch, String expiryDate, String unit, int tabPerStrip, String packing,
+                             String lotNum, double quantity, String quantityUnit, double purchasePrice, double mrp, double salePrice) {
         this.itemId = itemId;
         this.itemsName = itemsName;
         this.batch = batch;
@@ -70,11 +70,11 @@ public class PurchaseItemsTemp {
         this.unit = unit;
     }
 
-    public String getTabPerStrip() {
+    public int getTabPerStrip() {
         return tabPerStrip;
     }
 
-    public void setTabPerStrip(String tabPerStrip) {
+    public void setTabPerStrip(int tabPerStrip) {
         this.tabPerStrip = tabPerStrip;
     }
 
@@ -94,11 +94,11 @@ public class PurchaseItemsTemp {
         this.lotNum = lotNum;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 

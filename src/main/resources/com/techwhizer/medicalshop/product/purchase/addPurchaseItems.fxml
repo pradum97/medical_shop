@@ -32,7 +32,7 @@
                                           <Font name="Arial Black" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="productNameL" alignment="CENTER" onMouseClicked="#chooseProduct" prefHeight="50.0" prefWidth="538.0" style="-fx-border-color: grey; -fx-border-radius: 3;" text="Click to choose Product" textAlignment="CENTER" />
+                                    <Label fx:id="productNameL" alignment="CENTER" onMouseClicked="#chooseProduct" prefHeight="50.0" prefWidth="538.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to select item" textAlignment="CENTER" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -134,7 +134,7 @@
                                           <Font name="Arial Black" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="packingTf" editable="false" focusTraversable="false" onKeyPressed="#enterKeyPress" prefHeight="37.0" promptText="Enter packing" style="-fx-border-color: grey; -fx-border-radius: 3;" />
+                                    <TextField fx:id="packingTf" focusTraversable="false" onKeyPressed="#enterKeyPress" prefHeight="37.0" promptText="Enter packing" style="-fx-border-color: grey; -fx-border-radius: 3;" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -173,7 +173,7 @@
                                     <HBox>
                                        <children>
                                           <TextField fx:id="quantityTf" onKeyPressed="#enterKeyPress" prefHeight="38.0" prefWidth="134.0" promptText="Enter quantity" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
-                                          <ComboBox fx:id="quantityUnitCom" onKeyPressed="#enterKeyPress" prefHeight="38.0" prefWidth="150.0" promptText="select quantity unit" style="-fx-border-color: grey; -fx-border-radius: 0 3 3 0;" />
+                                          <ComboBox fx:id="quantityUnitCom" onKeyPressed="#enterKeyPress" prefHeight="38.0" prefWidth="150.0" promptText="select qty unit" style="-fx-border-color: grey; -fx-border-radius: 0 3 3 0;" />
                                        </children>
                                     </HBox>
                                  </children>

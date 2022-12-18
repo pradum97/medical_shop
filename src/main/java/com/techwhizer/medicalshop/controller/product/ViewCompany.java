@@ -191,7 +191,7 @@ public class ViewCompany implements Initializable {
             method.show_popup("Enter company name",companyNameTF);
             return;
         }else  if (cAddress.isEmpty()){
-            method.show_popup("Enter company address",companyAddressTf);
+            method.show_popup("Enter company addressTf",companyAddressTf);
             return;
         }
 

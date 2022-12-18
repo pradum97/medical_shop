@@ -9,9 +9,12 @@ import com.techwhizer.medicalshop.method.StaticData;
 import com.techwhizer.medicalshop.model.DealerModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import com.victorlaerte.asynctask.AsyncTask;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -20,7 +23,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
@@ -34,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AllDealer implements Initializable {
+    int rowsPerPage = 12;
     public TableView<DealerModel> tableView;
     public TableColumn<DealerModel, Integer> colSrNo;
     public TableColumn<DealerModel, String> colName;
@@ -45,13 +48,14 @@ public class AllDealer implements Initializable {
     public TableColumn<DealerModel, String> colDate;
     public TableColumn<DealerModel, String> colAction;
     public TableColumn<DealerModel, String> colDl;
-    public VBox contentContainer;
-    public VBox progressBar;
+    public TextField searchTf;
+    public Pagination pagination;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Method method;
 
-    private ObservableList<DealerModel> supplierList = FXCollections.observableArrayList();
+    private ObservableList<DealerModel> dealerList = FXCollections.observableArrayList();
+    private FilteredList<DealerModel> filteredData;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,9 +78,13 @@ public class AllDealer implements Initializable {
 
         @Override
         public void onPreExecute() {
-            //Background Thread will start
-            method.hideElement(contentContainer);
-            progressBar.setVisible(true);
+
+            if (null != tableView){
+                tableView.setItems(null);
+            }
+            assert tableView != null;
+            tableView.setPlaceholder(method.getProgressBar(40,40));
+
         }
 
         @Override
@@ -91,11 +99,12 @@ public class AllDealer implements Initializable {
 
         @Override
         public void onPostExecute(Boolean success) {
-            method.hideElement(progressBar);
-            contentContainer.setVisible(true);
-            if (!success) {
-                tableView.setPlaceholder(new Label(msg));
-                // new CustomDialog().showAlertBox("Failed", msg);
+            tableView.setPlaceholder(new Label("Dealer not available"));
+            if (null != dealerList) {
+                if (dealerList.size() > 0) {
+                    pagination.setVisible(true);
+                    search_Item();
+                }
             }
         }
 
@@ -108,8 +117,8 @@ public class AllDealer implements Initializable {
     private Map<String, Object> getDealer() {
         Map<String, Object> map = new HashMap<>();
 
-        if (null != supplierList) {
-            supplierList.clear();
+        if (null != dealerList) {
+            dealerList.clear();
         }
 
         Connection connection = null;
@@ -164,33 +173,10 @@ public class AllDealer implements Initializable {
                     dealerGstNum = "-";
                 }
 
-                supplierList.add(new DealerModel(dealerId, dealerName, dealerPhone, dealerEmail,
+                dealerList.add(new DealerModel(dealerId, dealerName, dealerPhone, dealerEmail,
                         dealerGstNum, dealerAddress, dealerState, date, dealerDl));
                 res++;
             }
-
-
-            colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
-                    tableView.getItems().indexOf(cellData.getValue()) + 1));
-            colName.setCellValueFactory(new PropertyValueFactory<>("dealerName"));
-            colPhone.setCellValueFactory(new PropertyValueFactory<>("dealerPhone"));
-            colEmail.setCellValueFactory(new PropertyValueFactory<>("dealerEmail"));
-            colGstNum.setCellValueFactory(new PropertyValueFactory<>("dealerGstNum"));
-            colAddress.setCellValueFactory(new PropertyValueFactory<>("dealerAddress"));
-            colState.setCellValueFactory(new PropertyValueFactory<>("dealerState"));
-            colDate.setCellValueFactory(new PropertyValueFactory<>("addedSate"));
-            colDl.setCellValueFactory(new PropertyValueFactory<>("dealerDl"));
-
-            onColumnEdit(colName, "dealer_name");
-            onColumnEdit(colPhone, "dealer_phone");
-            onColumnEdit(colEmail, "dealer_email");
-            onColumnEdit(colDl, "dealer_dl");
-            onColumnEdit(colGstNum, "dealer_gstNo");
-            onColumnEdit(colAddress, "ADDRESS");
-            onColumnEdit(colState, "STATE");
-
-            setOptionalCell();
-            tableView.setItems(supplierList);
 
             if (res > 0) {
                 map.put("message", "Many items found");
@@ -374,9 +360,83 @@ public class AllDealer implements Initializable {
 
     }
 
-    public void addSupplier(ActionEvent event) {
+    public void addDealer(ActionEvent event) {
         customDialog.showFxmlDialog2("product/dealer/addDealer.fxml", "ADD DEALER");
         callThread();
+    }
+    private void search_Item() {
+
+        filteredData = new FilteredList<>(dealerList, p -> true);
+
+        searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            filteredData.setPredicate(patient -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (String.valueOf(patient.getDealerName()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }else if (String.valueOf(patient.getDealerEmail()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }else if (String.valueOf(patient.getDealerDl()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else return patient.getDealerPhone().toLowerCase().contains(lowerCaseFilter);
+            });
+
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+        });
+
+        pagination.setCurrentPageIndex(0);
+        changeTableView(0, rowsPerPage);
+        Platform.runLater(() -> {
+            pagination.currentPageIndexProperty().addListener(
+                    (observable1, oldValue1, newValue1) -> {
+                        changeTableView(newValue1.intValue(), rowsPerPage);
+                    });
+        });
+
+    }
+
+    private void changeTableView(int index, int limit) {
+
+        int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
+        Platform.runLater(() -> pagination.setPageCount(totalPage));
+
+        colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
+                tableView.getItems().indexOf(cellData.getValue()) + 1));
+        colName.setCellValueFactory(new PropertyValueFactory<>("dealerName"));
+        colPhone.setCellValueFactory(new PropertyValueFactory<>("dealerPhone"));
+        colEmail.setCellValueFactory(new PropertyValueFactory<>("dealerEmail"));
+        colGstNum.setCellValueFactory(new PropertyValueFactory<>("dealerGstNum"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("dealerAddress"));
+        colState.setCellValueFactory(new PropertyValueFactory<>("dealerState"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("addedSate"));
+        colDl.setCellValueFactory(new PropertyValueFactory<>("dealerDl"));
+
+        onColumnEdit(colName, "dealer_name");
+        onColumnEdit(colPhone, "dealer_phone");
+        onColumnEdit(colEmail, "dealer_email");
+        onColumnEdit(colDl, "dealer_dl");
+        onColumnEdit(colGstNum, "dealer_gstNo");
+        onColumnEdit(colAddress, "ADDRESS");
+        onColumnEdit(colState, "STATE");
+
+        setOptionalCell();
+        tableView.setItems(dealerList);
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, dealerList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<DealerModel> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
     }
 
 }

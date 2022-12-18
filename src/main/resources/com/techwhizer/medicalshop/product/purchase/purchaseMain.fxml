@@ -30,7 +30,7 @@
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="dealerNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseDealer" prefWidth="265.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to choose dealer" textAlignment="CENTER">
+                        <Label fx:id="dealerNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseDealer" prefWidth="265.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to select dealer" textAlignment="CENTER">
                            <HBox.margin>
                               <Insets left="2.0" />
                            </HBox.margin>
@@ -75,7 +75,7 @@
                   </HBox>
                   <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
                      <children>
-                        <Button fx:id="addPurchaseItem" graphicTextGap="15.0" mnemonicParsing="false" onAction="#addPurchaseItem" prefHeight="35.0" prefWidth="131.0" style="-fx-background-color: #006666; -fx-background-radius: 3;" text="ADD ITEMS" textFill="WHITE">
+                        <Button fx:id="addPurchaseItem" graphicTextGap="15.0" mnemonicParsing="false" onAction="#addPurchaseItem" prefHeight="35.0" prefWidth="131.0" style="-fx-background-color: #006666; -fx-background-radius: 3; -fx-cursor: hand;" text="ADD ITEMS" textFill="WHITE">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -104,17 +104,17 @@
                <children>
                   <TableView fx:id="tableView" editable="true" VBox.vgrow="ALWAYS">
                     <columns>
-                      <TableColumn fx:id="colSrNo" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="-1.0" sortable="false" text="SL #" />
-                      <TableColumn fx:id="colProductName" editable="false" minWidth="220.0" prefWidth="-1.0" sortable="false" text="PRODUCT NAME" />
-                        <TableColumn fx:id="colPack" maxWidth="110.0" minWidth="110.0" prefWidth="-1.0" sortable="false" text="PACK" />
-                        <TableColumn fx:id="colQty" maxWidth="100.0" minWidth="100.0" prefWidth="-1.0" sortable="false" text="QTY" />
-                        <TableColumn fx:id="colQtyUnit" editable="false" maxWidth="80.0" minWidth="80.0" prefWidth="-1.0" sortable="false" text="UNIT" />
-                        <TableColumn fx:id="colPurchaseRate" maxWidth="110.0" minWidth="110.0" prefWidth="-1.0" sortable="false" text="P. RATE" />
-                        <TableColumn fx:id="colMrp" maxWidth="110.0" minWidth="110.0" prefWidth="-1.0" sortable="false" text="MRP" />
-                        <TableColumn fx:id="colExpiryDate" editable="false" maxWidth="110.0" minWidth="110.0" prefWidth="-1.0" sortable="false" text="EXPIRY DATE" />
-                        <TableColumn fx:id="colBatch" maxWidth="140.0" minWidth="140.0" prefWidth="-1.0" sortable="false" text="BATCH" />
-                        <TableColumn fx:id="colLotNum" maxWidth="90.0" minWidth="90.0" prefWidth="-1.0" sortable="false" text="LOT #" />
-                        <TableColumn fx:id="colAction" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="-1.0" sortable="false" text="ACTION" />
+                      <TableColumn fx:id="colSrNo" editable="false" maxWidth="70.0" minWidth="70.0"  sortable="false" text="SL #" />
+                      <TableColumn fx:id="colProductName" editable="false" minWidth="220.0"  sortable="false" text="PRODUCT NAME" />
+                        <TableColumn fx:id="colPack" maxWidth="110.0" minWidth="110.0"  sortable="false" text="PACK" />
+                        <TableColumn fx:id="colQty" maxWidth="100.0" minWidth="100.0"  sortable="false" text="QTY" />
+                        <TableColumn fx:id="colQtyUnit" editable="false" maxWidth="80.0" minWidth="80.0"  sortable="false" text="UNIT" />
+                        <TableColumn fx:id="colPurchaseRate" maxWidth="110.0" minWidth="110.0"  sortable="false" text="P. RATE" />
+                        <TableColumn fx:id="colMrp" maxWidth="110.0" minWidth="110.0"  sortable="false" text="MRP" />
+                        <TableColumn fx:id="colExpiryDate" editable="false" maxWidth="110.0" minWidth="110.0"  sortable="false" text="EXPIRY DATE" />
+                        <TableColumn fx:id="colBatch" maxWidth="140.0" minWidth="140.0"  sortable="false" text="BATCH" />
+                        <TableColumn fx:id="colLotNum" maxWidth="90.0" minWidth="90.0"  sortable="false" text="LOT #" />
+                        <TableColumn fx:id="colAction" editable="false" maxWidth="90.0" minWidth="90.0"  sortable="false" text="ACTION" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

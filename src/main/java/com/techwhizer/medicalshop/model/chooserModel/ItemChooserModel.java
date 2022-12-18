@@ -8,22 +8,18 @@ public class ItemChooserModel {
     private int itemId ;
     private String itemName;
     private String packing;
-    private  double purchasePrice,mrp,saleRate;
     private GstModel discountModel;
     private String unit;
     private int tabPerStrip;
 
     public ItemChooserModel(int itemId, String itemName, String packing,
-                            double purchasePrice, double mrp, double saleRate, GstModel discountModel,String unit,int tabPerStrip) {
+                             GstModel discountModel,String unit,int tabPerStrip) {
         this.itemId = itemId;
         this.itemName = itemName;
-        this.packing = packing;
-        this.purchasePrice = purchasePrice;
-        this.mrp = mrp;
-        this.saleRate = saleRate;
         this.discountModel = discountModel;
         this.unit = unit;
         this.tabPerStrip = tabPerStrip;
+        this.packing = packing;
     }
 
     public GstModel getDiscountModel() {
@@ -72,30 +68,6 @@ public class ItemChooserModel {
 
     public void setPacking(String packing) {
         this.packing = packing;
-    }
-
-    public double getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(double purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public double getMrp() {
-        return mrp;
-    }
-
-    public void setMrp(double mrp) {
-        this.mrp = mrp;
-    }
-
-    public double getSaleRate() {
-        return saleRate;
-    }
-
-    public void setSaleRate(double saleRate) {
-        this.saleRate = saleRate;
     }
 
     public GstModel getGstModel() {

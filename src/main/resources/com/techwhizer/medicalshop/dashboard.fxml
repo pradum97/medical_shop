@@ -71,6 +71,17 @@
                                     </ImageView>
                                  </graphic>
                               </Hyperlink>
+
+                               <Hyperlink fx:id="stockH" layoutX="80.0" layoutY="221.0" onAction="#stockReport" text="STOCK">
+                                   <graphic>
+                                       <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                           <image>
+                                               <Image url="@img/menu_icon/stock_ic.png" />
+                                           </image>
+                                       </ImageView>
+                                   </graphic>
+                               </Hyperlink>
+
                               <Hyperlink fx:id="saleProduct" layoutX="80.0" layoutY="245.0" onAction="#saleProductBnClick" text="SALE PRODUCTS">
                                  <graphic>
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
@@ -104,15 +115,6 @@
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@img/menu_icon/invoice_ic.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Hyperlink>
-                              <Hyperlink fx:id="kittyPartBn" layoutX="80.0" layoutY="365.0" onAction="#kittyBnClick" text="KITTY PARTY">
-                                 <graphic>
-                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@img/menu_icon/enquiry_ic.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

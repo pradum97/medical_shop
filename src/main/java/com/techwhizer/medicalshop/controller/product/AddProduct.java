@@ -31,18 +31,14 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AddProduct implements Initializable {
-    public ComboBox<DealerModel> dealerCom;
     public Button submitButton;
     public TextField productNameTf;
     public ComboBox<GstModel> hsnCom;
-    public TextField purchaseMrpTf;
     public ComboBox<String> typeCom;
     public ComboBox<String> narcoticCom;
     public ComboBox<String> itemTypeCom;
     public ComboBox<String> statusCom;
     public ComboBox<DiscountModel> discountCom;
-    public TextField mrpTf;
-    public TextField saleRateTf;
     public TextField packingTf, stripTabTf;
     public ComboBox<String> unitCom;
     public ProgressIndicator progressBar;
@@ -187,9 +183,6 @@ public class AddProduct implements Initializable {
             if (success) {
                 productNameTf.setText("");
                 packingTf.setText("");
-                purchaseMrpTf.setText("");
-                mrpTf.setText("");
-                saleRateTf.setText("");
                 stripTabTf.setText("");
                 discountCom.getSelectionModel().clearSelection();
                 companyModel = null;
@@ -203,7 +196,7 @@ public class AddProduct implements Initializable {
 
             Platform.runLater(() -> {
                 customDialog.showAlertBox("", (String) status.get("message"));
-                // clear some filed
+                // clearAllBn some filed
             });
         }
 
@@ -222,8 +215,8 @@ public class AddProduct implements Initializable {
         try {
             connection = dbConnection.getConnection();
             String qry = "INSERT INTO TBL_ITEMS_MASTER(ITEMS_NAME, UNIT, PACKING, COMPANY_ID, mfr_id, DISCOUNT_ID, mr_id, GST_ID,\n" +
-                    "                             PURCHASE_MRP, MRP, SALE_RATE, TYPE, NARCOTIC, ITEM_TYPE, STATUS,created_by,STRIP_TAB)\n" +
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    "                             TYPE, NARCOTIC, ITEM_TYPE, STATUS,created_by,STRIP_TAB)\n" +
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             ps = connection.prepareStatement(qry);
 
@@ -256,20 +249,12 @@ public class AddProduct implements Initializable {
             }
 
             ps.setInt(8, im.getGstId());
-            ps.setDouble(9, im.getPurchaseMrp());
-            ps.setDouble(10, im.getMrp());
-
-            if (saleRateTf.getText().isEmpty()) {
-                ps.setNull(11, Types.NULL);
-            } else {
-                ps.setDouble(11, im.getSaleRate());
-            }
-            ps.setString(12, im.getType());
-            ps.setString(13, im.getNarcotic());
-            ps.setString(14, im.getItemType());
-            ps.setInt(15, im.getStatus());
-            ps.setInt(16, Login.currentlyLogin_Id);
-            ps.setLong(17, im.getTabPerStrip());
+            ps.setString(9, im.getType());
+            ps.setString(10, im.getNarcotic());
+            ps.setString(11, im.getItemType());
+            ps.setInt(12, im.getStatus());
+            ps.setInt(13, Login.currentlyLogin_Id);
+            ps.setLong(14, im.getTabPerStrip());
 
             int res = ps.executeUpdate();
             if (res > 0) {
@@ -348,11 +333,6 @@ public class AddProduct implements Initializable {
         String productName = productNameTf.getText();
 
         String packing = packingTf.getText();
-
-        String purchaseMrp = purchaseMrpTf.getText();
-        String mrp = mrpTf.getText();
-        String saleRate = saleRateTf.getText();
-
         String stripTab = stripTabTf.getText();
 
         long stripTabL = 0;
@@ -383,33 +363,6 @@ public class AddProduct implements Initializable {
         } else if (hsnCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select hsn code", hsnCom);
             return;
-        } else if (purchaseMrp.isEmpty()) {
-            method.show_popup("Please enter purchase mrp", purchaseMrpTf);
-            return;
-        }
-        try {
-            purchaseMrpD = Double.parseDouble(purchaseMrp);
-        } catch (NumberFormatException e) {
-            method.show_popup("Please enter valid purchase mrp", purchaseMrpTf);
-            return;
-        }
-        if (mrp.isEmpty()) {
-            method.show_popup("Please enter mrp", mrpTf);
-            return;
-        }
-        try {
-            mrpD = Double.parseDouble(mrp);
-        } catch (NumberFormatException e) {
-            method.show_popup("Please enter valid mrp", mrpTf);
-            return;
-        }
-        if (!saleRate.isEmpty()) {
-            try {
-                saleRateD = Double.parseDouble(saleRate);
-            } catch (NumberFormatException e) {
-                method.show_popup("Please enter valid sale mrp", saleRateTf);
-                return;
-            }
         }
 
         String type = typeCom.getSelectionModel().getSelectedItem();
