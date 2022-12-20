@@ -243,6 +243,7 @@ CREATE TABLE TBL_SALE_MAIN
 (
     SALE_MAIN_ID        SERIAL PRIMARY KEY                  NOT NULL,
     PATIENT_ID          INTEGER                             NOT NULL,
+    DOCTOR_ID           INT,
     SELLER_ID           INTEGER                             NOT NULL,
     ADDITIONAL_DISCOUNT NUMERIC,
     PAYMENT_MODE        VARCHAR                             NOT NULL,
@@ -261,6 +262,12 @@ CREATE TABLE TBL_SALE_ITEMS
     SALE_MAIN_ID  INTEGER                             NOT NULL,
     ITEM_ID       INTEGER                             NOT NULL,
     ITEM_NAME     VARCHAR(200)                        NOT NULL,
+
+    PACK          VARCHAR(200),
+    MFR_ID        INT,
+    BATCH         VARCHAR(200),
+    EXPIRY_DATE   VARCHAR(50),
+
     PURCHASE_RATE NUMERIC                             NOT NULL,
     MRP           NUMERIC   DEFAULT 0                 NOT NULL,
     SALE_RATE     NUMERIC                             NOT NULL,

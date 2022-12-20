@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 public class SaleQuantityChooser implements Initializable {
     public Label itemNameL;
     public Label purchasePriceL;
-    public Label mrpL;
+    public Label mrpL,saleRateLabel;
     public TextField saleRateTf;
     public Label avlQuantity;
     public Label tabPerStripL;
@@ -49,7 +49,6 @@ public class SaleQuantityChooser implements Initializable {
         staticData = new StaticData();
     }
 
-
     public void chooseItem(MouseEvent mouseEvent) {
         customDialog.showFxmlDialog2("chooser/itemChooser.fxml", "SELECT ITEM");
         if (Main.primaryStage.getUserData() instanceof ItemChooserModel icm) {
@@ -58,6 +57,16 @@ public class SaleQuantityChooser implements Initializable {
                 tabPerStripL.setText(String.valueOf(icm.getTabPerStrip()));
                 this.icm = icm;
                 itemNameL.setText(icm.getItemName());
+              String stockUnit =  method.getStockUnit(icm.getItemId());
+
+              switch (stockUnit){
+                  case "TAB","STRIP"->{
+                      saleRateLabel.setText("(PER STRIP) :");
+                  }
+                  case "PCS"->{
+                      saleRateLabel.setText("(PER PCS) :");
+                  }
+              }
 
                 PriceTypeModel ptm = method.getLastPrice(icm.getItemId());
                 purchasePriceL.setText(method.removeZeroAfterDecimal(ptm.getPurchaseRate()));

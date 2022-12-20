@@ -115,7 +115,7 @@ public class AddPurchaseItems implements Initializable {
         String mrp = mrpTf.getText();
         String saleRate = saleRateTf.getText();
         String stripTab = stripTabTf.getText();
-        int stripTabInt = 0;
+        int stripTabInt = 0,quantityD = 0;
         double saleRateD = 0.0, purchasePriceD = 0.0,mrpD = 0.0;
 
         if (null == icm) {
@@ -154,16 +154,14 @@ public class AddPurchaseItems implements Initializable {
             return;
         }
         try {
-            Double.parseDouble(quantity);
+            quantityD = Integer.parseInt(quantity);
         } catch (NumberFormatException e) {
-            method.show_popup("Please enter valid quantity", quantityTf);
+            method.show_popup("Please enter a valid quantity without decimals", quantityTf);
             return;
         }
-
-        if (Double.parseDouble(quantity) < 1 ){
+        if (quantityD < 1 ){
             method.show_popup("Enter quantity more then 0", quantityTf);
             return;
-
         }else if (quantityUnitCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select quantity unit", quantityUnitCom);
             return;
@@ -171,7 +169,6 @@ public class AddPurchaseItems implements Initializable {
             method.show_popup("Please enter purchase price", purchaseRateTf);
             return;
         }
-
 
         try {
         purchasePriceD =  Double.parseDouble(purchaseRate);
@@ -217,20 +214,10 @@ public class AddPurchaseItems implements Initializable {
 
         String expiryDate = expiryMonth+"/"+expiryYear;
 
-        double noOfPcs = 0;
-        String qtyUnit = "";
-        if (quantityUnit.equalsIgnoreCase("strip")){
-            //noOfTab =
-            qtyUnit = "TAB";
-            noOfPcs =Double.parseDouble(quantity)*stripTabInt ;
-        }else {
-            qtyUnit = quantityUnit;
-            noOfPcs = Double.parseDouble(quantity);
-        }
-
         PurchaseItemsTemp pit = new PurchaseItemsTemp(icm.getItemId(), icm.getItemName(), batchNumber,expiryDate,unit,stripTabInt,
-                  packing,lotNum,noOfPcs,qtyUnit,Double.parseDouble(purchaseRate),
+                  packing,lotNum,quantityD,quantityUnit,Double.parseDouble(purchaseRate),
                 Double.parseDouble(mrp),saleRateD);
+
        if (null != Main.primaryStage.getUserData()){
            Main.primaryStage.setUserData(null);
        }
@@ -257,7 +244,7 @@ public class AddPurchaseItems implements Initializable {
                 String stockUnit = method.getStockUnit(icm.getItemId());
 
                 if (stockUnit.equalsIgnoreCase("TAB") || stockUnit.equalsIgnoreCase("STRIP")){
-                    unitCom.setItems(staticData.tabUnit);
+                    unitCom.setItems(staticData.strip);
                     unitCom.getSelectionModel().select(icm.getUnit());
                     if (icm.getUnit().equalsIgnoreCase("strip")) {
                         stripTabTf.setText(String.valueOf(icm.getTabPerStrip()));

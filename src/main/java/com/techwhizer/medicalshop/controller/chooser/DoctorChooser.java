@@ -188,7 +188,7 @@ public class DoctorChooser implements Initializable {
 
         colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableView.getItems().indexOf(cellData.getValue()) + 1));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("drName"));
 
         setOptionalCell();
         int fromIndex = index * limit;

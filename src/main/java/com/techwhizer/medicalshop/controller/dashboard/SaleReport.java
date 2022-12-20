@@ -30,8 +30,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class SaleReport implements Initializable {
@@ -99,15 +97,19 @@ public class SaleReport implements Initializable {
 
         @Override
         public Boolean doInBackground(String... params) {
-            Map<String, Object> status = getSaleItems(isDateFilter);
-            boolean isSuccess = (boolean) status.get("is_success");
-            msg = (String) status.get("message");
-            return isSuccess;
+            getSaleItems(isDateFilter);
+            return true;
         }
 
         @Override
         public void onPostExecute(Boolean success) {
             tableView.setPlaceholder(new Label("Item not available"));
+            if (reportList.size() > 0) {
+                pagination.setVisible(true);
+                search_Item();
+            } else {
+                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+            }
 
         }
 
@@ -117,14 +119,10 @@ public class SaleReport implements Initializable {
         }
     }
 
-    private Map<String, Object> getSaleItems(boolean isDateFilter) {
-        Map<String, Object> map = new HashMap<>();
-        if (null != reportList) {
-            reportList.clear();
-        }
+    private void getSaleItems(boolean isDateFilter) {
+        reportList.clear();
         if (null != tableView) {
             tableView.setItems(null);
-            tableView.refresh();
         }
 
         Connection connection = null;
@@ -157,9 +155,6 @@ public class SaleReport implements Initializable {
             }
             rs = ps.executeQuery();
             double totalNetAmount = 0;
-
-            int res = 0;
-
             while (rs.next()) {
 
                 int saleMainId = rs.getInt("sale_main_id");
@@ -174,7 +169,7 @@ public class SaleReport implements Initializable {
                 String sale_date = rs.getString("saleDate");
                 String patientName = rs.getString("name");
                 String patientPhone = rs.getString("phone");
-                String patientAddress = rs.getString("addressTf");
+                String patientAddress = rs.getString("address");
                 String sellerName = rs.getString("first_name") + " " + rs.getString("last_name");
                 double totNetAmount = rs.getDouble("netAmount");
 
@@ -183,38 +178,17 @@ public class SaleReport implements Initializable {
                         paymentMode, billType, invoiceNumber, sellerName, sale_date));
 
                 totalNetAmount = totalNetAmount + totNetAmount;
-
-                res++;
-
             }
 
             double finalTotalNetAmount = totalNetAmount;
             Platform.runLater(() -> totalNetAmountL.setText(String.valueOf(Double.parseDouble(method.decimalFormatter(finalTotalNetAmount)))));
 
-            if (reportList.size() > 0) {
-                pagination.setVisible(true);
-                search_Item();
-            } else {
-                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-            }
-
-            if (res > 0) {
-                map.put("message", "Many items found");
-                map.put("is_success", true);
-            } else {
-                map.put("message", "Item not available");
-                map.put("is_success", false);
-            }
-
         } catch (SQLException e) {
-            map.put("message", "An error occurred while fetching the item");
-            map.put("is_success", false);
             e.printStackTrace();
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
 
-        return map;
     }
 
     private void customColumn(TableColumn<SaleMainModel, String> columnName) {

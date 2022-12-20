@@ -26,12 +26,12 @@
                     <children>
                         <HBox alignment="CENTER_LEFT">
                             <children>
-                                <Label minWidth="95.0" prefHeight="19.0" prefWidth="122.0" text="PATIENT NAME : " textFill="#003fc7">
+                                <Label minWidth="95.0" prefHeight="19.0" prefWidth="110.0" text="PATIENT NAME : " textFill="#003fc7">
                                     <font>
                                         <Font name="Arial Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="patientNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="260.0" onMouseClicked="#selectPatient" prefWidth="265.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to select patient" textAlignment="CENTER">
+                                <Label fx:id="patientNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="217.0" onMouseClicked="#selectPatient" prefHeight="35.0" prefWidth="217.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="SELECT PATIENT" textAlignment="CENTER">
                                     <HBox.margin>
                                         <Insets left="2.0" />
                                     </HBox.margin>
@@ -44,28 +44,51 @@
                                 </Label>
                             </children>
                         </HBox>
-                  <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label fx:id="addItem" alignment="CENTER" graphicTextGap="8.0" minHeight="35.0" minWidth="154.0" onMouseClicked="#addItem" prefHeight="35.0" prefWidth="154.0" style="-fx-border-color: blue; -fx-border-radius: 3; -fx-cursor: hand;" text="ADD ITEM" textAlignment="CENTER">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
-                           <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../img/icon/add_ic_black.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                     </children>
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                            <children>
+                                <Label minWidth="95.0" prefHeight="19.0" prefWidth="110.0" text="DOCTOR NAME : " textFill="#003fc7">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="doctorNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="217.0" onMouseClicked="#selectDoctor" prefHeight="35.0" prefWidth="217.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="SELECT DOCTOR" textAlignment="CENTER">
+                                    <HBox.margin>
+                                        <Insets left="2.0" />
+                                    </HBox.margin>
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets left="5.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label fx:id="addItem" alignment="CENTER" graphicTextGap="8.0" minHeight="35.0" minWidth="154.0" onMouseClicked="#addItem" prefHeight="35.0" prefWidth="154.0" style="-fx-border-color: blue; -fx-border-radius: 3; -fx-cursor: hand;" text="ADD ITEM" textAlignment="CENTER">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets left="5.0" />
+                                    </padding>
+                                    <graphic>
+                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../img/icon/add_ic_black.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets right="20.0" />
+                            </padding>
+                        </HBox>
                     </children>
                 </HBox>
             </children>
@@ -245,7 +268,7 @@
                                                     </VBox>
                                                     <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="72.0">
                                                         <children>
-                                                            <Label alignment="CENTER_RIGHT" minHeight="16.0" minWidth="110.0" style="-fx-text-fill: BLACK;" text="ADDITI DISC  ₹ : " textAlignment="CENTER">
+                                                            <Label alignment="CENTER_RIGHT" minHeight="16.0" minWidth="110.0" style="-fx-text-fill: BLACK;" text="ADDITI DIS  ₹ : " textAlignment="CENTER">
                                                                 <font>
                                                                     <Font name="Arial Bold" size="12.0" />
                                                                 </font>
@@ -267,7 +290,7 @@
                                                     <Separator prefWidth="200.0" />
                                                     <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                                                         <children>
-                                                            <Label alignment="CENTER_RIGHT" text="TOTAL PAYABLE   ₹ : " textFill="#d91111">
+                                                            <Label alignment="CENTER_RIGHT" text="INVOICE VALUE   ₹ : " textFill="#d91111">
                                                                 <font>
                                                                     <Font name="Arial Black" size="10.0" />
                                                                 </font>

@@ -3,6 +3,7 @@ package com.techwhizer.medicalshop.controller.dashboard;
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
+import com.techwhizer.medicalshop.method.GenerateInvoice;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.InvoiceModel;
 import com.techwhizer.medicalshop.util.DBConnection;
@@ -193,129 +194,42 @@ public class InvoiceReport implements Initializable {
                 String fullPath = (String) map.get("path");
                 String billType = (String) map.get("billType");
 
-               /* switch (billType){
+                switch (billType){
                     case "REGULAR" -> {
                         if (isDownloadable){
 
-                         status = new GenerateInvoice().regularInvoice(saleMainId, true, fullPath, false, billType);
+                        new GenerateInvoice().regularInvoice(saleMainId, true, fullPath,button);
 
                         }else if(isReportPrint){
-                            status = new GenerateInvoice().regularInvoice(saleMainId, false, fullPath, true, billType);
+                            new GenerateInvoice().regularInvoice(saleMainId, false, fullPath,button);
                         }
                     }
                     case "GST" -> {
 
-                        if (isDownloadable){
+                        /*if (isDownloadable){
                             status =  new GenerateInvoice().gstInvoice(saleMainId, true, fullPath, billType);
 
                         }else if(isReportPrint){
 
                             status =  new GenerateInvoice().gstInvoice(saleMainId, false, fullPath, billType);
-                        }
+                        }*/
                     }
-                }*/
+                }
 
             }else {
                 status = getSaleItems(isDateFilter);
             }
-            statusMap = status;
-            boolean isSuccess = (boolean) status.get("is_success");
-            msg = (String) status.get("message");
 
-            return isSuccess;
+            status.get("is_success");
+            return true;
         }
 
         @Override
         public void onPostExecute(Boolean success) {
-
-            ImageView down_iv = new ImageView();
-            ImageView print_iv = new ImageView();
-
-            String rootPath = "img/icon/";
-
-            down_iv.setFitHeight(18);
-            down_iv.setFitWidth(18);
-            print_iv.setFitHeight(18);
-            print_iv.setFitWidth(18);
-            ImageLoader loader = new ImageLoader();
-            down_iv.setImage(loader.load(rootPath.concat("download_ic.png")));
-            print_iv.setImage(loader.load(rootPath.concat("print_ic.png")));
-
-            if (null != map){
-                boolean isReportGenerated = (boolean) statusMap.get("is_report_generated");
-
-                if(isReportGenerated){
-                    boolean isReportPrint = (boolean) map.get("isReportPrint");
-                    boolean isDownloadable =  (boolean) map.get("isDownloadable");
-
-                    JasperPrint jasperPrint = (JasperPrint) statusMap.get("jasper_print");
-                    String billingType = (String) statusMap.get("bill_type");
-
-                    String path =(String) statusMap.get("download_path");
-
-                    switch (billingType) {
-                        case "REGULAR" -> {
-                            if (isDownloadable){
-                                try {
-                                    JasperExportManager.exportReportToPdfFile(jasperPrint, path);
-                                } catch (JRException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                button.setGraphic(down_iv);
-                                new CustomDialog().showAlertBox("success","Invoice successfully download");
-
-
-                            }else if(isReportPrint){
-                                boolean isTemp =(Boolean) statusMap.get("isTemp");
-
-                                if (isTemp) {
-                                    String tempPath = method.getTempFile();
-                                    try {
-                                        JasperExportManager.exportReportToPdfFile(jasperPrint, tempPath);
-                                        button.setGraphic(print_iv);
-                                    } catch (JRException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                    method.openFileInBrowser(tempPath);
-                                }
-
-                            }
-                        }
-                        case "GST" -> {
-
-                            if (isDownloadable){
-                                try {
-                                    JasperExportManager.exportReportToPdfFile(jasperPrint, path);
-                                    button.setGraphic(down_iv);
-                                } catch (JRException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                new CustomDialog().showAlertBox("success","Invoice successfully download");
-
-                            } else if (isReportPrint) {
-
-                                JasperViewer viewer = new JasperViewer(jasperPrint, false);
-                                button.setGraphic(print_iv);
-                                viewer.setZoomRatio(0.65f);
-                                viewer.setVisible(true);
-                            }
-
-                        }
-
-                    }
-
-                }else{
-                    button.setGraphic(print_iv);
-                    button.setGraphic(down_iv);
-                    Platform.runLater(() -> new CustomDialog().showAlertBox(" Report generated failed", msg));
-                }
-
-            }else {
-                method.hideElement(progressBar);
-                contentContainer.setVisible(true);
-                if (!success) {
-                    tableView.setPlaceholder(new Label(msg));
-                }
+            method.hideElement(progressBar);
+            contentContainer.setVisible(true);
+            if (!success) {
+                tableView.setPlaceholder(new Label(msg));
             }
         }
 

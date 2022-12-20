@@ -3,11 +3,12 @@ package com.techwhizer.medicalshop.model;
 public class RegularInvoiceModel {
 
     private String productName , mfr,pack, batch,expiry;
-    double mrp,discountAmount,amount;
-    private int strip,pcs;
+    double mrp,discountAmount;
+    private int quantity;
+    private String saleDate;
 
-    public RegularInvoiceModel(String productName, String mfr, String pack, String batch, String expiry, double mrp,
-                               double discountAmount, double amount, int strip, int pcs) {
+    public RegularInvoiceModel(String productName, String mfr, String pack, String batch,
+                               String expiry, double mrp, double discountAmount, int quantity,String saleDate) {
         this.productName = productName;
         this.mfr = mfr;
         this.pack = pack;
@@ -15,9 +16,16 @@ public class RegularInvoiceModel {
         this.expiry = expiry;
         this.mrp = mrp;
         this.discountAmount = discountAmount;
-        this.amount = amount;
-        this.strip = strip;
-        this.pcs = pcs;
+        this.quantity = quantity;
+        this.saleDate = saleDate;
+    }
+
+    public String getSaleDate() {
+        return saleDate;
+    }
+
+    public void setSaleDate(String saleDate) {
+        this.saleDate = saleDate;
     }
 
     public String getProductName() {
@@ -76,27 +84,11 @@ public class RegularInvoiceModel {
         this.discountAmount = discountAmount;
     }
 
-    public double getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public int getStrip() {
-        return strip;
-    }
-
-    public void setStrip(int strip) {
-        this.strip = strip;
-    }
-
-    public int getPcs() {
-        return pcs;
-    }
-
-    public void setPcs(int pcs) {
-        this.pcs = pcs;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

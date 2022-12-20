@@ -115,7 +115,7 @@ public class PatientChooser implements Initializable {
                 int patient_id = rs.getInt("PATIENT_ID");
                 String name = rs.getString("name");
                 String phone = rs.getString("phone");
-                String address = rs.getString("addressTf");
+                String address = rs.getString("address");
                 String gender = rs.getString("gender");
                 String idNum = rs.getString("id_number");
                 String age = rs.getString("age");

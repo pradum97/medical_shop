@@ -61,6 +61,7 @@ public class StockReport implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
+        colAction.setVisible(false);
 
         MyAsyncTask myAsyncTask = new MyAsyncTask();
         myAsyncTask.setDaemon(false);

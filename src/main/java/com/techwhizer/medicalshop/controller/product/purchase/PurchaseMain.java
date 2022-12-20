@@ -259,7 +259,7 @@ public class PurchaseMain implements Initializable {
 
                     String itemUpdateQry = "UPDATE TBL_ITEMS_MASTER SET UNIT = ?,STRIP_TAB= ?,PACKING = ? WHERE ITEM_ID = ?";
 
-                    ps = connection.prepareStatement(purItemsQry,new String[]{"purchase_items_id"});
+                    ps = connection.prepareStatement(purItemsQry, new String[]{"purchase_items_id"});
                     ps.setInt(1, purMainId);
 
                     ObservableList<PurchaseItemsTemp> itemsTemp = tableView.getItems();
@@ -271,52 +271,66 @@ public class PurchaseMain implements Initializable {
 
                     for (PurchaseItemsTemp pt : itemsTemp) {
 
-                            ps.setInt(2, pt.getItemId());
-                            ps.setString(3, pt.getBatch());
-                            ps.setString(4, pt.getExpiryDate());
-                            ps.setString(5, pt.getLotNum());
-                            ps.setDouble(6, pt.getQuantity());
-                            ps.setString(7, pt.getQuantityUnit());
-                            ps.setDouble(8, pt.getPurchasePrice());
-                            ps.setDouble(9, pt.getMrp());
-                            ps.setDouble(10, pt.getSalePrice());
-                            int resPItems = ps.executeUpdate();
-                            if (resPItems > 0) {
-                                rsPItem = ps.getGeneratedKeys();
-                                if (rsPItem.next()){
-                                    int purchaseItemId = rsPItem.getInt(1);
+                        int qty = pt.getQuantity();
+                        String unit = pt.getQuantityUnit();
 
-                                    psItemMasterUpdate.setString(1, pt.getUnit());
-                                    psItemMasterUpdate.setInt(2, pt.getTabPerStrip());
-                                    psItemMasterUpdate.setString(3, pt.getPacking());
-                                    psItemMasterUpdate.setInt(4, pt.getItemId());
-                                    psItemMasterUpdate.executeUpdate();
+                        int noOfPcs = 0;
+                        String qtyUnit = "";
+                        if (pt.getQuantityUnit().equalsIgnoreCase("STRIP")) {
+                            //noOfTab =
+                            qtyUnit = "TAB";
+                            noOfPcs = qty * pt.getTabPerStrip();
+                        } else {
+                            qtyUnit = unit;
+                            noOfPcs = qty;
+                        }
+
+                        ps.setInt(2, pt.getItemId());
+                        ps.setString(3, pt.getBatch());
+                        ps.setString(4, pt.getExpiryDate());
+                        ps.setString(5, pt.getLotNum());
+                        ps.setInt(6, noOfPcs);
+                        ps.setString(7, qtyUnit);
+                        ps.setDouble(8, pt.getPurchasePrice());
+                        ps.setDouble(9, pt.getMrp());
+                        ps.setDouble(10, pt.getSalePrice());
+                        int resPItems = ps.executeUpdate();
+                        if (resPItems > 0) {
+                            rsPItem = ps.getGeneratedKeys();
+                            if (rsPItem.next()) {
+                                int purchaseItemId = rsPItem.getInt(1);
+
+                                psItemMasterUpdate.setString(1, pt.getUnit());
+                                psItemMasterUpdate.setInt(2, pt.getTabPerStrip());
+                                psItemMasterUpdate.setString(3, pt.getPacking());
+                                psItemMasterUpdate.setInt(4, pt.getItemId());
+                                psItemMasterUpdate.executeUpdate();
 
 
-                                    if (method.isItemAvailableInStock(pt.getItemId())) {
-                                        String stockQryUpdateQry = "UPDATE TBL_STOCK SET PURCHASE_MAIN_ID=?, PURCHASE_ITEMS_ID=?,QUANTITY = QUANTITY+?,\n" +
-                                                "QUANTITY_UNIT=?,UPDATE_DATE= ? WHERE item_id = ?";
-                                        psStock = connection.prepareStatement(stockQryUpdateQry);
+                                if (method.isItemAvailableInStock(pt.getItemId())) {
+                                    String stockQryUpdateQry = "UPDATE TBL_STOCK SET PURCHASE_MAIN_ID=?, PURCHASE_ITEMS_ID=?,QUANTITY = QUANTITY+?,\n" +
+                                            "QUANTITY_UNIT=?,UPDATE_DATE= ? WHERE item_id = ?";
+                                    psStock = connection.prepareStatement(stockQryUpdateQry);
 
-                                        psStock.setInt(1,purMainId);
-                                        psStock.setInt(2,purchaseItemId);
-                                        psStock.setDouble(3,pt.getQuantity());
-                                        psStock.setString(4,pt.getQuantityUnit());
-                                        psStock.setString(5,method.getCurrentDate());
-                                        psStock.setInt(6,pt.getItemId());
+                                    psStock.setInt(1, purMainId);
+                                    psStock.setInt(2, purchaseItemId);
+                                    psStock.setInt(3, noOfPcs);
+                                    psStock.setString(4, qtyUnit);
+                                    psStock.setString(5, method.getCurrentDate());
+                                    psStock.setInt(6, pt.getItemId());
 
-                                    } else {
-                                        String stockQryInsertQry = "INSERT INTO TBL_STOCK(ITEM_ID, PURCHASE_MAIN_ID, PURCHASE_ITEMS_ID, QUANTITY," +
-                                                " QUANTITY_UNIT,UPDATE_DATE)VALUES(?,?,?,?,?,?)";
-                                        psStock = connection.prepareStatement(stockQryInsertQry);
-                                        psStock.setInt(1,pt.getItemId());
-                                        psStock.setInt(2,purMainId);
-                                        psStock.setInt(3,purchaseItemId);
-                                        psStock.setDouble(4,pt.getQuantity());
-                                        psStock.setString(5,pt.getQuantityUnit());
-                                        psStock.setString(6,method.getCurrentDate());
+                                } else {
+                                    String stockQryInsertQry = "INSERT INTO TBL_STOCK(ITEM_ID, PURCHASE_MAIN_ID, PURCHASE_ITEMS_ID, QUANTITY," +
+                                            " QUANTITY_UNIT,UPDATE_DATE)VALUES(?,?,?,?,?,?)";
+                                    psStock = connection.prepareStatement(stockQryInsertQry);
+                                    psStock.setInt(1, pt.getItemId());
+                                    psStock.setInt(2, purMainId);
+                                    psStock.setInt(3, purchaseItemId);
+                                    psStock.setInt(4, noOfPcs);
+                                    psStock.setString(5, qtyUnit);
+                                    psStock.setString(6, method.getCurrentDate());
 
-                                    }
+                                }
 
                                     psStock.executeUpdate();
                                     count++;

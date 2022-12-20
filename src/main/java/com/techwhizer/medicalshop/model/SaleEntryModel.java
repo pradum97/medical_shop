@@ -18,9 +18,13 @@ public class SaleEntryModel {
     private  int cGst;
     private  int sGst;
     private double gstAmount,purchaseRate,mrp;
+    private String batch;
+    private int mfrId;
+    private double amtAsPerMrp;
 
     public SaleEntryModel(int itemId, String productName, double saleRate, String pack, int strip, int pcs, String expiryDate, int discountId, double discount, int gstId,
-                          double totalGst, double amount, long hsn, int iGst, int cGst, int sGst, double gstAmount,double purchaseRate,double mrp) {
+                          double totalGst, double amount, long hsn, int iGst, int cGst, int sGst, double gstAmount,
+                          double purchaseRate,double mrp,String batch , int mfrId,double amtAsPerMrp) {
         this.itemId = itemId;
         this.productName = productName;
         this.saleRate = saleRate;
@@ -40,7 +44,33 @@ public class SaleEntryModel {
         this.gstAmount = gstAmount;
         this.purchaseRate = purchaseRate;
         this.mrp = mrp;
+        this.batch = batch;
+        this.mfrId = mfrId;
+        this.amtAsPerMrp = amtAsPerMrp;
 
+    }
+
+    public double getAmtAsPerMrp() {
+        return amtAsPerMrp;
+    }
+
+    public void setAmtAsPerMrp(double amtAsPerMrp) {
+        this.amtAsPerMrp = amtAsPerMrp;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public int getMfrId() {
+        return mfrId;
+    }
+
+    public void setMfrId(int mfrId) {
+        this.mfrId = mfrId;
     }
 
     public double getPurchaseRate() {

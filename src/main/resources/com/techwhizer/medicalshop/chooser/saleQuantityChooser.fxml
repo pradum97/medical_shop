@@ -42,7 +42,7 @@
                                           <Font name="Arial Black" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="itemNameL" alignment="CENTER" minHeight="45.0" onKeyPressed="#enterKeyPress" onMouseClicked="#chooseItem" prefHeight="45.0" prefWidth="538.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to select item" textAlignment="CENTER" />
+                                    <Label fx:id="itemNameL" alignment="CENTER" minHeight="45.0" onKeyPressed="#enterKeyPress" onMouseClicked="#chooseItem" prefHeight="45.0" prefWidth="538.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="SELECT ITEM" textAlignment="CENTER" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -199,14 +199,23 @@
                            <children>
                               <VBox prefHeight="74.0" prefWidth="451.0" spacing="5.0">
                                  <children>
-                                    <Label text="SALE RATE * : ">
+                                    <HBox>
                                        <VBox.margin>
                                           <Insets left="2.0" />
                                        </VBox.margin>
-                                       <font>
-                                          <Font name="Arial Black" size="12.0" />
-                                       </font>
-                                    </Label>
+                                       <children>
+                                          <Label text="SALE RATE * ">
+                                             <font>
+                                                <Font name="Arial Black" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="saleRateLabel" layoutX="10.0" layoutY="10.0">
+                                             <font>
+                                                <Font name="Arial Black" size="12.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
                                     <HBox prefHeight="40.0" prefWidth="295.0">
                                        <children>
                                           <TextField fx:id="saleRateTf" minHeight="40.0" onKeyPressed="#enterKeyPress" prefHeight="40.0" prefWidth="209.0" promptText="Enter sale rate" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" HBox.hgrow="ALWAYS" />
@@ -216,6 +225,7 @@
                               </VBox>
                            </children>
                         </HBox>
+                        <Separator prefWidth="200.0" />
                         <HBox alignment="CENTER" prefWidth="200.0" spacing="40.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#cancel" prefHeight="35.0" prefWidth="146.0" style="-fx-border-color: blue; -fx-border-radius: 3;" text="CANCEL">
@@ -229,6 +239,9 @@
                                  </font>
                               </Button>
                            </children>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>

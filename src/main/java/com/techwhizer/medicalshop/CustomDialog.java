@@ -1,6 +1,7 @@
 package com.techwhizer.medicalshop;
 
 import com.techwhizer.medicalshop.util.AppConfig;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -54,11 +55,13 @@ public class CustomDialog {
 
     public void showAlertBox(String title, String message) {
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(message);
-        alert.initOwner(Main.primaryStage);
-        alert.showAndWait();
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(message);
+            alert.initOwner(Main.primaryStage);
+            alert.showAndWait();
+        });
     }
 
     public void showFxmlDialog2(String fxml_file, String title) {
@@ -76,12 +79,10 @@ public class CustomDialog {
             stage2.setResizable(false);
 
             scene.setOnKeyReleased(e -> {
-
                 if (e.getCode() == KeyCode.ESCAPE) {
                     if (stage2.isShowing()) {
                         stage2.close();
                     }
-
                 }
             });
 

@@ -63,7 +63,7 @@ public class StaticData {
         return FXCollections.observableArrayList("PERCENTAGE","FLAT");
     }
     public ObservableList<String> getUnit() {
-        return FXCollections.observableArrayList("STRIP","TAB","PCS");
+        return FXCollections.observableArrayList("STRIP","PCS");
     }
     public ObservableList<String> getQuantityUnit() {
         return FXCollections.observableArrayList("PCS");
@@ -74,6 +74,7 @@ public class StaticData {
     }
 
    public ObservableList<String> tabUnit = FXCollections.observableArrayList("TAB","STRIP");
+   public ObservableList<String> strip = FXCollections.observableArrayList("STRIP");
   public   ObservableList<String> pcsUnit = FXCollections.observableArrayList("PCS");
   public   ObservableList<String> stockFilter = FXCollections.observableArrayList("EXPIRED","CLOSE","NARCOTIC ITEMS","PROHIBIT","LOW QTY","OUT OF STOCK");
 

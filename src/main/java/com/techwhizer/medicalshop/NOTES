@@ -1,12 +1,11 @@
---UPDATE PRIVACY POLICY IN LEAD APP
-add dr in cart
-
-change unit confirma. dialo in add pur item
+change unit confirm. dialog in add pur item
 if table cell is null or empty set "-" from Method.java rec method
 special customer discount control
 purchase board
-naroctic
+narcotic
 type
+doctor auto select in sale entry ( setting )
+Purchase entry update
 
 
 close item not show

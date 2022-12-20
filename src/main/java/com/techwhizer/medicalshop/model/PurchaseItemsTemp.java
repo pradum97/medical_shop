@@ -9,12 +9,12 @@ public class PurchaseItemsTemp {
     private int tabPerStrip;
     private String packing;
     private String lotNum;
-    private double quantity;
+    private int quantity;
     private String quantityUnit;
     private double purchasePrice , mrp,salePrice;
 
     public PurchaseItemsTemp(int itemId, String itemsName, String batch, String expiryDate, String unit, int tabPerStrip, String packing,
-                             String lotNum, double quantity, String quantityUnit, double purchasePrice, double mrp, double salePrice) {
+                             String lotNum, int quantity, String quantityUnit, double purchasePrice, double mrp, double salePrice) {
         this.itemId = itemId;
         this.itemsName = itemsName;
         this.batch = batch;
@@ -94,11 +94,11 @@ public class PurchaseItemsTemp {
         this.lotNum = lotNum;
     }
 
-    public double getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

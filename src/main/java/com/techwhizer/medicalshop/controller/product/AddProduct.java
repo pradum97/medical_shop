@@ -75,8 +75,6 @@ public class AddProduct implements Initializable {
     }
 
     private void selectionChooser() {
-
-
     }
 
     private void callInitializeThread() {
