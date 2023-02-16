@@ -1,40 +1,30 @@
-/*DROP TABLE IF EXISTS TBL_SHOP_DETAILS;
-DROP TABLE IF EXISTS MENU_CATEGORY;
-DROP TABLE IF EXISTS TBL_MENU;
-DROP TABLE IF EXISTS TBL_FEEDBACK;
-DROP TABLE IF EXISTS TBL_ROLE;
-DROP TABLE IF EXISTS TBL_CART;
-DROP TABLE IF EXISTS TBL_PCS_MRP;
-DROP TABLE IF EXISTS TBL_PACK_MRP;
-DROP TABLE IF EXISTS TBL_WEIGHT_MRP;
-DROP TABLE IF EXISTS TBL_COUPON;
-DROP TABLE IF EXISTS TBL_DUES;
-DROP TABLE IF EXISTS DUES_HISTORY;
-DROP TABLE IF EXISTS tbl_dealer;
-DROP TABLE IF EXISTS PURCHASE_HISTORY;
-DROP TABLE IF EXISTS TBL_CUSTOMER;
-DROP TABLE IF EXISTS kitty_party_items;
-DROP TABLE IF EXISTS kitty_party_main;
-DROP TABLE IF EXISTS TBL_LICENSE;
-DROP TABLE IF EXISTS tbl_sale_Items;
-DROP TABLE IF EXISTS TBL_RETURN_ITEMS;
-DROP TABLE IF EXISTS TBL_RETURN_MAIN;
-DROP TABLE IF EXISTS TBL_SALE_MAIN;
-DROP TABLE IF EXISTS TBL_PRODUCTS;
-DROP TABLE IF EXISTS TBL_PRODUCT_TAX;
-DROP TABLE IF EXISTS TBL_CATEGORY;
-DROP TABLE IF EXISTS TBL_USERS;
-DROP TABLE IF EXISTS TBL_PAPER_TYPE;
-DROP TABLE IF EXISTS TBL_UPI;
-DROP TABLE IF EXISTS TBL_CRM_SETTING;*/
-
 /* DATABASE DETAILS
 
         DB_USERNAME =postgres
         DB_PASSWORD =postgres
         DB_PORT = 5432
-        DB_NAME = hotel_management
+        DB_NAME = medical_shop
 */
+
+drop table if exists tbl_cart cascade;
+drop table if exists tbl_company cascade;
+drop table if exists tbl_dealer cascade;
+drop table if exists tbl_discount cascade;
+drop table if exists tbl_doctor cascade;
+drop table if exists tbl_items_master cascade;
+drop table if exists tbl_license cascade;
+drop table if exists tbl_manufacturer_list cascade;
+drop table if exists tbl_mr_list cascade;
+drop table if exists tbl_patient cascade;
+drop table if exists TBL_PRODUCT_TAX cascade;
+drop table if exists tbl_purchase_items cascade;
+drop table if exists tbl_purchase_main cascade;
+drop table if exists tbl_role cascade;
+drop table if exists tbl_sale_items cascade;
+drop table if exists tbl_sale_main cascade;
+drop table if exists tbl_shop_details cascade;
+drop table if exists tbl_stock cascade;
+drop table if exists tbl_users cascade;
 
 CREATE TABLE tbl_users
 (
@@ -56,7 +46,7 @@ CREATE TABLE tbl_users
 
 /*CREATE ADMIN*/
 INSERT INTO tbl_users(first_name, last_name, username, gender, email, phone, password)
-VALUES ('PRADUM', 'KUMAR', 'admin', 'MALE', 'admin@gmail.com', 1234567899, 'admin');
+VALUES ('Admin', 'Account', 'admin', 'MALE', 'admin@gmail.com', 1234567899, 'admin');
 
 CREATE TABLE TBL_SHOP_DETAILS
 (
@@ -124,6 +114,24 @@ CREATE TABLE TBL_DISCOUNT
 
 );
 
+CREATE TABLE tbl_manufacturer_list
+(
+    mfr_id            serial primary key,
+    manufacturer_name varchar(200),
+    created_date      timestamp default current_timestamp
+);
+CREATE TABLE tbl_mr_list
+(
+    mr_id        serial primary key,
+    name         varchar(200) not null,
+    phone        varchar(20),
+    gender       varchar(20)  not null,
+    email        varchar(100),
+    company      varchar(100),
+    address      varchar(200),
+    created_date timestamp default current_timestamp
+);
+
 CREATE TABLE TBL_ITEMS_MASTER
 (
     ITEM_ID      SERIAL PRIMARY KEY,
@@ -147,24 +155,6 @@ CREATE TABLE TBL_ITEMS_MASTER
     foreign key (CREATED_BY) REFERENCES tbl_users (user_id),
     foreign key (MFR_ID) REFERENCES tbl_manufacturer_list (MFR_ID),
     foreign key (MR_ID) REFERENCES tbl_mr_list (MR_ID)
-);
-
-CREATE TABLE tbl_manufacturer_list
-(
-    mfr_id            serial primary key,
-    manufacturer_name varchar(200),
-    created_date      timestamp default current_timestamp
-);
-CREATE TABLE tbl_mr_list
-(
-    mr_id        serial primary key,
-    name         varchar(200) not null,
-    phone        varchar(20),
-    gender       varchar(20)  not null,
-    email        varchar(100),
-    company      varchar(100),
-    address      varchar(200),
-    created_date timestamp default current_timestamp
 );
 
 CREATE TABLE TBL_PURCHASE_MAIN
@@ -229,23 +219,19 @@ CREATE TABLE TBL_PATIENT
     CVS             VARCHAR(100),
     CNS             VARCHAR(100),
     CHEST           VARCHAR(100),
-    invoice_number varchar(50),
+    invoice_number  varchar(50),
     registered_date timestamp default CURRENT_TIMESTAMP
 );
-
-INSERT INTO TBL_PATIENT(NAME, PHONE, ADDRESS, ID_NUMBER, GENDER, AGE, CARE_OF,
-                        WEIGHT, BP, PULSE, SUGAR, SPO2, TEMP, CVS, CNS, CHEST) (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 
 CREATE TABLE TBL_CART
 (
     CART_ID      BIGSERIAL PRIMARY KEY NOT NULL,
-    STOCK_ID      INTEGER               NOT NULL,
+    ITEM_ID      INTEGER               NOT NULL,
     MRP          NUMERIC               NOT NULL,
     STRIP        INT,
     PCS          INT,
     CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 CREATE TABLE TBL_SALE_MAIN
 (
@@ -270,7 +256,7 @@ CREATE TABLE TBL_SALE_ITEMS
     SALE_MAIN_ID  INTEGER                             NOT NULL,
     ITEM_ID       INTEGER                             NOT NULL,
     ITEM_NAME     VARCHAR(200)                        NOT NULL,
-    STOCK_ID INT,
+
     PACK          VARCHAR(200),
     MFR_ID        INT,
     BATCH         VARCHAR(200),
@@ -297,15 +283,16 @@ CREATE TABLE TBL_SALE_ITEMS
         REFERENCES tbl_items_master (item_id)
 );
 
-CREATE TABLE TBL_DOCTOR(
-    DOCTOR_ID SERIAL PRIMARY KEY ,
-    DR_NAME VARCHAR(100) NOT NULL ,
-    DR_PHONE varchar(20),
-    DR_ADDRESS VARCHAR(200),
-    DR_REG_NUM VARCHAR(100),
-    SPECIALITY VARCHAR(100),
+CREATE TABLE TBL_DOCTOR
+(
+    DOCTOR_ID     SERIAL PRIMARY KEY,
+    DR_NAME       VARCHAR(100) NOT NULL,
+    DR_PHONE      varchar(20),
+    DR_ADDRESS    VARCHAR(200),
+    DR_REG_NUM    VARCHAR(100),
+    SPECIALITY    VARCHAR(100),
     QUALIFICATION VARCHAR(300),
-    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CREATED_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE TBL_LICENSE
@@ -320,107 +307,3 @@ CREATE TABLE TBL_LICENSE
     LICENSE_PERIOD_DAYS INTEGER             NOT NULL,
     REGISTERED_EMAIL    VARCHAR(100)        NOT NULL
 );
-
-
--- top finished
-
-
-CREATE TABLE TBL_DUES
-(
-    DUES_ID        SERIAL PRIMARY KEY NOT NULL,
-    CUSTOMER_ID    INTEGER            NOT NULL,
-    SALE_MAIN_ID   INTEGER            NOT NULL,
-    DUES_AMOUNT    NUMERIC,
-    DUES_NOTES     VARCHAR(300),
-    INVOICE_NUMBER VARCHAR(100),
-    PAYMENT_MODE   VARCHAR(50)        NOT NULL,
-    LAST_PAYMENT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CUSTOMER_ID)
-        REFERENCES tbl_customer (CUSTOMER_ID)
-);
-
-CREATE TABLE DUES_HISTORY
-(
-    DUES_HISTORY_ID BIGSERIAL PRIMARY KEY NOT NULL,
-    DUES_ID         INTEGER               NOT NULL,
-    CUSTOMER_ID     INTEGER               NOT NULL,
-    SALE_MAIN_ID    INTEGER               NOT NULL,
-    PREVIOUS_DUES   NUMERIC               NOT NULL,
-    PAID_AMOUNT     NUMERIC               NOT NULL,
-    CURRENT_DUES    NUMERIC               NOT NULL,
-    PAYMENT_MODE    VARCHAR               NOT NULL,
-    PAYMENT_DATE    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CUSTOMER_ID)
-        REFERENCES tbl_customer (CUSTOMER_ID)
-
-);
-
-CREATE TABLE TBL_LICENSE
-(
-    LICENSE_ID          SERIAL PRIMARY KEY,
-    COMPANY_ID          INT unique          NOT NULL,
-    APPLICATION_ID      VARCHAR(50) unique  NOT NULL,
-    SERIAL_KEY          VARCHAR(100) unique NOT NULL,
-    START_ON            VARCHAR(20)         NOT NULL,
-    EXPIRES_ON          VARCHAR(20)         NOT NULL,
-    LICENSE_TYPE        VARCHAR(50)         NOT NULL,
-    LICENSE_PERIOD_DAYS INTEGER             NOT NULL,
-    REGISTERED_EMAIL    VARCHAR(100)        NOT NULL
-);
-
-
-CREATE TABLE TBL_RETURN_MAIN
-(
-    RETURN_MAIN_ID      SERIAL PRIMARY KEY,
-    SALE_MAIN_ID        INTEGER NOT NULL,
-    seller_id           integer not null,
-    CREATED_DATE        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    TOTAL_REFUND_AMOUNT NUMERIC NOT NULL,
-    OLD_INVOICE_NUMBER  VARCHAR(50),
-    INVOICE_NUMBER      TEXT    NOT NULL,
-    REMARK              TEXT,
-    foreign key (SALE_MAIN_ID) references tbl_sale_main (SALE_MAIN_ID),
-    foreign key (seller_id) references tbl_users (user_id)
-);
-
-CREATE TABLE TBL_RETURN_ITEMS
-(
-    return_items_id SERIAL PRIMARY KEY,
-    RETURN_MAIN_ID  INTEGER NOT NULL,
-    PRODUCT_ID      INTEGER NOT NULL,
-    RETURN_QUANTITY INTEGER NOT NULL,
-    SALE_ITEM_ID    INTEGER NOT NULL,
-    quantity_Unit   varchar(10),
-    RATE            NUMERIC NOT NULL,
-    foreign key (RETURN_MAIN_ID) references TBL_RETURN_MAIN (RETURN_MAIN_ID),
-    foreign key (PRODUCT_ID) references TBL_PRODUCTs (PRODUCT_ID)
-);
-
-CREATE TABLE TBL_PAPER_TYPE
-(
-    PAPER_ID   SERIAL PRIMARY KEY,
-    PAPER_TYPE VARCHAR(100) unique NOT NULL
-);
-
-INSERT INTO TBL_PAPER_TYPE(PAPER_TYPE)
-VALUES ('RECEIPT');
-
-CREATE TABLE TBL_UPI
-(
-    U_ID        SERIAL PRIMARY KEY,
-    UPI_ID      VARCHAR(200) unique NOT NULL,
-    PAYEE_NAME  VARCHAR(200) unique NOT NULL,
-    UPDATE_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE TBL_CRM_SETTING
-(
-    CRM_SETTING_ID SERIAL PRIMARY KEY,
-    CRM_TYPE       VARCHAR(100),
-    UPDATE_TIME    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-INSERT INTO TBL_CRM_SETTING(CRM_TYPE)
-VALUES ('MANUAL');
-
-
-
