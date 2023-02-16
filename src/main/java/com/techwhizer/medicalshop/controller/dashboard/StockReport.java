@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -63,10 +64,18 @@ public class StockReport implements Initializable {
         customDialog = new CustomDialog();
         colAction.setVisible(false);
 
+       callThread();
+
+    }
+
+    private void callThread() {
         MyAsyncTask myAsyncTask = new MyAsyncTask();
         myAsyncTask.setDaemon(false);
         myAsyncTask.execute();
+    }
 
+    public void refresh(ActionEvent event) {
+        callThread();
     }
 
     private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
@@ -75,6 +84,11 @@ public class StockReport implements Initializable {
         @Override
         public void onPreExecute() {
             msg = "";
+            if (null != tableView) {
+                tableView.setItems(null);
+                tableView.refresh();
+            }
+            assert tableView != null;
             tableView.setPlaceholder(method.getProgressBar(40, 40));
         }
 
@@ -101,6 +115,10 @@ public class StockReport implements Initializable {
     }
 
     private void getStock() {
+
+        if (null != itemList){
+            itemList.clear();
+        }
 
         Connection connection = null;
         PreparedStatement ps = null;

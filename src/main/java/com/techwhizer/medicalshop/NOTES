@@ -1,7 +1,4 @@
 
-view password in create user
-admin icon differnt male and female
-shopname update from staff role
 IF ITEM PCS HIDE STRIP
 SALE RATE CONTROL IN ADD CART ITEM
 backup failed failed in win 11
@@ -10,21 +7,15 @@ change unit confirm. dialog in add pur item
 if table cell is null or empty set "-" from Method.java rec method
 
 purchase history board
-narcotic control
-type control
-doctor auto select in sale entry ( setting )
 Purchase entry update
-BILL NUM ADD IN PREC
+narcotic control
+BILL NUM ADD IN PRESCRIPTION
 role control
 
-refresh button in every
 patient details not updated today added column
 doses in add product
 short doses data in asc
-close item not show in stock
-PROHIBIT ITEM SHOW ONLY FOR ADMIN
 
-check extra file delete in server
 // for admin
 -> enable licence
 -> update licence details in licence manager

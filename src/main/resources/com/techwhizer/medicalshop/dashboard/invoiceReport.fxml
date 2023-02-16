@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<BorderPane stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/18"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.techwhizer.medicalshop.controller.dashboard.InvoiceReport">
+
+<BorderPane stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.dashboard.InvoiceReport">
     <center>
         <AnchorPane>
             <children>
-                <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
                         <VBox fx:id="contentContainer" VBox.vgrow="ALWAYS">
                             <children>
                                 <TableView fx:id="tableView" focusTraversable="false" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="colSrNo" maxWidth="60.0" minWidth="60.0" prefWidth="60.0"
-                                                     text="Sr No"/>
-                                        <TableColumn fx:id="colCusName" minWidth="150.0" prefWidth="-1.0"
-                                                     text="CUSTOMER NAME"/>
-                                        <TableColumn fx:id="colCusPhone" maxWidth="130.0" minWidth="140.0"
-                                                     prefWidth="100.0" text="CUSTOMER PHONE"/>
-                                        <TableColumn fx:id="colTotItems" maxWidth="90.0" minWidth="90.0"
-                                                     prefWidth="90.0" text="TOTAL ITEMS"/>
-                                        <TableColumn fx:id="colBillType" maxWidth="100.0" minWidth="100.0"
-                                                     prefWidth="100.0" text="BILL TYPE"/>
-                                        <TableColumn fx:id="colDate" maxWidth="130.0" minWidth="120.0" prefWidth="130.0"
-                                                     text="DATE"/>
-                                        <TableColumn fx:id="colInvoice" minWidth="150.0" prefWidth="136.0"
-                                                     text="INVOICE NUM"/>
-                                        <TableColumn fx:id="colAction" minWidth="180.0" prefWidth="-1.0" text="#"/>
+                                        <TableColumn fx:id="colSrNo" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="Sr No" />
+                                        <TableColumn fx:id="colCusName" minWidth="150.0" prefWidth="-1.0" text="CUSTOMER NAME" />
+                                        <TableColumn fx:id="colCusPhone" maxWidth="130.0" minWidth="140.0" prefWidth="100.0" text="CUSTOMER PHONE" />
+                                        <TableColumn fx:id="colTotItems" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="TOTAL ITEMS" />
+                                        <TableColumn fx:id="colBillType" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="BILL TYPE" />
+                                        <TableColumn fx:id="colDate" maxWidth="130.0" minWidth="120.0" prefWidth="130.0" text="DATE" />
+                                        <TableColumn fx:id="colInvoice" minWidth="150.0" prefWidth="136.0" text="INVOICE NUM" />
+                                        <TableColumn fx:id="colAction" minWidth="180.0" prefWidth="-1.0" text="#" />
                                     </columns>
                                     <columnResizePolicy>
-                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
                                 </TableView>
-                                <Pagination fx:id="pagination" visible="false"/>
+                                <Pagination fx:id="pagination" visible="false" />
                             </children>
                         </VBox>
                         <VBox fx:id="progressBar" alignment="CENTER">
                             <children>
-                                <ProgressIndicator/>
+                                <ProgressIndicator />
                             </children>
                         </VBox>
                     </children>
@@ -57,19 +59,19 @@
     <top>
         <VBox style="-fx-border-color: transparent transparent gray transparent;" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
             <children>
                 <HBox alignment="CENTER" style="-fx-border-color: transparent transparent gray transparent;">
                     <children>
                         <Label lineSpacing="1.0" text="INVOICE" textAlignment="CENTER">
                             <font>
-                                <Font name="Arial Black" size="17.0"/>
+                                <Font name="Arial Black" size="17.0" />
                             </font>
                         </Label>
                     </children>
                     <padding>
-                        <Insets bottom="8.0" top="5.0"/>
+                        <Insets bottom="8.0" top="5.0" />
                     </padding>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" spacing="20.0">
@@ -78,35 +80,27 @@
                             <children>
                                 <Label layoutX="185.0" layoutY="21.0" text="FROM">
                                     <font>
-                                        <Font name="Arial" size="14.0"/>
+                                        <Font name="Arial" size="14.0" />
                                     </font>
                                 </Label>
-                                <DatePicker fx:id="fromDateP" editable="false" focusTraversable="false"
-                                            prefHeight="40.0" promptText="DD-MM-YYYY" showWeekNumbers="true"
-                                            style="-fx-background-radius: 1; -fx-border-radius: 1; -fx-border-color: gray;">
+                                <DatePicker fx:id="fromDateP" editable="false" focusTraversable="false" prefHeight="40.0" prefWidth="180.0" promptText="DD-MM-YYYY" showWeekNumbers="true" style="-fx-background-radius: 1; -fx-border-radius: 1; -fx-border-color: gray;">
                                     <cursor>
-                                        <Cursor fx:constant="HAND"/>
+                                        <Cursor fx:constant="HAND" />
                                     </cursor>
                                 </DatePicker>
                                 <Label text="TO">
                                     <font>
-                                        <Font name="Bookman Old Style" size="14.0"/>
+                                        <Font name="Bookman Old Style" size="14.0" />
                                     </font>
                                 </Label>
-                                <DatePicker fx:id="toDateP" editable="false" focusTraversable="false" layoutX="10.0"
-                                            layoutY="17.0" prefHeight="40.0" promptText="DD-MM-YYYY"
-                                            showWeekNumbers="true"
-                                            style="-fx-background-radius: 1; -fx-border-radius: 1; -fx-border-color: gray;">
+                                <DatePicker fx:id="toDateP" editable="false" focusTraversable="false" layoutX="10.0" layoutY="17.0" prefHeight="40.0" prefWidth="180.0" promptText="DD-MM-YYYY" showWeekNumbers="true" style="-fx-background-radius: 1; -fx-border-radius: 1; -fx-border-color: gray;">
                                     <cursor>
-                                        <Cursor fx:constant="HAND"/>
+                                        <Cursor fx:constant="HAND" />
                                     </cursor>
                                 </DatePicker>
-                                <Button fx:id="searchReportBn" focusTraversable="false" mnemonicParsing="false"
-                                        onAction="#searchInvoice" prefHeight="35.0" prefWidth="81.0"
-                                        style="-fx-cursor: hand; -fx-background-color: #008080; -fx-text-fill: WHITE; -fx-background-radius: 2; -fx-border-radius: 2;"
-                                        text="SUBMIT">
+                                <Button fx:id="searchReportBn" focusTraversable="false" mnemonicParsing="false" onAction="#searchInvoice" prefHeight="35.0" prefWidth="81.0" style="-fx-cursor: hand; -fx-background-color: #008080; -fx-text-fill: WHITE; -fx-background-radius: 2; -fx-border-radius: 2;" text="SUBMIT">
                                     <font>
-                                        <Font name="Arial Bold" size="12.0"/>
+                                        <Font name="Arial Bold" size="12.0" />
                                     </font>
                                 </Button>
                             </children>
@@ -118,46 +112,39 @@
 
                                         <HBox alignment="CENTER" fillHeight="false">
                                             <children>
-                                                <ComboBox fx:id="searchTypeC" focusTraversable="false" minWidth="40.0"
-                                                          prefHeight="40.0" prefWidth="80.0"
-                                                          style="-fx-background-radius: 1;  -fx-border-color: gray transparent  gray gray;"/>
-                                                <TextField fx:id="searchTf" alignment="CENTER" focusTraversable="false"
-                                                           minWidth="40.0" prefHeight="40.0" prefWidth="210.0"
-                                                           style="-fx-background-color: transparent; -fx-text-inner-color: BLACK; -fx-border-color: gray gray  gray transparent; -fx-background-radius: 1;"
-                                                           HBox.hgrow="ALWAYS"/>
+                                                <ComboBox fx:id="searchTypeC" focusTraversable="false" minWidth="40.0" prefHeight="40.0" prefWidth="80.0" style="-fx-background-radius: 1;  -fx-border-color: gray transparent  gray gray;" />
+                                                <TextField fx:id="searchTf" alignment="CENTER" focusTraversable="false" minWidth="40.0" prefHeight="40.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-inner-color: BLACK; -fx-border-color: gray gray  gray transparent; -fx-background-radius: 1;" HBox.hgrow="ALWAYS" />
                                             </children>
                                             <HBox.margin>
-                                                <Insets/>
+                                                <Insets />
                                             </HBox.margin>
                                         </HBox>
                                     </children>
                                 </HBox>
 
-                                <HBox alignment="CENTER" fillHeight="false" minHeight="30.0" onMouseClicked="#bnRefresh"
-                                      prefHeight="38.0" prefWidth="60.0"
-                                      style="-fx-cursor: hand; -fx-background-color: RED; -fx-background-radius: 3;">
+                                <HBox alignment="CENTER" fillHeight="false" minHeight="30.0" onMouseClicked="#bnRefresh" prefHeight="38.0" prefWidth="60.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-background-radius: 3;">
 
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" onMouseClicked="#bnRefresh">
-                                        <Image url="@../img/icon/refresh_ic.png"/>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" onMouseClicked="#bnRefresh">
+                                        <Image url="@../img/icon/refresh_ic.png" />
                                         <HBox.margin>
-                                            <Insets left="7.0" right="7.0"/>
+                                            <Insets left="7.0" right="7.0" />
                                         </HBox.margin>
                                     </ImageView>
                                     <HBox.margin>
-                                        <Insets/>
+                                        <Insets />
                                     </HBox.margin>
                                 </HBox>
                             </children>
                             <HBox.margin>
-                                <Insets right="10.0"/>
+                                <Insets right="10.0" />
                             </HBox.margin>
                         </HBox>
                     </children>
                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0"/>
+                        <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
                     <padding>
-                        <Insets bottom="1.0"/>
+                        <Insets bottom="1.0" />
                     </padding>
                 </HBox>
             </children>

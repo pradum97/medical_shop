@@ -98,10 +98,9 @@
     -fx-border-color: transparent -fx-table-cell-border-color -fx-table-cell-border-color transparent;
     -fx-alignment: center;
     -fx-table-cell-border-color: transparent;
-    -fx-cell-size: 3.0em; /* 24 */
+    -fx-cell-size: 3.3em; /* 24 */
     -fx-text-fill: black;
-    -fx-font-family: "Arial";
-    -fx-font-size: 13;
+    -fx-font-size: 14;
 }
 
 .table-row-cell:selected {

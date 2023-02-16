@@ -16,17 +16,17 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="main_container" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.Dashboard">
+<BorderPane fx:id="main_container" prefHeight="570.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.Dashboard">
 
     <left>
-        <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="200.0" style="-fx-background-color: #006666;" BorderPane.alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="200.0" style="-fx-background-color: #000033;" BorderPane.alignment="TOP_CENTER">
             <children>
                 <VBox alignment="TOP_CENTER" spacing="12.0">
                     <children>
 
-                        <ImageView fx:id="userImage" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="userImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@img/Avatar/avtar_3.png" />
+                                <Image url="@img/Avatar/avtar.png" />
                             </image>
                         </ImageView>
 
@@ -81,16 +81,6 @@
                                        </ImageView>
                                    </graphic>
                                </Hyperlink>
-
-                              <Hyperlink fx:id="saleProduct" layoutX="80.0" layoutY="245.0" onAction="#saleProductBnClick" text="SALE MEDICINES">
-                                 <graphic>
-                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@img/menu_icon/sell_ic.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Hyperlink>
                               <Hyperlink fx:id="saleReportBn" layoutX="80.0" layoutY="269.0" onAction="#saleReportBnClick" text="SALES REPORT">
                                  <graphic>
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
@@ -155,52 +145,59 @@
         </AnchorPane>
     </center>
    <top>
-      <VBox alignment="CENTER_RIGHT" style="-fx-background-color: #006666;" BorderPane.alignment="CENTER_RIGHT">
+      <VBox alignment="CENTER_RIGHT" style="-fx-background-color: #000033;" BorderPane.alignment="CENTER_RIGHT">
          <children>
-            <HBox VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets right="50.0" />
                </VBox.margin>
                <children>
-                  <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label fx:id="dateL" style="-fx-text-fill: white;" visible="false">
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font name="Arial Black" size="16.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </HBox>
                   <HBox alignment="CENTER" fillHeight="false" spacing="20.0">
                      <children>
-                        <Label alignment="CENTER" graphicTextGap="8.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#patientMain" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PATIENT" textAlignment="CENTER">
-                           <font>
-                              <Font name="Arial Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="CENTER" graphicTextGap="8.0" onMouseClicked="#addProductBnClick" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="ADD MEDICINE" textAlignment="CENTER">
+                        <Label alignment="CENTER" graphicTextGap="8.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#saleProductBnClick" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: #990033; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="SALE MEDICINES" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@img/icon/add_ic_black.png" />
+                                    <Image url="@img/menu_icon/sell_ic.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Label>
-                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#addPurchase" prefHeight="27.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PURCHASE MEDICINES" textAlignment="CENTER">
+                        <Label alignment="CENTER" graphicTextGap="8.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#patientMain" prefHeight="27.0" prefWidth="111.0" style="-fx-background-color: #990033; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PATIENT" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@img/icon/add_ic_black.png" />
+                                    <Image url="@img/menu_icon/sell_ic.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                        <Label alignment="CENTER" graphicTextGap="8.0" onMouseClicked="#addProductBnClick" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: #990033; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="ADD MEDICINE" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Arial Bold" size="12.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@img/menu_icon/add_icon.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#addPurchase" prefHeight="27.0" prefWidth="181.0" style="-fx-background-color: #990033; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PURCHASE MEDICINES" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Arial Bold" size="12.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@img/menu_icon/add_icon.png" />
                                  </image>
                               </ImageView>
                            </graphic>

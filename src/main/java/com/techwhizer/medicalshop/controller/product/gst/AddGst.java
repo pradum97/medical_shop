@@ -30,7 +30,6 @@ public class AddGst implements Initializable {
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
-    private Properties propInsert;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,8 +37,6 @@ public class AddGst implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        PropertiesLoader propLoader = new PropertiesLoader();
-        propInsert = propLoader.getInsertProp();
     }
 
     public void addTax(ActionEvent event) {
@@ -161,7 +158,7 @@ public class AddGst implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(propInsert.getProperty("ADD_GST"));
+            ps = connection.prepareStatement("INSERT INTO tbl_product_tax (HSN_SAC ,SGST, CGST, IGST, gstName ,DESCRIPTION) VALUES(? ,?,?,?,?,?)");
             ps.setInt(1, hsn_sac);
             ps.setDouble(2, sGst);
             ps.setInt(3, cGst);

@@ -3,6 +3,8 @@ package com.techwhizer.medicalshop.controller.chooser;
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
+import com.techwhizer.medicalshop.controller.Constant;
+import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.GstModel;
 import com.techwhizer.medicalshop.model.chooserModel.ItemChooserModel;
@@ -108,10 +110,10 @@ public class ItemChooser implements Initializable {
             connection = dbConnection.getConnection();
 
             String qry = """
-                    SELECT *
-                    ,(concat((tpt.igst+tpt.cgst+tpt.sgst),' %')) as totalGst
+                    SELECT * ,tim.type,tim.status
+                         ,(concat((tpt.igst+tpt.cgst+tpt.sgst),' %')) as totalGst
                     from tbl_items_master as tim
-                    left join tbl_product_tax tpt on tpt.tax_id = tim.gst_id
+                             left join tbl_product_tax tpt on tpt.tax_id = tim.gst_id
                     """;
             ps = connection.prepareStatement(qry);
             rs = ps.executeQuery();
@@ -129,12 +131,23 @@ public class ItemChooser implements Initializable {
                 int sGst = rs.getInt("sgst");
                 int hsn = rs.getInt("hsn_sac");
                 int tabPerStrip = rs.getInt("STRIP_TAB");
+                int status = rs.getInt("status");
                 String gstName = rs.getString("gstName");
+                String type = rs.getString("type");
                 String unit = rs.getString("unit");
                 count++;
 
                 GstModel gm = new GstModel(gstId, hsn, sGst, cGst, iGst, gstName, null);
-                itemList.add(new ItemChooserModel(itemId, itemName, packing, gm, unit, tabPerStrip));
+
+                if (status == 1){
+                    if (Constant.ITEM_TYPE_PROHIBIT.equalsIgnoreCase(type)) {
+                        if (Login.currentRoleName.equalsIgnoreCase("admin")) {
+                            itemList.add(new ItemChooserModel(itemId, itemName, packing, gm, unit, tabPerStrip));
+                        }
+                    } else {
+                        itemList.add(new ItemChooserModel(itemId, itemName, packing, gm, unit, tabPerStrip));
+                    }
+                }
             }
 
             if (itemList.size() > 0) {

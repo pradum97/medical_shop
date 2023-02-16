@@ -12,7 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="608.0" prefWidth="593.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.product.patient.AddPatient">
+<BorderPane prefHeight="608.0" prefWidth="593.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.techwhizer.medicalshop.controller.product.patient.AddPatient">
 
     <center>
         <VBox alignment="CENTER" fillWidth="false" prefHeight="599.0" prefWidth="520.0">

@@ -45,37 +45,6 @@ public class Method extends StaticData {
         return pi;
     }
 
-    public String stripTrailingZeros(Object o) {
-        return new BigDecimal(String.valueOf(o)).stripTrailingZeros().toPlainString();
-    }
-
-    public ObservableList<CategoryModel> getCategory() {
-
-        ObservableList<CategoryModel> categoryList = FXCollections.observableArrayList();
-
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = new DBConnection().getConnection();
-            ps = connection.prepareStatement("SELECT * FROM tbl_category order by category_id desc");
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int categoryId = rs.getInt("category_id");
-                String categoryName = rs.getString("category_name");
-                categoryList.add(new CategoryModel(categoryId, categoryName));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DBConnection.closeConnection(connection, ps, rs);
-        }
-
-        return categoryList;
-    }
 
     public ObservableList<CompanyModel> getCompany() {
 
@@ -397,34 +366,6 @@ public class Method extends StaticData {
         }
     }
 
-    public UpiModel getUpiDetails() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = new DBConnection().getConnection();
-            String qry = "select * from tbl_upi";
-            ps = connection.prepareStatement(qry);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                int id = rs.getInt("u_id");
-                String upiId = rs.getString("upi_id");
-                String payeeName = rs.getString("payee_name");
-
-
-                return new UpiModel(id, upiId, payeeName);
-            } else {
-                return null;
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            DBConnection.closeConnection(connection, ps, rs);
-        }
-    }
 
     public boolean isShopDetailsAvailable() {
 

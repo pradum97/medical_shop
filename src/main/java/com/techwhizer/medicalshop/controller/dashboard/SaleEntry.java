@@ -85,7 +85,6 @@ public class SaleEntry implements Initializable {
         method.hideElement(progressBar);
         setData();
         refresh();
-
     }
 
     private void setData() {

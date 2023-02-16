@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -65,6 +66,8 @@ public class All_Products implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
 
+        colAction.setVisible(Login.currentRoleName.equalsIgnoreCase("admin"));
+
         callThread();
 
     }
@@ -75,12 +78,22 @@ public class All_Products implements Initializable {
         myAsyncTask.execute();
     }
 
+    public void refresh(ActionEvent event) {
+
+        callThread();
+    }
+
     private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private String msg;
 
         @Override
         public void onPreExecute() {
             msg = "";
+            if (null != tableView) {
+                tableView.setItems(null);
+                tableView.refresh();
+            }
+            assert tableView != null;
             tableView.setPlaceholder(method.getProgressBar(40, 40));
         }
 
@@ -270,8 +283,10 @@ public class All_Products implements Initializable {
         mrName.setCellValueFactory(new PropertyValueFactory<>("mrName"));
         colCompany.setCellValueFactory(new PropertyValueFactory<>("companyName"));
 
+        if (Login.currentRoleName.equalsIgnoreCase("admin")) {
+            setOptionalCell();
+        }
 
-        setOptionalCell();
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, itemList.size());
 

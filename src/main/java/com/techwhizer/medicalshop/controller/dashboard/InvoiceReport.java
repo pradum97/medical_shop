@@ -178,7 +178,15 @@ public class InvoiceReport implements Initializable {
             }else {
                 method.hideElement(contentContainer);
                 progressBar.setVisible(true);
+                if (null != tableView) {
+                    tableView.setItems(null);
+                    tableView.refresh();
+                }
+                assert tableView != null;
+                tableView.setPlaceholder(method.getProgressBar(40, 40));
             }
+
+
         }
 
         @Override

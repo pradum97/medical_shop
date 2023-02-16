@@ -1,3 +1,4 @@
+
 /* DATABASE DETAILS
 
         DB_USERNAME =postgres
@@ -5,26 +6,6 @@
         DB_PORT = 5432
         DB_NAME = medical_shop
 */
-
-drop table if exists tbl_cart cascade;
-drop table if exists tbl_company cascade;
-drop table if exists tbl_dealer cascade;
-drop table if exists tbl_discount cascade;
-drop table if exists tbl_doctor cascade;
-drop table if exists tbl_items_master cascade;
-drop table if exists tbl_license cascade;
-drop table if exists tbl_manufacturer_list cascade;
-drop table if exists tbl_mr_list cascade;
-drop table if exists tbl_patient cascade;
-drop table if exists TBL_PRODUCT_TAX cascade;
-drop table if exists tbl_purchase_items cascade;
-drop table if exists tbl_purchase_main cascade;
-drop table if exists tbl_role cascade;
-drop table if exists tbl_sale_items cascade;
-drop table if exists tbl_sale_main cascade;
-drop table if exists tbl_shop_details cascade;
-drop table if exists tbl_stock cascade;
-drop table if exists tbl_users cascade;
 
 CREATE TABLE tbl_users
 (
@@ -46,7 +27,7 @@ CREATE TABLE tbl_users
 
 /*CREATE ADMIN*/
 INSERT INTO tbl_users(first_name, last_name, username, gender, email, phone, password)
-VALUES ('Admin', 'Account', 'admin', 'MALE', 'admin@gmail.com', 1234567899, 'admin');
+VALUES ('PRADUM', 'KUMAR', 'admin', 'MALE', 'admin@gmail.com', 1234567899, 'admin');
 
 CREATE TABLE TBL_SHOP_DETAILS
 (
@@ -226,11 +207,10 @@ CREATE TABLE TBL_PATIENT
 CREATE TABLE TBL_CART
 (
     CART_ID      BIGSERIAL PRIMARY KEY NOT NULL,
-    stock_id     INTEGER               NOT NULL,
+    ITEM_ID      INTEGER               NOT NULL,
     MRP          NUMERIC               NOT NULL,
     STRIP        INT,
     PCS          INT,
-
     CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -277,7 +257,6 @@ CREATE TABLE TBL_SALE_ITEMS
     NET_AMOUNT    NUMERIC                             NOT NULL,
     TAX_AMOUNT    NUMERIC,
     sale_date     timestamp default CURRENT_TIMESTAMP NOT NULL,
-    stock_id      integer not null ,
 
     FOREIGN KEY (SALE_MAIN_ID)
         REFERENCES TBL_SALE_MAIN (SALE_MAIN_ID),

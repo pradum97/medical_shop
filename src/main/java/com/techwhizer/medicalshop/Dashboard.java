@@ -79,7 +79,7 @@ public class Dashboard implements Initializable {
     private void setting() {
 
         setVisible(homeBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
-        setVisible(myProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
+     //   setVisible(myProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(saleReportBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         //setVisible(returnProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
 
@@ -188,12 +188,10 @@ public class Dashboard implements Initializable {
     }
 
     private void setCustomImage() {
-
         ImageView logout_img = new ImageView();
         logout_img.setImage(new ImageLoader().load("img/menu_icon/logout_ic.png"));
         logout_img.setFitHeight(20);
         logout_img.setFitWidth(20);
-
         bn_logout.setGraphic(logout_img);
     }
 
@@ -229,7 +227,6 @@ public class Dashboard implements Initializable {
         } else {
             alert.close();
         }
-
     }
 
     public void homeBnClick(ActionEvent actionEvent) {
@@ -240,12 +237,11 @@ public class Dashboard implements Initializable {
         replaceScene("dashboard/all_products.fxml");
     }
     public void stockReport(ActionEvent event) {
-
         replaceScene("dashboard/stockReport.fxml");
     }
 
 
-    public void saleProductBnClick(ActionEvent actionEvent) {
+    public void saleProductBnClick(MouseEvent actionEvent) {
 
         customDialog.showFxmlDialog2("dashboard/saleEntry.fxml","SALE ENTRY");
     }

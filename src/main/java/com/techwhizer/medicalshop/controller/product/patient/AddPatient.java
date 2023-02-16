@@ -103,7 +103,7 @@ public class AddPatient implements Initializable {
             method.show_popup("Enter customer full name", nameTf);
             return;
         }else if (address.isEmpty()) {
-            method.show_popup("Please enter patient address", address);
+            method.show_popup("Please enter patient address", addressTf);
             return;
         }else if (genderCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select gender", genderCom);

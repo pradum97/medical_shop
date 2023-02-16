@@ -116,6 +116,10 @@ public class SaleQuantityChooser implements Initializable {
 
                 }
 
+                if (null == bcm){
+                    return;
+                }
+
                 avlQuantity.setText(bcm.getFullQty());
                 tabPerStripL.setText(String.valueOf(bcm.getStripTab()));
                 itemNameL.setText(bcm.getItemName());

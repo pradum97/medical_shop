@@ -35,7 +35,7 @@ public class SignUp implements Initializable {
     public ComboBox<String> gender_comboBox;
     public ComboBox<Role> role_combobox;
     public TextArea full_address_f;
-    public PasswordField password_f;
+    public TextField password_f;
     public Button submit_bn;
     private Method method;
     private DBConnection dbConnection;

@@ -15,7 +15,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.techwhizer.medicalshop.controller.update.user.UpdateProfile">
+<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.techwhizer.medicalshop.controller.update.user.UpdateProfile">
 
     <StackPane style="-fx-background-color: #ffffff; -fx-background-radius: 10;" VBox.vgrow="ALWAYS">
 
