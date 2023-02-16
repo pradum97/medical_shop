@@ -469,11 +469,67 @@ public class Method extends StaticData {
 
         try {
             connection = new DBConnection().getConnection();
-            String qry = "select item_id from tbl_stock where item_id = ?";
+            String qry = "select item_id from tbl_stock where item_id = ? and quantity > 0";
             ps = connection.prepareStatement(qry);
             ps.setInt(1, itemId);
             rs = ps.executeQuery();
             return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+    public boolean isBatchAvailableInStock(String batch) {
+
+        batch = batch.trim();
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = """
+                    select tpi.batch from tbl_stock ts
+                    left join tbl_purchase_items tpi on tpi.purchase_items_id = ts.purchase_items_id
+                    where batch = ?
+                    """;
+            ps = connection.prepareStatement(qry);
+            ps.setString(1, batch);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public boolean isMultipleItemInStock(int itemId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = """
+                select  count(stock_id) as itemCount  from tbl_stock ts
+                left join tbl_purchase_items tpi on tpi.purchase_items_id = ts.purchase_items_id
+                where tpi.item_id =?  and ts.quantity>0
+                """;
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, itemId);
+            rs = ps.executeQuery();
+
+            int count = 0;
+            if (rs.next()){
+                 count = rs.getInt("itemCount");
+            }
+
+            return count > 1;
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -506,23 +562,47 @@ public class Method extends StaticData {
 
     }
 
-    public String getCurrentDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
-
-    public int getQuantity(int itemId) {
-
+    public String getStockUnitStockWise(int stockId) {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             connection = new DBConnection().getConnection();
-            String qry = "select quantity from tbl_stock where item_id = ?";
+            String qry = "select quantity_unit from tbl_stock where stock_id = ?";
             ps = connection.prepareStatement(qry);
-            ps.setInt(1, itemId);
+            ps.setInt(1, stockId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("quantity_unit");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+
+    }
+
+    public String getCurrentDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
+
+    public int getQuantity(int stockId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select quantity from tbl_stock where stock_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, stockId);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("quantity");
@@ -534,10 +614,6 @@ public class Method extends StaticData {
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new Method().getTbPerStrip(1));
     }
 
     public int getTbPerStrip(int itemId) {
@@ -563,7 +639,6 @@ public class Method extends StaticData {
             DBConnection.closeConnection(connection, ps, rs);
         }
     }
-
     public String getAvailableQty(int itemId) {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -571,7 +646,9 @@ public class Method extends StaticData {
 
         try {
             connection = new DBConnection().getConnection();
-            String qry = "select  ts.quantity,ts.quantity_unit,strip_tab from tbl_items_master tim\n" + "left join tbl_stock ts on tim.item_id = ts.item_id where ts.item_id = ?";
+            String qry =
+                    "select  ts.quantity,ts.quantity_unit,strip_tab from tbl_items_master tim\n" +
+                    "left join tbl_stock ts on tim.item_id = ts.item_id where ts.item_id = ?";
             ps = connection.prepareStatement(qry);
             ps.setInt(1, itemId);
             rs = ps.executeQuery();
@@ -599,7 +676,6 @@ public class Method extends StaticData {
             DBConnection.closeConnection(connection, ps, rs);
         }
     }
-
     public String tabToStrip(double tablet, int stripPerTab, String unitType) {
         String val = "";
         int strip = (int) (tablet / stripPerTab);
@@ -630,7 +706,7 @@ public class Method extends StaticData {
 
         try {
             connection = new DBConnection().getConnection();
-            String qry = "select purchase_rate,mrp,sale_price from tbl_purchase_items where item_id = ?";
+            String qry = "select purchase_rate,mrp,sale_price from tbl_purchase_items where item_id = ? order by purchase_items_id asc";
             ps = connection.prepareStatement(qry);
             ps.setInt(1, itemId);
             rs = ps.executeQuery();
@@ -656,7 +732,41 @@ public class Method extends StaticData {
         return ptm;
     }
 
-    public boolean isItemAvlInCart(int itemId) {
+    public PriceTypeModel getStockPrice(int purchaseItemsId) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        PriceTypeModel ptm = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            String qry = "select purchase_rate,mrp,sale_price from tbl_purchase_items where purchase_items_id = ?";
+            ps = connection.prepareStatement(qry);
+            ps.setInt(1, purchaseItemsId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                double purchaseRate = rs.getDouble("purchase_rate");
+                double mrp = rs.getDouble("mrp");
+                double saleRate = rs.getDouble("sale_price");
+
+                if (rs.isLast()) {
+                    ptm = new PriceTypeModel(purchaseRate, mrp, saleRate);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+
+        if (null == ptm) {
+            ptm = new PriceTypeModel(0, 0, 0);
+        }
+
+        return ptm;
+    }
+
+    public boolean isItemAvlInCart(int stockId) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -664,10 +774,11 @@ public class Method extends StaticData {
 
         try {
             connection = new DBConnection().getConnection();
-            String qry = "select item_id from tbl_cart where item_id = ?";
+            String qry = "select stock_id from tbl_cart where stock_id = ?";
             ps = connection.prepareStatement(qry);
-            ps.setInt(1, itemId);
+            ps.setInt(1, stockId);
             rs = ps.executeQuery();
+
             return rs.next();
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -262,7 +262,7 @@ public class DealerChooser implements Initializable {
     }
 
     public void addDealer(MouseEvent actionEvent) {
-        customDialog.showFxmlDialog("product/dealer/addDealer.fxml", "Add new product");
+        customDialog.showFxmlDialog("product/dealer/addDealer.fxml", "Add new dealer");
         searchTf.setText("");
         callThread();
 

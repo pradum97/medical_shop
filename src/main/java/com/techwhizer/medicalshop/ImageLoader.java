@@ -1,17 +1,18 @@
 package com.techwhizer.medicalshop;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.Objects;
 
 public class ImageLoader {
-
-    public Image load(String imagePath){
+    
+    public Image load(String imagePath) {
 
         try {
-         return  new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+            return new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
-            return  new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon/img_preview.png")));
+            return new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon/img_preview.png")));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.techwhizer.medicalshop;
 
 import com.techwhizer.medicalshop.controller.auth.Login;
+import com.techwhizer.medicalshop.method.GenerateInvoice;
 import com.techwhizer.medicalshop.method.GetUserProfile;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.model.UserDetails;
@@ -55,11 +56,6 @@ public class Dashboard implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (Objects.equals(Login.currentRoleName, RoleKey.STAFF)){
-            saleProductBnClick(null);
-        }else {
-            homeBnClick(null);
-        }
 
         main_container.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/setting.css")).toExternalForm());
         dbConnection = new DBConnection();
@@ -67,6 +63,12 @@ public class Dashboard implements Initializable {
         propRead = propLoader.getReadProp();
         customDialog = new CustomDialog();
         main = new Main();
+
+        if (Objects.equals(Login.currentRoleName, RoleKey.STAFF)){
+            myProductBnClick(null);
+        }else {
+            homeBnClick(null);
+        }
         addButtonMenu();
         setCustomImage();
         setUserData();
@@ -79,7 +81,7 @@ public class Dashboard implements Initializable {
         setVisible(homeBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(myProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
         setVisible(saleReportBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
-        setVisible(returnProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
+        //setVisible(returnProductBn, !Objects.equals(Login.currentRoleName, RoleKey.STAFF));
 
     }
 
@@ -196,7 +198,6 @@ public class Dashboard implements Initializable {
     }
 
     private void replaceScene(String fxml_file_name) {
-
         try {
             Parent parent = FXMLLoader.load(getClass().getResource(fxml_file_name));
             contentArea.getChildren().removeAll();
@@ -269,5 +270,7 @@ public class Dashboard implements Initializable {
     public void addPurchase(MouseEvent actionEvent) {
        customDialog.showFxmlFullDialog("product/purchase/purchaseMain.fxml","PURCHASE ENTRY");
     }
-
+    public void patientMain(MouseEvent mouseEvent) {
+        customDialog.showFxmlFullDialog("product/patient/patientMain.fxml", "ALL PATIENTS");
+    }
 }

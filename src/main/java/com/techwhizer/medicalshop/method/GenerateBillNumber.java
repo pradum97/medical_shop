@@ -36,7 +36,6 @@ public class GenerateBillNumber {
         }
 
     }
-
     public String getSaleBillNum() {
 
         Connection connection = null;
@@ -55,6 +54,33 @@ public class GenerateBillNumber {
                 invoiceNum = String.format("%07d", id);
             }
             return "INV"+invoiceNum;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            DBConnection.closeConnection(connection , ps , rs);
+
+        }
+
+    }
+    public String getPrescriptionBillNumb() {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            ps = connection.prepareStatement("select max(patient_id) from tbl_patient");
+            rs = ps.executeQuery();
+            String invoiceNum = null;
+
+            if (rs.next()) {
+                long id = rs.getInt(1) + 1;
+
+                invoiceNum = String.format("%07d", id);
+            }
+            return "AP"+invoiceNum;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

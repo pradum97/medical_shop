@@ -10,9 +10,13 @@ public class DailySaleReport {
     private int totalTab;
     private String qtyUnit , fullQuantity;
     private int stripPerTab;
+    private String batch;
+    private int stockId;
+    private String expiryDate;
 
     public DailySaleReport(int itemId, int totalItems, String productName, double totalNetAmount,
-                           int totalTab, String qtyUnit, String fullQuantity, int stripPerTab) {
+                           int totalTab, String qtyUnit, String fullQuantity, int stripPerTab,
+                           String batch,int stockId,String expiryDate) {
         this.itemId = itemId;
         this.totalItems = totalItems;
         this.productName = productName;
@@ -21,6 +25,33 @@ public class DailySaleReport {
         this.qtyUnit = qtyUnit;
         this.fullQuantity = fullQuantity;
         this.stripPerTab = stripPerTab;
+        this.batch = batch;
+        this.stockId = stockId;
+        this.expiryDate = expiryDate;
+    }
+
+    public String getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public int getStockId() {
+        return stockId;
+    }
+
+    public void setStockId(int stockId) {
+        this.stockId = stockId;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
     }
 
     public int getStripPerTab() {

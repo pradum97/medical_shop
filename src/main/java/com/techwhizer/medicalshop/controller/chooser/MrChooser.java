@@ -118,13 +118,11 @@ public class MrChooser implements Initializable {
                 String phone = rs.getString("phone");
                 String email = rs.getString("email");
                 String company = rs.getString("company");
-                String address = rs.getString("addressTf");
+                String address = rs.getString("address");
                 String createdDate = rs.getString("created_date");
                 String gender = rs.getString("gender");
-
                 list.add(new MrModel(mr_id,name,phone,company,email,address,createdDate,gender));
                 count++;
-
             }
 
             if (list.size() > 0) {

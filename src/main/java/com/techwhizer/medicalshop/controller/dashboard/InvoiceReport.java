@@ -153,7 +153,6 @@ public class InvoiceReport implements Initializable {
         private String msg = "";
         private boolean isDateFilter;
         private Map<String, Object> map;
-        private Map<String, Object> statusMap;
         private Label button;
 
         public MyAsyncTask(boolean isDateFilter, Map<String, Object> map) {
@@ -610,6 +609,4 @@ public class InvoiceReport implements Initializable {
             toDateP.setValue(null);
         }
     }
-
-
 }

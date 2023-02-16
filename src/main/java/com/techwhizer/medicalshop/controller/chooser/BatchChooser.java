@@ -4,7 +4,7 @@ import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.method.Method;
-import com.techwhizer.medicalshop.model.PatientModel;
+import com.techwhizer.medicalshop.model.chooserModel.BatchChooserModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import com.victorlaerte.asynctask.AsyncTask;
 import javafx.application.Platform;
@@ -18,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -32,57 +31,67 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class PatientChooser implements Initializable {
+public class BatchChooser implements Initializable {
+
+    public Label productNameL;
     private int rowsPerPage = 7;
     public TextField searchTf;
-    public TableColumn<PatientModel, Integer> colSrNo;
-    public TableColumn<PatientModel, String> colName;
-    public TableColumn<PatientModel, String> colAction;
-    public TableView<PatientModel> tableView;
+    public TableColumn<BatchChooserModel, Integer> colSrNo;
+    public TableColumn<BatchChooserModel, String> colBatch;
+    public TableColumn<BatchChooserModel, String> colExpiryDate;
+    public TableColumn<BatchChooserModel, String> colQty;
+    public TableColumn<BatchChooserModel, String> colAction;
+    public TableView<BatchChooserModel> tableView;
     public Pagination pagination;
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private ObservableList<PatientModel> list = FXCollections.observableArrayList();
-    private FilteredList<PatientModel> filteredData;
-
+    private ObservableList<BatchChooserModel> itemList = FXCollections.observableArrayList();
+    private FilteredList<BatchChooserModel> filteredData;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
 
-        callThread();
+        if (Main.primaryStage.getUserData() instanceof Map<?,?> map){
+            productNameL.setText((String) map.get("item_name"));
+            callThread((int)map.get("item_id"));
+        }else {
+            customDialog.showAlertBox("Item not found","Something went wrong");
+        }
     }
 
-    private void callThread() {
-        MyAsyncTask myAsyncTask = new MyAsyncTask();
+    private void callThread(int itemId) {
+        MyAsyncTask myAsyncTask = new MyAsyncTask(itemId);
         myAsyncTask.setDaemon(false);
         myAsyncTask.execute();
     }
-
     private class MyAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private String msg;
+         int itemId;
+
+        public MyAsyncTask(int itemId) {
+            this.itemId = itemId;
+        }
 
         @Override
         public void onPreExecute() {
-            //Background Thread will start
-            tableView.setPlaceholder(method.getProgressBar(30, 30));
-            msg = "";
+            if (null != tableView) {
+                tableView.setItems(null);
+            }
+            assert tableView != null;
+            tableView.setPlaceholder(method.getProgressBar(40, 40));
         }
 
         @Override
         public Boolean doInBackground(String... params) {
-            /* Background Thread is running */
-
-            Map<String, Object> status = getItems();
-            msg = (String) status.get("message");
+            Map<String, Object> status = getItems(itemId);
             return (boolean) status.get("is_success");
         }
 
         @Override
         public void onPostExecute(Boolean success) {
-            tableView.setPlaceholder(new Label(msg));
+            tableView.setPlaceholder(new Label("Not available"));
         }
 
         @Override
@@ -91,10 +100,9 @@ public class PatientChooser implements Initializable {
         }
     }
 
-    private Map<String, Object> getItems() {
-
-        if (null != list) {
-            list.clear();
+    private Map<String, Object> getItems(int itemId) {
+        if (null != itemList) {
+            itemList.clear();
         }
         Map<String, Object> map = new HashMap<>();
 
@@ -105,36 +113,39 @@ public class PatientChooser implements Initializable {
         try {
             connection = dbConnection.getConnection();
 
-            String qry = "select *,(TO_CHAR(tp.registered_date, 'DD-MM-YYYY')) as created_date from tbl_patient as tp order by patient_id desc ";
+            String qry = """
+                    select  stock_id,tpi.purchase_items_id ,tim.items_name,tim.strip_tab ,tpi.batch , tpi.expiry_date , ts.quantity , ts.quantity_unit  from tbl_stock ts
+                    left join tbl_purchase_items tpi on tpi.purchase_items_id = ts.purchase_items_id
+                    left join tbl_items_master tim on tim.item_id = ts.item_id
+                    where tpi.item_id =?  and ts.quantity>0 order by expiry_date asc
+                                        
+                    """;
             ps = connection.prepareStatement(qry);
+            ps.setInt(1,itemId);
             rs = ps.executeQuery();
 
             int count = 0;
 
             while (rs.next()) {
-                int patient_id = rs.getInt("PATIENT_ID");
-                String name = rs.getString("name");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                String gender = rs.getString("gender");
-                String idNum = rs.getString("id_number");
-                String age = rs.getString("age");
-                String careOf = rs.getString("care_of");
-                String weight = rs.getString("weight");
-                String bp = rs.getString("bp");
-                String pulse = rs.getString("pulse");
-                String sugar = rs.getString("sugar");
-                String registeredDate = rs.getString("registered_date");
 
-                PatientModel pm = new PatientModel(patient_id, name, method.rec(phone), method.rec(address), method.rec(idNum),
-                        method.rec(String.valueOf(0)), method.rec(gender), method.rec(age), method.rec(careOf), method.rec(weight), method.rec(bp),
-                        method.rec(pulse), method.rec(sugar), method.rec(registeredDate));
-                list.add(pm);
+                int stockId = rs.getInt("stock_id");
+                String itemName = rs.getString("items_name");
+                String batch = rs.getString("batch");
+                String expiryDate = rs.getString("expiry_date");
+                int quantity = rs.getInt("quantity");
+                int strip_tab = rs.getInt("strip_tab");
+                int purchase_items_id = rs.getInt("purchase_items_id");
+                String quantityUnit = rs.getString("quantity_unit");
                 count++;
 
+                String qty = method.tabToStrip(quantity, strip_tab, quantityUnit);
+
+                BatchChooserModel bcm = new BatchChooserModel(stockId, itemName, batch,
+                        expiryDate, quantity, quantityUnit, qty,strip_tab,purchase_items_id);
+                itemList.add(bcm);
             }
 
-            if (list.size() > 0) {
+            if (itemList.size() > 0) {
                 pagination.setVisible(true);
                 search_Item();
             }
@@ -146,7 +157,6 @@ public class PatientChooser implements Initializable {
                 map.put("is_success", false);
                 map.put("message", "Item not available");
             }
-
 
         } catch (SQLException e) {
             map.put("is_success", false);
@@ -160,7 +170,7 @@ public class PatientChooser implements Initializable {
 
     private void search_Item() {
 
-        filteredData = new FilteredList<>(list, p -> true);
+        filteredData = new FilteredList<>(itemList, p -> true);
 
         searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -172,11 +182,9 @@ public class PatientChooser implements Initializable {
 
                 String lowerCaseFilter = newValue.toLowerCase();
 
-                if (products.getName().toLowerCase().contains(lowerCaseFilter)) {
+                if (products.getBatch().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                }
-                return products.getPhone().toLowerCase().contains(lowerCaseFilter);
-
+                } else return String.valueOf(products.getExpiryDate()).toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
@@ -184,10 +192,9 @@ public class PatientChooser implements Initializable {
 
         pagination.setCurrentPageIndex(0);
         changeTableView(0, rowsPerPage);
-        pagination.currentPageIndexProperty().addListener(
-                (observable1, oldValue1, newValue1) -> {
-                    changeTableView(newValue1.intValue(), rowsPerPage);
-                });
+        pagination.currentPageIndexProperty().addListener((observable1, oldValue1, newValue1) -> {
+            changeTableView(newValue1.intValue(), rowsPerPage);
+        });
     }
 
     private void changeTableView(int index, int limit) {
@@ -195,17 +202,17 @@ public class PatientChooser implements Initializable {
         int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
         Platform.runLater(() -> pagination.setPageCount(totalPage));
 
-        colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
-                tableView.getItems().indexOf(cellData.getValue()) + 1));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(tableView.getItems().indexOf(cellData.getValue()) + 1));
+        colBatch.setCellValueFactory(new PropertyValueFactory<>("batch"));
+        colExpiryDate.setCellValueFactory(new PropertyValueFactory<>("expiryDate"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("fullQty"));
 
         setOptionalCell();
         int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, list.size());
+        int toIndex = Math.min(fromIndex + limit, itemList.size());
 
         int minIndex = Math.min(toIndex, filteredData.size());
-        SortedList<PatientModel> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        SortedList<BatchChooserModel> sortedData = new SortedList<>(FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
         tableView.setItems(sortedData);
@@ -213,8 +220,7 @@ public class PatientChooser implements Initializable {
 
     private void setOptionalCell() {
 
-        Callback<TableColumn<PatientModel, String>, TableCell<PatientModel, String>>
-                cellFactory = (TableColumn<PatientModel, String> param) -> new TableCell<>() {
+        Callback<TableColumn<BatchChooserModel, String>, TableCell<BatchChooserModel, String>> cellFactory = (TableColumn<BatchChooserModel, String> param) -> new TableCell<>() {
             @Override
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -225,20 +231,18 @@ public class PatientChooser implements Initializable {
                 } else {
 
                     Button selectBn = new Button();
-
                     ImageView iv = new ImageView(new ImageLoader().load("img/icon/rightArrow_ic_white.png"));
                     iv.setFitHeight(17);
                     iv.setFitWidth(17);
-
                     selectBn.setGraphic(iv);
                     selectBn.setStyle("-fx-cursor: hand ; -fx-background-color: #06a5c1 ; -fx-background-radius: 3 ");
 
                     selectBn.setOnAction((event) -> {
                         method.selectTable(getIndex(), tableView);
-                        PatientModel icm = tableView.getSelectionModel().getSelectedItem();
+                        BatchChooserModel bcm = tableView.getSelectionModel().getSelectedItem();
 
-                        if (null != icm) {
-                            Main.primaryStage.setUserData(icm);
+                        if (null != bcm) {
+                            Main.primaryStage.setUserData(bcm);
                             Stage stage = (Stage) searchTf.getScene().getWindow();
                             if (null != stage && stage.isShowing()) {
                                 stage.close();
@@ -262,10 +266,4 @@ public class PatientChooser implements Initializable {
         colAction.setCellFactory(cellFactory);
     }
 
-    public void add(MouseEvent actionEvent) {
-        customDialog.showFxmlDialog("product/patient/addPatient.fxml", "Add new Patient");
-        searchTf.setText("");
-        callThread();
-
-    }
 }

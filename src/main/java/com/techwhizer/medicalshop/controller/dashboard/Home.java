@@ -37,6 +37,8 @@ public class Home implements Initializable {
     public Label totalNetAmountL;
     public TableColumn<DailySaleReport, String> colItemName;
     public TableColumn<DailySaleReport, String> colQuantity;
+    public TableColumn<DailySaleReport, String> colBatch;
+    public TableColumn<DailySaleReport, String> colExpiryDate;
     public BorderPane mainContainer;
     public TableView<DailySaleReport> tableViewHome;
     public TableColumn<DailySaleReport, Integer> col_sno;
@@ -83,6 +85,8 @@ public class Home implements Initializable {
         colItemName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         colNetAmount.setCellValueFactory(new PropertyValueFactory<>("totalNetAmount"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("fullQuantity"));
+        colBatch.setCellValueFactory(new PropertyValueFactory<>("batch"));
+        colExpiryDate.setCellValueFactory(new PropertyValueFactory<>("expiryDate"));
 
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, reportList.size());
@@ -145,15 +149,16 @@ public class Home implements Initializable {
             connection = dbConnection.getConnection();
 
             String query = """
-                    select  tsi.item_name ,tsi.item_id,
-                            count(*)as total_Item  ,
-                            sum(net_amount) as total_Net_Amount,
-                            ( sum(tsi.strip*(select strip_tab from tbl_items_master tim where tsi.item_id = tim.item_id )))+ ( sum(tsi.pcs))as totalTab,
-                            (select quantity_unit from tbl_stock ts where tsi.item_id = ts.item_id) as qtyUnit,
-                            tsi.strip_tab as stripTab
-                    from tbl_sale_Items tsi
-                    where TO_CHAR(sale_date, 'yyyy-MM-dd' ) =
-                          TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd')   group by item_id, tsi.item_name, tsi.strip_tab""";
+                 select  tsi.item_name ,tsi.stock_id,tsi.batch,
+                         count(*)as total_Item  ,tsi.expiry_date,
+                         sum(net_amount) as total_Net_Amount,
+                         ( sum(tsi.strip*(select strip_tab from tbl_items_master tim where tsi.item_id = tim.item_id )))+ ( sum(tsi.pcs))as totalTab,
+                         (select quantity_unit from tbl_stock ts where tsi.stock_id = ts.stock_id) as qtyUnit,
+                         tsi.strip_tab as stripTab
+                 from tbl_sale_Items tsi
+                 where TO_CHAR(sale_date, 'yyyy-MM-dd' ) =
+                       TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd')   group by stock_id,tsi.batch, tsi.item_name, tsi.strip_tab, tsi.expiry_date
+                    """;
 
             ps = connection.prepareStatement(query);
 
@@ -165,11 +170,13 @@ public class Home implements Initializable {
 
             while (rs.next()) {
                 String itemName = rs.getString("item_name");
-                int itemId = rs.getInt("item_id");
+                int stockId = rs.getInt("stock_id");
                 int totalItem = rs.getInt("total_Item");
                 double totalNet_Amount = rs.getDouble("total_Net_Amount");
                 int totalTab = rs.getInt("totalTab");
                 String qtyUnit = rs.getString("qtyUnit");
+                String batch  = rs.getString("batch");
+                String expiryDate = rs.getString("expiry_date");
                 int stripTab = rs.getInt("stripTab");
                 String qty = method.tabToStrip(totalTab,stripTab,qtyUnit);;
 
@@ -177,7 +184,7 @@ public class Home implements Initializable {
                     itemName = itemName.concat(" ( STRIP-"+stripTab+" )");
                 }
 
-                reportList.add(new DailySaleReport(itemId ,totalItem, itemName, totalNet_Amount,totalTab,qtyUnit,qty,stripTab));
+                reportList.add(new DailySaleReport(0 ,totalItem, itemName, totalNet_Amount,totalTab,qtyUnit,qty,stripTab,batch,stockId,expiryDate));
                 totalNetAmount = totalNetAmount + totalNet_Amount;
                 res++;
             }

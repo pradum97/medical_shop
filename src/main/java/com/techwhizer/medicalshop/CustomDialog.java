@@ -104,6 +104,7 @@ public class CustomDialog {
             stage3.getIcons().add((new ImageLoader().load(AppConfig.APPLICATION_ICON)));
             stage3.setTitle(title);
             stage3.initOwner(Main.primaryStage);
+            stage3.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/cartTable.css")).toExternalForm());
             stage3.setScene(scene);

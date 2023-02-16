@@ -1,8 +1,10 @@
 package com.techwhizer.medicalshop.controller.product.patient;
 
-import com.techwhizer.medicalshop.CustomDialog;
+import com.techwhizer.medicalshop.*;
+import com.techwhizer.medicalshop.controller.dashboard.InvoiceReport;
+import com.techwhizer.medicalshop.method.GenerateInvoice;
 import com.techwhizer.medicalshop.method.Method;
-import com.techwhizer.medicalshop.PropertiesLoader;
+import com.techwhizer.medicalshop.model.PatientModel;
 import com.techwhizer.medicalshop.model.PatientModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import com.victorlaerte.asynctask.AsyncTask;
@@ -14,15 +16,23 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.stage.DirectoryChooser;
+import javafx.util.Callback;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -30,18 +40,18 @@ import java.util.ResourceBundle;
 
 public class PatientMain implements Initializable {
 
+
     private int rowsPerPage = 15;
     public TableView<PatientModel> tableView;
     public TableColumn<PatientModel, Integer> colSrNo;
-    public TableColumn<PatientModel, String> colCId;
     public TableColumn<PatientModel, String> colName;
     public TableColumn<PatientModel, String> colPhone;
     public TableColumn<PatientModel, String> colAddress;
     public TableColumn<PatientModel, String> colDate;
+    public TableColumn<PatientModel, String> colAction;
     public TableColumn<PatientModel, String> colIdNum;
     public TableColumn<PatientModel, String> colGender;
     public TableColumn<PatientModel, String> colAge;
-    public TableColumn<PatientModel, String> colDiscount;
     public TableColumn<PatientModel, String> colCareOf;
     public TableColumn<PatientModel, String> colWeight;
     public TableColumn<PatientModel, String> colBp;
@@ -65,9 +75,7 @@ public class PatientMain implements Initializable {
         customDialog = new CustomDialog();
         PropertiesLoader propLoader = new PropertiesLoader();
         propRead = propLoader.getReadProp();
-
         callThread();
-
     }
 
     private void onColumnEdit(TableColumn<PatientModel, String> col, String updateColumnName) {
@@ -83,26 +91,6 @@ public class PatientMain implements Initializable {
                     callThread();
                     customDialog.showAlertBox("Failed", "Empty Value Not Accepted");
                     return;
-                }
-            }
-
-            if (col == colDiscount){
-                if (!value.isEmpty()) {
-
-                    double dis  = 0.0;
-                    try {
-                      dis = Double.parseDouble(value);
-                    } catch (NumberFormatException ex) {
-                        callThread();
-                        customDialog.showAlertBox("Invalid", "Please Enter valid discount");
-                        return;
-                    }
-
-                    if (dis >100){
-                        callThread();
-                        customDialog.showAlertBox("", "Please Enter discount less then 100");
-                        return;
-                    }
                 }
             }
 
@@ -226,7 +214,7 @@ public class PatientMain implements Initializable {
                 String gender = rs.getString("gender");
                 String idNum = rs.getString("id_number");
                 String age = rs.getString("age");
-                double discount = rs.getDouble("discount");
+               // double discount = rs.getDouble("discount");
                 String careOf = rs.getString("care_of");
                 String weight = rs.getString("weight");
                 String bp = rs.getString("bp");
@@ -235,7 +223,7 @@ public class PatientMain implements Initializable {
                 String registeredDate = rs.getString("registered_date");
 
                 PatientModel pm = new PatientModel(patient_id,name, method.rec(phone), method.rec(address), method.rec(idNum),
-                        method.rec(String.valueOf(discount)), method.rec(gender), method.rec(age), method.rec(careOf), method.rec(weight), method.rec(bp),
+                        method.rec(String.valueOf(0)), method.rec(gender), method.rec(age), method.rec(careOf), method.rec(weight), method.rec(bp),
                         method.rec(pulse), method.rec(sugar), method.rec(registeredDate));
                 patientList.add(pm);
                 res++;
@@ -310,7 +298,6 @@ public class PatientMain implements Initializable {
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         colIdNum.setCellValueFactory(new PropertyValueFactory<>("idNumber"));
-        colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
         colAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         colCareOf.setCellValueFactory(new PropertyValueFactory<>("careOf"));
         colWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
@@ -320,14 +307,14 @@ public class PatientMain implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<>("registered_date"));
         colGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
 
+        setOptionalCell();
+
         onColumnEdit(colName, "name");
         onColumnEdit(colAddress, "addressTf");
         onColumnEdit(colPhone, "phone");
         onColumnEdit(colIdNum, "id_number");
         onColumnEdit(colGender, "gender");
         onColumnEdit(colAge, "age");
-
-        onColumnEdit(colDiscount, "discount");
 
         onColumnEdit(colCareOf, "care_of");
         onColumnEdit(colWeight, "weight");
@@ -349,5 +336,146 @@ public class PatientMain implements Initializable {
     public void addPatient(ActionEvent event) {
         customDialog.showFxmlDialog2("product/patient/addPatient.fxml", "Add New Patient");
         callThread();
+    }
+
+    private void setOptionalCell() {
+
+        Callback<TableColumn<PatientModel, String>, TableCell<PatientModel, String>>
+                cellFactory = (TableColumn<PatientModel, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+
+                } else {
+
+                    Label bnDownload = new Label("DOWNLOAD");
+                    Label bnPrint = new Label("PRINT");
+
+                    bnDownload.setMinWidth(60);
+                    bnPrint.setMinWidth(60);
+                    bnPrint.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    bnDownload.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                    bnDownload.setStyle("-fx-background-color: #030c3d; -fx-background-radius: 3 ;  " +
+                            "-fx-padding: 4 11 4 11 ;-fx-font-family: Arial; -fx-text-fill: white;-fx-font-weight: bold; -fx-alignment: center;-fx-cursor: hand");
+
+                    bnPrint.setStyle("-fx-background-color: #670283; -fx-background-radius: 3 ;-fx-font-weight: bold ;-fx-font-family: Arial; " +
+                            "-fx-padding: 4 11 4 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    ImageView down_iv = new ImageView();
+                    ImageView print_iv = new ImageView();
+
+                    String path = "img/icon/";
+
+                    down_iv.setFitHeight(18);
+                    down_iv.setFitWidth(18);
+
+                    print_iv.setFitHeight(18);
+                    print_iv.setFitWidth(18);
+
+                    ImageLoader loader = new ImageLoader();
+
+                    down_iv.setImage(loader.load(path.concat("download_ic.png")));
+                    print_iv.setImage(loader.load(path.concat("print_ic.png")));
+
+                    bnDownload.setGraphic(down_iv);
+                    bnPrint.setGraphic(print_iv);
+
+                    bnDownload.setOnMouseClicked(mouseEvent -> {
+
+                        DirectoryChooser directoryChooser = new DirectoryChooser();
+                        File selectedPath = directoryChooser.showDialog(Main.primaryStage);
+
+                        if (selectedPath != null) {
+
+                            int patientId = patientList.get(getIndex()).getPatientId();
+                            String name = patientList.get(getIndex()).getName();
+
+                            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                            LocalDateTime now = LocalDateTime.now();
+
+                            String fileName = name + "_" + dtf.format(now) + ".pdf";
+                            String fullPath = selectedPath + "\\" + fileName;
+
+                            PrintTask myAsyncTask = new PrintTask(patientId , true,fullPath , bnDownload);
+                            myAsyncTask.setDaemon(false);
+                            myAsyncTask.execute();
+
+
+
+                        }
+                    });
+
+                    bnPrint.setOnMouseClicked(mouseEvent -> {
+                        int patientId = patientList.get(getIndex()).getPatientId();
+                        String tempPath = method.getTempFile();
+
+                        PrintTask myAsyncTask = new PrintTask(patientId , false,tempPath , bnPrint);
+                        myAsyncTask.setDaemon(false);
+                        myAsyncTask.execute();
+                    });
+
+                    HBox managebtn = new HBox(bnDownload, bnPrint);
+
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(bnDownload, new Insets(5, 0, 5, 30));
+                    HBox.setMargin(bnPrint, new Insets(0, 3, 0, 20));
+
+                    setGraphic(managebtn);
+                    setText(null);
+                }
+            }
+
+        };
+
+        colAction.setCellFactory(cellFactory);
+    }
+
+    private class PrintTask extends AsyncTask<String, Integer, Boolean> {
+      private   int patientId;
+      private   boolean isDownloadable;
+      private   String fullPath;
+       private Label button;
+
+        public PrintTask(int patientId, boolean isDownloadable, String fullPath, Label button) {
+            this.patientId = patientId;
+            this.isDownloadable = isDownloadable;
+            this.fullPath = fullPath;
+            this.button = button;
+        }
+
+        @Override
+        public void onPreExecute() {
+
+            ProgressIndicator pi = new ProgressIndicator();
+            pi.indeterminateProperty();
+            pi.setPrefHeight(25);
+            pi.setPrefWidth(25);
+            pi.setStyle("-fx-progress-color: white;");
+
+            if (null != button){
+                button.setGraphic(pi);
+            }
+
+        }
+
+        @Override
+        public Boolean doInBackground(String... params) {
+
+            new GenerateInvoice().prescriptionInvoice(patientId,isDownloadable,fullPath,button);
+
+            return false;
+        }
+
+        @Override
+        public void onPostExecute(Boolean success) {
+        }
+
+        @Override
+        public void progressCallback(Integer... params) {
+
+        }
     }
 }

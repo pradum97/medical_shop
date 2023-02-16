@@ -223,7 +223,7 @@ public class ShopDetailsUpdate implements Initializable {
             } else {
                 ps.setString(7, gstNumber);
             }
-            if (foodLicence.isEmpty()) {
+            if (null == foodLicence ||foodLicence.isEmpty()) {
                 ps.setNull(8, Types.NULL);
             } else {
                 ps.setString(8, foodLicence);

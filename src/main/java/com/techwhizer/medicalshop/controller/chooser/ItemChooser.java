@@ -107,10 +107,12 @@ public class ItemChooser implements Initializable {
         try {
             connection = dbConnection.getConnection();
 
-            String qry = "SELECT *\n" +
-                    ",(concat((tpt.igst+tpt.cgst+tpt.sgst),' %')) as totalGst\n" +
-                    "from tbl_items_master as tim\n" +
-                    "left join tbl_product_tax tpt on tpt.tax_id = tim.gst_id\n";
+            String qry = """
+                    SELECT *
+                    ,(concat((tpt.igst+tpt.cgst+tpt.sgst),' %')) as totalGst
+                    from tbl_items_master as tim
+                    left join tbl_product_tax tpt on tpt.tax_id = tim.gst_id
+                    """;
             ps = connection.prepareStatement(qry);
             rs = ps.executeQuery();
 

@@ -70,7 +70,7 @@ public class AddMr implements Initializable {
             method.show_popup("Please enter 10 digit phone number", phoneTf);
             return;
         }else if (address.isEmpty()) {
-            method.show_popup("Please enter full name of mr", addressTf);
+            method.show_popup("Please enter address", addressTf);
             return;
         }
 

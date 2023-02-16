@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddPurchaseItems implements Initializable {
     public Label productNameL;
@@ -118,13 +120,20 @@ public class AddPurchaseItems implements Initializable {
         int stripTabInt = 0,quantityD = 0;
         double saleRateD = 0.0, purchasePriceD = 0.0,mrpD = 0.0;
 
+        Pattern pattern = Pattern.compile("\\s");
+        Matcher matcher = pattern.matcher(batchNumber);
+        boolean found = matcher.find();
+
         if (null == icm) {
             method.show_popup("Please select product", productNameL);
             return;
         } else if (batchNumber.isEmpty()) {
             method.show_popup("Please enter batch", batchTf);
             return;
-        } else if (monthCom.getSelectionModel().isEmpty()) {
+        }else if (found){
+            method.show_popup("Please remove space from batch", batchTf);
+            return;
+        }else if (monthCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select expiry month", monthCom);
             return;
         } else if (yearCom.getSelectionModel().isEmpty()) {

@@ -3,7 +3,6 @@ package com.techwhizer.medicalshop.controller.product.patient;
 import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
-import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.method.StaticData;
 import com.techwhizer.medicalshop.util.DBConnection;
@@ -38,7 +37,13 @@ public class AddPatient implements Initializable {
     public TextField weightTf;
     public TextField bpTf;
     public TextField pulseTf;
-    public TextField sugarTf, discountTf;
+    public TextField sugarTf;
+
+    public TextField spo2Tf;
+    public TextField tempTf;
+    public TextField cvsTf;
+    public TextField cnsTf;
+    public TextField chestTf;
 
     private Method method;
     private CustomDialog customDialog;
@@ -82,15 +87,23 @@ public class AddPatient implements Initializable {
         String address = addressTf.getText();
         String gender = genderCom.getSelectionModel().getSelectedItem();
         String age = ageTf.getText();
-        String discount = discountTf.getText();
         String co = coName.getText();
         String weight = weightTf.getText();
         String bp = bpTf.getText();
         String pulse = pulseTf.getText();
         String sugar = sugarTf.getText();
 
+        String spo2 = spo2Tf.getText();
+        String temp  = tempTf.getText();
+        String cvs = cvsTf.getText();
+        String cns = cnsTf.getText();
+        String chest = chestTf.getText();
+
         if (fullName.isEmpty()) {
             method.show_popup("Enter customer full name", nameTf);
+            return;
+        }else if (address.isEmpty()) {
+            method.show_popup("Please enter patient address", address);
             return;
         }else if (genderCom.getSelectionModel().isEmpty()) {
             method.show_popup("Please select gender", genderCom);
@@ -111,16 +124,6 @@ public class AddPatient implements Initializable {
                 return;
             }
         }
-        double discountD = 0d;
-        if (!discount.isEmpty()) {
-            try {
-                discountD =  Double.parseDouble(discount);
-            } catch (NumberFormatException e) {
-                method.show_popup("Enter valid discount", discountTf);
-                return;
-            }
-        }
-
 
         ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
         image.setFitWidth(45);
@@ -141,23 +144,26 @@ public class AddPatient implements Initializable {
             try {
                 connection = new DBConnection().getConnection();
 
-                String qry = "INSERT INTO TBL_PATIENT(NAME, PHONE, ADDRESS, ID_NUMBER, GENDER, AGE, DISCOUNT, " +
-                        "CARE_OF, WEIGHT, BP, PULSE, SUGAR) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+                String qry = "INSERT INTO TBL_PATIENT(NAME, PHONE, ADDRESS, ID_NUMBER, GENDER, AGE,CHEST, CARE_OF,\n" +
+                        "                        WEIGHT, BP, PULSE, SUGAR, SPO2, TEMP, CVS, CNS) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                 ps = connection.prepareStatement(qry);
-
                 ps.setString(1, fullName);
                 ps.setString(2, phone);
                 ps.setString(3, address);
                 ps.setString(4, idNumber);
                 ps.setString(5, gender);
                 ps.setString(6, age);
-                ps.setDouble(7, discountD);
+                ps.setString(7, chest);
                 ps.setString(8, co);
                 ps.setString(9, weight);
                 ps.setString(10, bp);
                 ps.setString(11, pulse);
                 ps.setString(12, sugar);
+                ps.setString(13, spo2);
+                ps.setString(14, temp);
+                ps.setString(15, cvs);
+                ps.setString(16, cns);
 
                 int res = ps.executeUpdate();
 

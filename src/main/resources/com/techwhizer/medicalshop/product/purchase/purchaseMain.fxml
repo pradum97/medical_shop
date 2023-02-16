@@ -30,7 +30,7 @@
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="dealerNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseDealer" prefWidth="265.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="Click to select dealer" textAlignment="CENTER">
+                        <Label fx:id="dealerNameL" alignment="CENTER" layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="260.0" onMouseClicked="#chooseDealer" prefWidth="265.0" style="-fx-border-color: grey; -fx-border-radius: 3; -fx-cursor: hand;" text="SELECT DEALER" textAlignment="CENTER">
                            <HBox.margin>
                               <Insets left="2.0" />
                            </HBox.margin>

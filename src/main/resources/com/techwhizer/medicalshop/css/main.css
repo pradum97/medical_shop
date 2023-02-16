@@ -3,6 +3,11 @@
 }
 
 
+
+.text-input {
+    -fx-font-size: 16px;
+}
+
 .context-menu {
     -fx-background-color: red;
     -fx-border-color: red;

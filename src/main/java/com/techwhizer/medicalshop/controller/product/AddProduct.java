@@ -311,7 +311,7 @@ public class AddProduct implements Initializable {
     }
 
     public void addDiscount(ActionEvent actionEvent) {
-        customDialog.showFxmlDialog2("product/viewCompany.fxml", "Create new discount");
+        customDialog.showFxmlDialog2("product/discount/discount.fxml", "Create new discount");
         getDiscount();
     }
 

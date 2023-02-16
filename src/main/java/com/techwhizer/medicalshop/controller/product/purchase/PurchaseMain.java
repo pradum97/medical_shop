@@ -307,7 +307,7 @@ public class PurchaseMain implements Initializable {
                                 psItemMasterUpdate.executeUpdate();
 
 
-                                if (method.isItemAvailableInStock(pt.getItemId())) {
+                                if (method.isBatchAvailableInStock(pt.getBatch())) {
                                     String stockQryUpdateQry = "UPDATE TBL_STOCK SET PURCHASE_MAIN_ID=?, PURCHASE_ITEMS_ID=?,QUANTITY = QUANTITY+?,\n" +
                                             "QUANTITY_UNIT=?,UPDATE_DATE= ? WHERE item_id = ?";
                                     psStock = connection.prepareStatement(stockQryUpdateQry);
@@ -349,9 +349,11 @@ public class PurchaseMain implements Initializable {
                         }
 
                         dealerBillNumTf.setText("");
-                        Platform.runLater(() -> dealerNameL.setText("Click to select dealer"));
+                        Platform.runLater(() -> dealerNameL.setText("SELECT DEALER"));
                         tableView.setItems(itemList);
                         tableView.refresh();
+
+                        customDialog.showAlertBox("Success","Successfully added");
 
                     }
 

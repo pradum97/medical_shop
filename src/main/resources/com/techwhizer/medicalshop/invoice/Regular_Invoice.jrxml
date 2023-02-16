@@ -306,7 +306,7 @@
 							<font fontName="Cutom_hindi_font" size="9" isBold="false"/>
 							<paragraph rightIndent="5"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$P{SHOP_PHONE_1}+" , "+$P{SHOP_PHONE_2}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$P{SHOP_PHONE_1}+$P{SHOP_PHONE_2}]]></textFieldExpression>
 					</textField>
 					<staticText>
 						<reportElement x="12" y="31" width="80" height="17" uuid="00c042af-fc8f-430b-b737-e169cf4af4b9"/>
@@ -965,9 +965,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[
-
-new BigDecimal($V{Total_Disount_Amount}+new Double($P{add_discount})).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new BigDecimal($V{Total_Disount_Amount}+new Double($P{add_discount})).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="493" y="44" width="80" height="20" uuid="f07e5150-2f43-48f7-bba6-55d1c535882e">

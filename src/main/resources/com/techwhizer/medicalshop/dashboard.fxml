@@ -62,7 +62,7 @@
                                     </ImageView>
                                  </graphic>
                               </Hyperlink>
-                              <Hyperlink fx:id="myProductBn" layoutX="80.0" layoutY="221.0" onAction="#myProductBnClick" text="MY PRODUCTS">
+                              <Hyperlink fx:id="myProductBn" layoutX="80.0" layoutY="221.0" onAction="#myProductBnClick" text="MEDICINES">
                                  <graphic>
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -72,7 +72,7 @@
                                  </graphic>
                               </Hyperlink>
 
-                               <Hyperlink fx:id="stockH" layoutX="80.0" layoutY="221.0" onAction="#stockReport" text="STOCK">
+                               <Hyperlink fx:id="stockH" layoutX="80.0" layoutY="221.0" onAction="#stockReport" text="MANAGE STOCK">
                                    <graphic>
                                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                            <image>
@@ -82,7 +82,7 @@
                                    </graphic>
                                </Hyperlink>
 
-                              <Hyperlink fx:id="saleProduct" layoutX="80.0" layoutY="245.0" onAction="#saleProductBnClick" text="SALE PRODUCTS">
+                              <Hyperlink fx:id="saleProduct" layoutX="80.0" layoutY="245.0" onAction="#saleProductBnClick" text="SALE MEDICINES">
                                  <graphic>
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -101,7 +101,7 @@
                                  </graphic>
                               </Hyperlink>
 
-                              <Hyperlink fx:id="returnProductBn" layoutX="80.0" layoutY="317.0" onAction="#returnProductBnClick" text="RETURN PRODUCT">
+                              <Hyperlink fx:id="returnProductBn" layoutX="80.0" layoutY="317.0" onAction="#returnProductBnClick" text="RETURN MEDICINES">
                                  <graphic>
                                     <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -176,7 +176,12 @@
                   </HBox>
                   <HBox alignment="CENTER" fillHeight="false" spacing="20.0">
                      <children>
-                        <Label alignment="CENTER" graphicTextGap="8.0" onMouseClicked="#addProductBnClick" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="ITEM ENTRY" textAlignment="CENTER">
+                        <Label alignment="CENTER" graphicTextGap="8.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#patientMain" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PATIENT" textAlignment="CENTER">
+                           <font>
+                              <Font name="Arial Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" graphicTextGap="8.0" onMouseClicked="#addProductBnClick" prefHeight="27.0" prefWidth="127.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="ADD MEDICINE" textAlignment="CENTER">
                            <font>
                               <Font name="Arial Bold" size="12.0" />
                            </font>
@@ -188,7 +193,7 @@
                               </ImageView>
                            </graphic>
                         </Label>
-                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#addPurchase" prefHeight="27.0" prefWidth="155.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PURCHASE ENTRY" textAlignment="CENTER">
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#addPurchase" prefHeight="27.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-radius: 3; -fx-background-radius: 3; -fx-border-color: black; -fx-cursor: hand;" text="PURCHASE MEDICINES" textAlignment="CENTER">
                            <font>
                               <Font name="Arial Bold" size="12.0" />
                            </font>

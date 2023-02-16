@@ -4,6 +4,7 @@ import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.FileLoader;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
+import com.techwhizer.medicalshop.model.PrescriptionsBillModel;
 import com.techwhizer.medicalshop.model.RegularInvoiceModel;
 import com.techwhizer.medicalshop.util.DBConnection;
 import javafx.application.Platform;
@@ -232,7 +233,7 @@ public class GenerateInvoice {
                     from tbl_sale_main tsm
                              Left Join tbl_sale_items tsi on tsm.sale_main_id = tsi.sale_main_id
                              LEFT JOIN tbl_doctor td on tsm.doctor_id = td.doctor_id
-                        left join tbl_stock ts on tsi.item_id = ts.item_id
+                        left join tbl_stock ts on tsi.stock_id = ts.stock_id
                              LEFT JOIN tbl_patient tp on tsm.patient_id = tp.patient_id
                              left join tbl_manufacturer_list tml on tsi.mfr_id = tml.mfr_id
                              CROSS JOIN tbl_shop_details tsd
@@ -267,19 +268,23 @@ public class GenerateInvoice {
                 String fl = rs.getString("shop_food_licence");
                 String dl = rs.getString("shop_drug_licence");
                 String drName = rs.getString("dr_name");
-                double additional_discount = 0.9+ rs.getDouble("ADDITIONAL_DISCOUNT");
+                double additional_discount = rs.getDouble("ADDITIONAL_DISCOUNT");
+
+                if (null == shopPhone2 || shopPhone2.isEmpty()){
+                    shopPhone2 = "";
+                }else {
+                    shopPhone2 = ","+shopPhone2;
+                }
+
+                System.out.println(shopPhone2);
 
                 Method m = new Method();
-
 
                 shop_customer_details(param, rs, patientName, m.rec(patientPhone), m.rec(patientAddress),
                         invoiceNum, saleDate, shopName, m.rec(shopAddress),
                         shopEmail, shopPhone1, shopPhone2, m.rec(shopGstNum), additional_discount,m.rec(drName),m.rec(fl),m.rec(dl));
                 modelList.add(new RegularInvoiceModel(productName,m.rec(mfrName),m.rec(pack),m.rec(batch),m.rec(exp),saleRate,
                         discountAmount, totalTab, saleDate ));
-
-
-
             }
 
             JRBeanCollectionDataSource cartBean = new JRBeanCollectionDataSource(modelList);
@@ -309,6 +314,110 @@ public class GenerateInvoice {
                    }
                }
            });
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public static void main(String[] args) {
+        new GenerateInvoice().prescriptionInvoice(1,false,"",null);
+    }
+
+    public void prescriptionInvoice(int patientId, boolean isDownLoad, String downloadPath,
+                               Label button) {
+        ImageView down_iv = new ImageView();
+        ImageView print_iv = new ImageView();
+
+        String rootPath = "img/icon/";
+        down_iv.setFitHeight(18);
+        down_iv.setFitWidth(18);
+        print_iv.setFitHeight(18);
+        print_iv.setFitWidth(18);
+        ImageLoader loader = new ImageLoader();
+        down_iv.setImage(loader.load(rootPath.concat("download_ic.png")));
+        print_iv.setImage(loader.load(rootPath.concat("print_ic.png")));
+
+        List<PrescriptionsBillModel> modelList = new ArrayList<>();
+        Map<String, Object> param = new HashMap<>();
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        fileLoader = new FileLoader();
+
+        try {
+            connection = new DBConnection().getConnection();
+            String query = """
+                    select  * ,(TO_CHAR(tp.registered_date,'DD-MM-YYYY')) as sale_date from tbl_patient tp where  patient_id = ?
+                    """;
+
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, patientId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+
+                String gender = rs.getString("gender");
+                String age = rs.getString("age");
+
+                String weight = rs.getString("weight");
+                String bp = rs.getString("bp");
+                String pulse = rs.getString("pulse");
+
+                String sugar = rs.getString("sugar");
+
+                String spo2 = rs.getString("spo2");
+                String temp = rs.getString("temp");
+                String cvs = rs.getString("cvs");
+                String cns = rs.getString("cns");
+                String chest = rs.getString("chest");
+                String registeredDate = rs.getString("registered_date");
+                String invoiceNum = rs.getString("invoice_number");
+
+                param.put("age",age);
+                param.put("gender",String.valueOf(gender.charAt(0)).toUpperCase());
+                param.put("weight",weight);
+                param.put("name",name);
+                param.put("address",address);
+                param.put("date",registeredDate);
+                param.put("phone",phone);
+                param.put("invoice_number",phone);
+                param.put("doctor_logo",new ImageLoader().reportLogo("img/icon/doctor_logo.png"));
+
+                modelList.add(new PrescriptionsBillModel(patientId,bp,pulse,spo2,temp,chest,cvs,cns,sugar));
+            }
+
+            JRBeanCollectionDataSource cartBean = new JRBeanCollectionDataSource(modelList);
+            param.put("patientDetails", cartBean);
+            JasperReport jasperReport = null;
+            jasperReport = JasperCompileManager.compileReport(fileLoader.load("invoice/prescriptions.jrxml"));
+            JasperPrint print = JasperFillManager.fillReport(jasperReport, param, new JREmptyDataSource());
+
+            if (isDownLoad && null != downloadPath){
+                JasperExportManager.exportReportToPdfFile(print,downloadPath);
+                Platform.runLater(()-> button.setGraphic(down_iv));
+                new CustomDialog().showAlertBox("Successful","Invoice Successfully Download");
+
+            }else{
+                Platform.runLater(()->{ button.setGraphic(print_iv);});
+                JasperViewer viewer = new JasperViewer(print, false);
+                viewer.setZoomRatio(pdfZoomRatio);
+                viewer.setVisible(true);
+            }
+        } catch (SQLException | JRException e) {
+           /* Platform.runLater(()->{
+                if (null != button){
+                    if (isDownLoad){
+                        button.setGraphic(down_iv);
+                    }else { button.setGraphic(print_iv);
+
+                    }
+                }
+            });*/
             e.printStackTrace();
         } finally {
             DBConnection.closeConnection(connection, ps, rs);

@@ -61,14 +61,15 @@ public class ViewSellItems implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            String qry = "select (TO_CHAR(sale_date, 'DD-MM-YYYY HH12:MI:SS AM')) as sale_date,ts.quantity_unit,tsi.strip_tab\n" +
-                    "        ,((coalesce(tsi.strip,0)*coalesce(tsi.strip_tab,0))+tsi.pcs) as totalTab,\n" +
-                    "       ts.quantity_unit,tim.item_id,tsi.sale_item_id,tsi.sale_item_id, tsi.item_name, tsi.sale_rate, tsi.discount, tsi.hsn_sac,\n" +
-                    "       tsi.igst, tsi.sgst, tsi.cgst, tsi.net_amount, tsi.sale_date, tsi.tax_amount\n" +
-                    "from tbl_sale_items tsi\n" +
-                    "         left join tbl_items_master tim on tim.item_id = tsi.item_id\n" +
-                    "         left join tbl_stock ts on tim.item_id = ts.item_id\n" +
-                    "where sale_main_id = ? order by sale_item_id asc";
+            String qry = """
+                    select (TO_CHAR(sale_date, 'DD-MM-YYYY HH12:MI:SS AM')) as sale_date,ts.quantity_unit,tsi.strip_tab
+                            ,((coalesce(tsi.strip,0)*coalesce(tsi.strip_tab,0))+tsi.pcs) as totalTab,
+                           ts.quantity_unit,tim.item_id,tsi.sale_item_id,tsi.sale_item_id, tsi.item_name, tsi.sale_rate, tsi.discount, tsi.hsn_sac,
+                           tsi.igst, tsi.sgst, tsi.cgst, tsi.net_amount, tsi.sale_date, tsi.tax_amount
+                    from tbl_sale_items tsi
+                             left join tbl_items_master tim on tim.item_id = tsi.item_id
+                             left join tbl_stock ts on tsi.stock_id = ts.stock_id
+                    where sale_main_id = ? order by sale_item_id asc """;
 
             ps = connection.prepareStatement(qry);
             ps.setInt(1, sale_main_id);

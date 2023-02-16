@@ -6,12 +6,14 @@ module com.techwhizer.medicalshop {
     requires org.controlsfx.controls;
     requires java.desktop;
     requires org.apache.httpcomponents.httpcore;
+    requires org.apache.httpcomponents.httpmime;
     requires org.json;
     requires org.apache.httpcomponents.httpclient;
     requires java.base;
     requires jasperreports;
     opens com.techwhizer.medicalshop to javafx.fxml;
     exports com.techwhizer.medicalshop;
+
 
     opens com.techwhizer.medicalshop.controller to javafx.fxml;
     exports com.techwhizer.medicalshop.controller;

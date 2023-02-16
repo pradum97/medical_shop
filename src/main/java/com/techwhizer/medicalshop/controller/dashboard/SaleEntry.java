@@ -5,6 +5,7 @@ import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.controller.auth.Login;
 import com.techwhizer.medicalshop.method.GenerateBillNumber;
+import com.techwhizer.medicalshop.method.GenerateInvoice;
 import com.techwhizer.medicalshop.method.Method;
 import com.techwhizer.medicalshop.method.StaticData;
 import com.techwhizer.medicalshop.model.DoctorModel;
@@ -145,7 +146,7 @@ public class SaleEntry implements Initializable {
                     selectBn.setOnAction((event) -> {
                         method.selectTable(getIndex(), tableView);
                         SaleEntryModel sem = tableView.getSelectionModel().getSelectedItem();
-                        removeItem(sem.getItemId());
+                        removeItem(sem.getCartId());
 
                     });
 
@@ -182,7 +183,7 @@ public class SaleEntry implements Initializable {
         try {
             connection = dbConnection.getConnection();
             String qry = """
-                   select tim.items_name,tc.item_id,t.batch,tim.mfr_id ,tpt.hsn_sac as hsn,tpt.igst,tpt.sgst,tpt.cgst, tim.packing , tc.mrp  as sale_rate , tc.strip,tc.pcs,
+                   select tim.items_name,tim.item_id , tc.stock_id , tc,cart_id,t.batch,tim.mfr_id ,tpt.hsn_sac as hsn,tpt.igst,tpt.sgst,tpt.cgst, tim.packing , tc.mrp  as sale_rate , tc.strip,tc.pcs,
                           (select expiry_date from tbl_purchase_items tpi where ts.purchase_items_id = tpi.purchase_items_id),t.purchase_rate,t.mrp,
                           coalesce(td.discount,0) as discount,td.discount_id,tpt.tax_id,
                           coalesce((coalesce(tpt.sgst,0)+coalesce(tpt.cgst,0)+coalesce(tpt.igst,0)),0)as total_gst,
@@ -209,8 +210,8 @@ public class SaleEntry implements Initializable {
                           (100+(coalesce((coalesce(tpt.sgst,0)+coalesce(tpt.cgst,0)+coalesce(tpt.igst,0)),0)))*coalesce((coalesce(tpt.sgst,0)+coalesce(tpt.cgst,0)
                                                                                                                              +coalesce(tpt.igst,0)),0)/100 as gstAmount
                    from tbl_cart tc
-                            left join tbl_items_master tim on tc.item_id = tim.item_id
-                            left join tbl_stock ts on tim.item_id = ts.item_id
+                            left join tbl_stock ts on tc.stock_id = ts.stock_id
+                            left join tbl_items_master tim on tim.item_id = ts.item_id
                             left join tbl_discount td on tim.discount_id = td.discount_id
                             left join tbl_product_tax tpt on tpt.tax_id = tim.gst_id
                             left outer join tbl_purchase_items t on ts.purchase_items_id = t.purchase_items_id
@@ -244,7 +245,10 @@ public class SaleEntry implements Initializable {
                 String batch = rs.getString("batch");
                 int mfrId = rs.getInt("mfr_id");
 
-                itemList.add(new SaleEntryModel(itemId, productName, saleRate, pack, strip, pcs, expiryDate, discountId,
+                int cartId = rs.getInt("cart_id");
+                int stockId = rs.getInt("stock_id");
+
+                itemList.add(new SaleEntryModel(itemId,cartId , stockId, productName, saleRate, pack, strip, pcs, expiryDate, discountId,
                         discount, gstId, totalGst, netAmount, hsn, iGst, cGst, sGst, gstAmount, purchaseRate, mrp,batch,mfrId,amountAsPerMrp));
                 totGstAmount += gstAmount;
                 totalDiscount += discountAmt;
@@ -282,6 +286,7 @@ public class SaleEntry implements Initializable {
             });
 
         } catch (SQLException e) {
+            tableView.setPlaceholder(new Label("Something went wrong"));
             throw new RuntimeException(e);
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
@@ -369,15 +374,15 @@ public class SaleEntry implements Initializable {
         });
     }
 
-    public void removeItem(int itemId) {
+    public void removeItem(int cartId) {
         Connection con = null;
         PreparedStatement ps = null;
-        String query = "DELETE FROM tbl_cart WHERE item_id = ?";
+        String query = "DELETE FROM tbl_cart WHERE cart_id = ?";
 
         try {
             con = dbConnection.getConnection();
             ps = con.prepareStatement(query);
-            ps.setInt(1, itemId);
+            ps.setInt(1, cartId);
             int res = ps.executeUpdate();
             if (res >= 0) {
                 getCartData();
@@ -429,6 +434,9 @@ public class SaleEntry implements Initializable {
     }
 
     public void checkOutBn(ActionEvent event) {
+
+        System.out.println("size : "+tableView.getItems().size());
+
         if (itemList.size() < 1) {
             customDialog.showAlertBox("Not available", "Item not available.please add at least one item");
             return;
@@ -503,12 +511,11 @@ public class SaleEntry implements Initializable {
     }
 
     private void addSaleItem(int patientId, String billingType) {
+
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
 
         double totalTaxAmtD = totGstAmount;
         double invoiceValue = 0;
-
-
 
         invoiceValue = Double.parseDouble(invoiceValueTf.getText());
         Connection connection = null;
@@ -564,11 +571,12 @@ public class SaleEntry implements Initializable {
                     int resItem = 0;
                     String query = "INSERT INTO TBL_SALE_ITEMS(SALE_MAIN_ID, ITEM_ID, ITEM_NAME, " +
                             "sale_rate, STRIP, PCS, DISCOUNT, HSN_SAC, igst, sgst, cgst, NET_AMOUNT, TAX_AMOUNT," +
-                            "strip_tab,purchase_rate,mrp, PACK ,MFR_ID,BATCH ,EXPIRY_DATE)" +
-                            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                            "strip_tab,purchase_rate,mrp, PACK ,MFR_ID,BATCH ,EXPIRY_DATE,stock_id)" +
+                            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                     ps = connection.prepareStatement(query);
 
                     for (SaleEntryModel model : items) {
+
                         ps.setInt(1, sale_main_id);
                         ps.setInt(2, model.getItemId());
                         ps.setString(3, model.getProductName());
@@ -589,6 +597,7 @@ public class SaleEntry implements Initializable {
                         ps.setInt(18,model.getMfrId());
                         ps.setString(19,model.getBatch());
                         ps.setString(20,model.getExpiryDate());
+                        ps.setInt(21,model.getStockId());
 
                         resItem = ps.executeUpdate();
 
@@ -598,16 +607,15 @@ public class SaleEntry implements Initializable {
                                 int tab = model.getStrip() * method.getTbPerStrip(model.getItemId());
                                 pcs += tab;
                             }
-
-                            String qry = "UPDATE tbl_stock SET quantity = quantity-? WHERE  item_id= ?";
+                            String qry = "UPDATE tbl_stock SET quantity = quantity-? WHERE  stock_id= ?";
                             psUpdateQty = connection.prepareStatement(qry);
                             psUpdateQty.setInt(1, pcs);
-                            psUpdateQty.setInt(2, model.getItemId());
+                            psUpdateQty.setInt(2, model.getStockId());
                             psUpdateQty.executeUpdate();
 
                         }
 
-
+                        System.out.println("count");
                     }
                     if (resItem > 0) {
                         psUpdateQty.close();
@@ -615,14 +623,15 @@ public class SaleEntry implements Initializable {
                         addDiscTF.setText(String.valueOf(0));
                         patientModel = null;
                         Platform.runLater(() -> patientNameL.setText("SELECT PATIENT"));
-
                         clearAll();
+                        new GenerateInvoice().regularInvoice(sale_main_id, false, null, new Label());
+
                         /*switch (billingType) {
                             case "REGULAR" -> {
-                                map = new GenerateInvoice().regularInvoice(sale_main_id, false, null, true, billingType);
+                               new GenerateInvoice().regularInvoice(sale_main_id, false, null, true, billingType);
                             }
                             case "GST" -> {
-                                map = new GenerateInvoice().gstInvoice(sale_main_id, false, null, billingType);
+                               // map = new GenerateInvoice().gstInvoice(sale_main_id, false, null, billingType);
                             }
                         }*/
 

@@ -65,7 +65,7 @@ public class DatabaseBackup {
         String fileName = "backup_" + DateTimeFormatter.ofPattern(pattern).format(LocalDateTime.now());
         String backupExtension = ".backup";
 
-        String path = System.getProperty("user.home") + "\\HOTEL_DB_BACKUP\\";
+        String path = System.getProperty("user.home") + "\\DB_BACKUP\\";
         File file = new File(path);
         if (!file.exists()) {
             file.mkdirs();

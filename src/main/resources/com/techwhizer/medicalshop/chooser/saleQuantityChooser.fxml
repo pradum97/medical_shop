@@ -124,7 +124,7 @@
                                     </HBox>
                                     <Separator orientation="VERTICAL">
                                        <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
+                                          <Insets left="9.0" right="5.0" />
                                        </HBox.margin>
                                     </Separator>
                                     <HBox layoutX="10.0" layoutY="10.0" spacing="5.0">
@@ -163,9 +163,9 @@
                                     </HBox>
                                     <HBox prefHeight="40.0" prefWidth="295.0" spacing="20.0">
                                        <children>
-                                          <VBox spacing="4.0">
+                                          <VBox prefHeight="57.0" prefWidth="149.0" spacing="4.0">
                                              <children>
-                                                <Label text="STRIP">
+                                                <Label text="STRIP :">
                                                    <font>
                                                       <Font name="Arial Black" size="12.0" />
                                                    </font>
@@ -176,9 +176,21 @@
                                                 <TextField fx:id="stripTf" minHeight="35.0" onKeyPressed="#enterKeyPress" prefHeight="40.0" prefWidth="209.0" promptText="Enter strip" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
                                              </children>
                                           </VBox>
-                                          <VBox layoutX="10.0" layoutY="10.0" spacing="4.0">
+                                          <HBox alignment="CENTER" prefHeight="57.0" prefWidth="47.0">
                                              <children>
-                                                <Label text="PCS OR TAB">
+                                                <Label text="AND">
+                                                   <font>
+                                                      <Font name="Arial Black" size="16.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets top="20.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <VBox layoutX="10.0" layoutY="10.0" prefHeight="57.0" prefWidth="164.0" spacing="4.0">
+                                             <children>
+                                                <Label text="PCS OR TAB :">
                                                    <font>
                                                       <Font name="Arial Black" size="12.0" />
                                                    </font>
@@ -186,7 +198,7 @@
                                                       <Insets left="2.0" />
                                                    </VBox.margin>
                                                 </Label>
-                                                <TextField fx:id="pcsTf" minHeight="35.0" onKeyPressed="#enterKeyPress" prefHeight="40.0" prefWidth="209.0" promptText="Enter pcs" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
+                                                <TextField fx:id="pcsTf" minHeight="35.0" onKeyPressed="#enterKeyPress" prefHeight="35.0" prefWidth="170.0" promptText="Enter pcs" style="-fx-border-color: grey; -fx-border-radius: 3 0 0 3;" />
                                              </children>
                                           </VBox>
                                        </children>

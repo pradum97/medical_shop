@@ -2,6 +2,8 @@ package com.techwhizer.medicalshop.model;
 
 public class SaleEntryModel {
     private int itemId;
+    private int cartId;
+    private int stockId;
     private String productName;
     private double saleRate;
     private String pack;
@@ -22,10 +24,12 @@ public class SaleEntryModel {
     private int mfrId;
     private double amtAsPerMrp;
 
-    public SaleEntryModel(int itemId, String productName, double saleRate, String pack, int strip, int pcs, String expiryDate, int discountId, double discount, int gstId,
+    public SaleEntryModel(int itemId,int cartId, int stockId,String productName, double saleRate, String pack, int strip, int pcs, String expiryDate, int discountId, double discount, int gstId,
                           double totalGst, double amount, long hsn, int iGst, int cGst, int sGst, double gstAmount,
                           double purchaseRate,double mrp,String batch , int mfrId,double amtAsPerMrp) {
         this.itemId = itemId;
+        this.cartId = cartId;
+        this.stockId = stockId;
         this.productName = productName;
         this.saleRate = saleRate;
         this.pack = pack;
@@ -48,6 +52,22 @@ public class SaleEntryModel {
         this.mfrId = mfrId;
         this.amtAsPerMrp = amtAsPerMrp;
 
+    }
+
+    public int getStockId() {
+        return stockId;
+    }
+
+    public void setStockId(int stockId) {
+        this.stockId = stockId;
+    }
+
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
     }
 
     public double getAmtAsPerMrp() {
