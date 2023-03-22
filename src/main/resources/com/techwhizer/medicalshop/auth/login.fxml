@@ -40,7 +40,7 @@
                            <Insets left="3.0" />
                         </VBox.margin>
                             </Label>
-                            <TextField fx:id="email_f" maxWidth="389.0" minWidth="235.0" onKeyReleased="#enterPress" prefHeight="54.0" prefWidth="390.0" promptText="Enter email  / username / phone" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 4;" text="sanoj123@">
+                            <TextField fx:id="email_f" maxWidth="389.0" minWidth="235.0" onKeyReleased="#enterPress" prefHeight="54.0" prefWidth="390.0" promptText="Enter email  / username / phone" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 4;" text="admin">
                                 <font>
                                     <Font name="Arial" size="12.0" />
                                 </font>
@@ -59,7 +59,7 @@
                                  <Insets left="3.0" />
                               </VBox.margin>
                                   </Label>
-                                  <PasswordField fx:id="password_f" maxWidth="396.0" minWidth="235.0" onKeyReleased="#enterPress" prefHeight="54.0" prefWidth="390.0" promptText="Enter password" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 4;" text="sk123">
+                                  <PasswordField fx:id="password_f" maxWidth="396.0" minWidth="235.0" onKeyReleased="#enterPress" prefHeight="54.0" prefWidth="390.0" promptText="Enter password" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 4;" text="admin">
                                       <font>
                                           <Font name="Arial" size="12.0" />
                                       </font>

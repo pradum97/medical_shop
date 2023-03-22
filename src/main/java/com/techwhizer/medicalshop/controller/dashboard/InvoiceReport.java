@@ -1,6 +1,5 @@
 package com.techwhizer.medicalshop.controller.dashboard;
 
-import com.techwhizer.medicalshop.CustomDialog;
 import com.techwhizer.medicalshop.ImageLoader;
 import com.techwhizer.medicalshop.Main;
 import com.techwhizer.medicalshop.method.GenerateInvoice;
@@ -28,10 +27,6 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.File;
 import java.net.URL;
@@ -172,6 +167,9 @@ public class InvoiceReport implements Initializable {
             pi.setPrefHeight(25);
             pi.setPrefWidth(25);
             pi.setStyle("-fx-progress-color: white;");
+            if (null != invoiceList) {
+                invoiceList.clear();
+            }
 
             if (null != map) {
                 button.setGraphic(pi);
@@ -200,7 +198,6 @@ public class InvoiceReport implements Initializable {
                 int saleMainId = (int) map.get("saleMainId");
                 String fullPath = (String) map.get("path");
                 String billType = (String) map.get("billType");
-
                 switch (billType){
                     case "REGULAR" -> {
                         if (isDownloadable){
@@ -213,13 +210,13 @@ public class InvoiceReport implements Initializable {
                     }
                     case "GST" -> {
 
-                        /*if (isDownloadable){
-                            status =  new GenerateInvoice().gstInvoice(saleMainId, true, fullPath, billType);
+                        if (isDownloadable) {
+                            new GenerateInvoice().gstInvoice(saleMainId, false, fullPath, button);
 
-                        }else if(isReportPrint){
+                        } else if (isReportPrint) {
 
-                            status =  new GenerateInvoice().gstInvoice(saleMainId, false, fullPath, billType);
-                        }*/
+                            new GenerateInvoice().gstInvoice(saleMainId, false, fullPath, button);
+                        }
                     }
                 }
 
@@ -248,7 +245,6 @@ public class InvoiceReport implements Initializable {
 
     private Map<String, Object> getSaleItems(boolean isDateFilter) {
         Map<String, Object> map = new HashMap<>();
-
         if (null != invoiceList) {
             invoiceList.clear();
         }
@@ -257,7 +253,12 @@ public class InvoiceReport implements Initializable {
         ResultSet rs = null;
 
         try {
-
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ;
             connection = dbConnection.getConnection();
 
             String query = "select tp.name, coalesce(tp.phone, '-')as phone,  tsm.bill_type,\n" +
@@ -456,9 +457,9 @@ public class InvoiceReport implements Initializable {
 
                         if (selectedPath != null) {
 
-                            int saleMainId = invoiceList.get(getIndex()).getSale_main_id();
-                            String billType = invoiceList.get(getIndex()).getBillType();
-                            String invoiceNmber = invoiceList.get(getIndex()).getInvoiceNumber();
+                            int saleMainId = tableView.getItems().get(getIndex()).getSale_main_id();
+                            String billType = tableView.getItems().get(getIndex()).getBillType();
+                            String invoiceNmber =  tableView.getItems().get(getIndex()).getInvoiceNumber();
 
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                             LocalDateTime now = LocalDateTime.now();
@@ -499,8 +500,10 @@ public class InvoiceReport implements Initializable {
                     });
 
                     bnPrint.setOnMouseClicked(mouseEvent -> {
-                        int saleMainId = invoiceList.get(getIndex()).getSale_main_id();
-                        String billType = invoiceList.get(getIndex()).getBillType();
+                        int saleMainId = tableView.getItems().get(getIndex()).getSale_main_id();
+                        String billType = tableView.getItems().get(getIndex()).getBillType();
+
+
                         String tempPath = method.getTempFile();
                         Map<String, Object> map = new HashMap<>();
                         map.put("saleMainId",saleMainId);
